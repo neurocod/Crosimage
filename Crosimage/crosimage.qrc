@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="Crosimage">
-    </qresource>
+  <qresource prefix="/"> 
+    <file>images/folder-up-24.png</file>
+    <file>images/folder-down-24.png</file>
+  </qresource>
 </RCC>

@@ -51,13 +51,13 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 		btnRefresh.connectClicks(m_model, SLOT(refresh()));
 		lay2 << btnRefresh;
 		{
-			ToolButton b("", tr("Show prev sibling directory"), QIcon(":/qt-project.org/styles/commonstyle/images/up-32.png"));
+			ToolButton b("", tr("Show prev sibling directory"), QIcon(":/images/folder-up-24.png"));
 			b.iconSize = szBtn;
 			b.connectClicks(this, SLOT(goUpSibling()));
 			lay2 << b;
 		}
 		{
-			ToolButton b("", tr("Show next sibling directory"), QIcon(":/qt-project.org/styles/commonstyle/images/down-32.png"));
+			ToolButton b("", tr("Show next sibling directory"), QIcon(":/images/folder-down-24.png"));
 			b.iconSize = szBtn;
 			b.connectClicks(this, SLOT(goDownSibling()));
 			lay2 << b;

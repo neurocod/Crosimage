@@ -544,4 +544,12 @@
       <Filter>Qqt\DB</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\folder-down-24.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\folder-up-24.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
