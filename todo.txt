@@ -1,0 +1,86 @@
+settings dialog
+main window/general
+	video to youtube
+	navigation history
+	dropdown menus in back\forward buttons
+	large folders working speed - with large count of images
+windows manager
+	show only windows from this app
+	manager window is fullscreen
+	no extra borders in this window
+	no extra borders in windows which are shown as thumbnais
+QtSingleApplication
+	to prevent DB conflicts
+ImageView
+	ctrl+N
+	+/- keys - any scale, not only "original size\fit to screen"
+	select image area to fit it to screen, in addition to stepped zoom changes
+	remember zoom level and scale area per image, save it to DB and show at slideshow
+	when image is shown with some parts invisible due to zoom, quickly show frame with relative positions of shown area
+	side toolbars
+		show it when cursor goes to the border of the screen
+		view options
+			single image
+				100% scale
+				fit to screen
+				fit to selection
+				remember scale
+				restore scale
+			slideshow vertically
+			slideshow horizontally
+preview
+	image deleted -> incremant folder fragmentation counter in folder DB
+	rebuild DB if fragmentation is too high
+XnView toolbar commands, reproduce some of these:
+	Back
+	Forward
+	Up one level
+	[line]
+	New folder
+	Rename
+	Delete
+	[line]
+	View as
+		Thumbnails
+		Thumbnails & Labels
+		Thumbnails & Details
+		Icons
+		List
+		Details
+	Sort by
+		Name
+		Name numeric
+		Extension
+		Date
+		EXIF Date
+		Type
+		File size
+		Image sile
+		Print size
+		Image width
+		Image height
+		Orientaion
+		Folder
+		Ratio
+		Description
+		COmment (embedded)
+		Rating
+		[line]
+		Asc
+		Desc
+	Filter
+		Images
+		Videos
+		Sounss
+		Archives
+		All
+		Custom
+		Tagged files
+	Refresh
+	[line]
+	Favorite
+		Add favorite...
+		Edit favorites
+		[line]
+		[favorites]
+	[path]

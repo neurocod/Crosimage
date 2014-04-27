@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{b042d9e3-a3c5-4288-866a-ef96ebde3878}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{a682703c-dd1c-4e4f-a876-d36cfa2556cd}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Template">
+      <UniqueIdentifier>{2a4047c9-5aad-42f7-8dd6-e15eab81558f}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Thumb">
+      <UniqueIdentifier>{f56f7f91-2939-479e-b6dd-79ebbb712756}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AltTab">
+      <UniqueIdentifier>{bcb2839c-efb3-4952-98cc-07aebc5d5f5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="ImageView">
+      <UniqueIdentifier>{10cbff92-e7d4-40eb-a840-4d0a76ff6ceb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_crosimage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ThumbModel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ThumbModel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CMainWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CMainWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_CMainWindow.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="framework.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbView.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbModel.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbDelegate.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbCache.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbWorker.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ThumbWorker.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ThumbWorker.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_ThumbWorker.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ThumbCache.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ThumbCache.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_ThumbCache.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ThumbView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ThumbView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_ThumbView.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbDirPainter.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystemThread.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FileSystemThread.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_FileSystemThread.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_FileSystemThread.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageView.cpp">
+      <Filter>ImageView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ImageView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ImageView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_ImageView.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="ImgDbWorker.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="CApplication.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="CMainWindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="DirCache.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="DirCacheItem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CApplication.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CApplication.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_CApplication.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="AltTabView.cpp">
+      <Filter>AltTab</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AltTabView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AltTabView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_AltTabView.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="AltTabLabel.cpp">
+      <Filter>AltTab</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="crosimage.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ThumbModel.h">
+      <Filter>Thumb</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ThumbView.h">
+      <Filter>Thumb</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ThumbWorker.h">
+      <Filter>Thumb</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ThumbCache.h">
+      <Filter>Thumb</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FileSystemThread.h">
+      <Filter>Thumb</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ImageView.h">
+      <Filter>ImageView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CMainWindow.h">
+      <Filter>src</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CApplication.h">
+      <Filter>src</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AltTabView.h">
+      <Filter>AltTab</Filter>
+    </CustomBuild>
+    <CustomBuild Include="pch.h">
+      <Filter>src</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ThumbDelegate.h">
+      <Filter>Thumb</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbDirPainter.h">
+      <Filter>Thumb</Filter>
+    </ClInclude>
+    <ClInclude Include="ImgDbWorker.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="DirCache.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="DirCacheItem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="AltTabLabel.h">
+      <Filter>AltTab</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
