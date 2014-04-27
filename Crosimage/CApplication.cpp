@@ -52,7 +52,7 @@ CApplication::~CApplication() {
 }
 void CApplication::quit() {
 	Settings sett;
-	sett.save("mainWindowsCount", CMainWindow::s_inst.count());
+	sett.save("mainWindowsCount", CMainWindow::instancesCount());
 	CMainWindow::beforeQuit();
 	for(auto w: topLevelWidgets()) {
 		w->close();

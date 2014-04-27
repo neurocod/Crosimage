@@ -11,11 +11,12 @@ class CMainWindow : public QMainWindow {
 		static CMainWindow* instance(QWidget*child);
 		void go(const QString & dir, int addCurrentToHistory);//-1=history, 0=not add, 1==add to fwd
 		void display(const QString & file);
-		static void beforeQuit();
-		static bool s_loadingComplete;
-		static QList<CMainWindow*> s_inst;//also focus order
 		ThumbView* view()const { return m_view; }
 		void prioritizeThumbs();
+
+		static void beforeQuit();
+		static bool s_loadingComplete;
+		static int instancesCount() { return s_inst.count(); }
 	public slots:
 		void go(const QString & path);
 		void goUp();
@@ -31,6 +32,8 @@ class CMainWindow : public QMainWindow {
 		void onFocus();
 		void updateSettings(bool save);
 	private:
+		static QList<CMainWindow*> s_inst;//also focus order
+
 		MenuButton m_menu;
 		int m_nInst;
 		QString m_rootDir;
