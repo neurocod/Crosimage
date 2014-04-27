@@ -8,6 +8,7 @@
 #include "CompactVBoxLayout.h"
 #include "WidgetPropertyRedirects.h"
 #include "MsgBox.h"
+#include "DialogButtonBox.h"
 #include "AbstractButtonPropertyRedirects.h"
 #include "PushButton.h"
 #include "ToolButton.h"

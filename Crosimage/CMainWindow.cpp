@@ -6,6 +6,7 @@
 #include "ThumbWorker.h"
 #include "ImageView.h"
 #include "CApplication.h"
+#include "SettingsDialog.h"
 
 QList<CMainWindow*> CMainWindow::s_inst;
 bool CMainWindow::s_loadingComplete = false;
@@ -115,6 +116,13 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 					showMaximized();
 				else
 					showFullScreen();
+			});
+		addAction(a);
+	}
+	{
+		Action a(tr("Settings..."), QIcon(":/qt-project.org/styles/commonstyle/images/computer-16.png"));
+		QObject::connect(a, &QAction::triggered, this, [=]() {
+				SettingsDialog::createAndShow(this);
 			});
 		addAction(a);
 	}

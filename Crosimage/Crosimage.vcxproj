@@ -425,6 +425,7 @@
     <ClCompile Include="Qqt\DB\DbWorker.cpp" />
     <ClCompile Include="Qqt\DB\PreparedSqlQuery.cpp" />
     <ClCompile Include="Qqt\DB\SqliteDb.cpp" />
+    <ClCompile Include="Qqt\DialogButtonBox.cpp" />
     <ClCompile Include="Qqt\DirString.cpp" />
     <ClCompile Include="Qqt\FileFacility.cpp" />
     <ClCompile Include="Qqt\FileReader.cpp" />
@@ -458,6 +459,7 @@
     <ClCompile Include="Qqt\VBoxLayout.cpp" />
     <ClCompile Include="Qqt\Widget.cpp" />
     <ClCompile Include="Qqt\WidgetPropertyRedirects.cpp" />
+    <ClCompile Include="SettingsDialog.cpp" />
     <ClCompile Include="ThumbCache.cpp" />
     <ClCompile Include="ThumbDelegate.cpp" />
     <ClCompile Include="ThumbDirPainter.cpp" />
@@ -778,6 +780,7 @@
     <ClInclude Include="Qqt\DB\DbWorker.h" />
     <ClInclude Include="Qqt\DB\PreparedSqlQuery.h" />
     <ClInclude Include="Qqt\DB\SqliteDb.h" />
+    <ClInclude Include="Qqt\DialogButtonBox.h" />
     <ClInclude Include="Qqt\DirString.h" />
     <ClInclude Include="Qqt\FileFacility.h" />
     <ClInclude Include="Qqt\FileReader.h" />
@@ -866,6 +869,7 @@
     <ClInclude Include="Qqt\VBoxLayout.h" />
     <ClInclude Include="Qqt\Widget.h" />
     <ClInclude Include="Qqt\WidgetPropertyRedirects.h" />
+    <ClInclude Include="SettingsDialog.h" />
     <ClInclude Include="ThumbDirPainter.h" />
     <CustomBuild Include="ThumbCache.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

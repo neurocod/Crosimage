@@ -332,6 +332,12 @@
     <ClCompile Include="Qqt\DB\SqliteDb.cpp">
       <Filter>Qqt\DB</Filter>
     </ClCompile>
+    <ClCompile Include="SettingsDialog.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Qqt\DialogButtonBox.cpp">
+      <Filter>Qqt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="crosimage.qrc">
@@ -542,6 +548,12 @@
     </ClInclude>
     <ClInclude Include="Qqt\DB\SqliteDb.h">
       <Filter>Qqt\DB</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsDialog.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Qqt\DialogButtonBox.h">
+      <Filter>Qqt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

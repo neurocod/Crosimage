@@ -48,7 +48,11 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 }
 CApplication::~CApplication() {
 	ThumbWorker::instance().exit();
-	QProcess::startDetached("taskmgr.exe");
+	Settings sett;
+	QString strCmd;
+	sett.load("shutdownCommand", strCmd);
+	if(!strCmd.isEmpty())
+		QProcess::startDetached(strCmd);
 }
 void CApplication::quit() {
 	Settings sett;
