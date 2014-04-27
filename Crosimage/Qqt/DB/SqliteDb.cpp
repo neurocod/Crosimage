@@ -9,22 +9,17 @@ SqliteDb::SqliteDb(QObject*parent): DbWorker(parent), m_queryLastInsertedId(this
 QVariant SqliteDb::toVariantByteArray(const QDateTime & dt) {
 	QByteArray arr;
 	{
-		QBuffer buf(&arr);
-		buf.open(QIODevice::WriteOnly);
-		QDataStream stream(&buf);
+		QDataStream stream(&arr, QFile::WriteOnly);
 		stream << dt;
 	}
 	return QVariant(arr);
 }
 //static
 QDateTime SqliteDb::dateTimeFromVariant(const QVariant & v) {
-	ASSERT(0);//not tested
 	QDateTime dt;
 	if(v.canConvert(QVariant::ByteArray)) {
 		QByteArray arr = v.toByteArray();
-		QBuffer buf(&arr);
-		buf.open(QIODevice::ReadOnly);
-		QDataStream stream(&buf);
+		QDataStream stream(arr);
 		stream >> dt;
 	}
 	return dt;

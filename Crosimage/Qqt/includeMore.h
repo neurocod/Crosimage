@@ -1,4 +1,4 @@
-//NLStyle.h by Kostya Kozachuck as neurocod
+//includeMore.h by Kostya Kozachuck as neurocod
 //BSD license https://github.com/neurocod/Qqt
 #pragma once
 #include "CtorProcessorT.h"
