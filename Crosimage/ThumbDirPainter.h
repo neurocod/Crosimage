@@ -1,4 +1,4 @@
-﻿//ThumbDirPainter.h by Kostya Kozachuck as neurocod - 2013.10.21 07:07:26
+﻿//ThumbDirPainter.h by Kostya Kozachuck as neurocod
 #pragma once
 
 class ThumbDirPainter {

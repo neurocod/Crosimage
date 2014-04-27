@@ -1,4 +1,4 @@
-﻿//CApplication.cpp by Kostya Kozachuck as neurocod - 2013.10.30 08:37:21
+﻿//CApplication.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "CApplication.h"
 #include "CMainWindow.h"

@@ -1,4 +1,4 @@
-﻿//AltTabLabel.cpp by Kostya Kozachuck as neurocod - 2014.01.09 14:05:36
+﻿//AltTabLabel.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "AltTabLabel.h"
 #include "AltTabView.h"

@@ -1,4 +1,4 @@
-﻿//DirCacheItem.cpp by Kostya Kozachuck as neurocod - 2013.11.09 15:57:36
+﻿//DirCacheItem.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "DirCacheItem.h"
 

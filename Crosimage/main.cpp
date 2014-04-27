@@ -1,4 +1,4 @@
-//main.cpp by Kostya Kozachuck as neurocod - 29.03.2013 8:15:33
+//main.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "CMainWindow.h"
 #include "CApplication.h"

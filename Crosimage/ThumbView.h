@@ -1,4 +1,4 @@
-//ThumbView.h by Kostya Kozachuck as neurocod - 29.03.2013 8:16:40
+//ThumbView.h by Kostya Kozachuck as neurocod
 #pragma once
 class ThumbModel;
 

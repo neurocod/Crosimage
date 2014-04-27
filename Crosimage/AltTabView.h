@@ -1,4 +1,4 @@
-﻿//AltTabView.h by Kostya Kozachuck as neurocod - 2014.01.09 12:54:48
+﻿//AltTabView.h by Kostya Kozachuck as neurocod
 #pragma once
 class AltTabLabel;
 

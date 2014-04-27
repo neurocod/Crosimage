@@ -1,4 +1,4 @@
-﻿//DirCacheItem.h by Kostya Kozachuck as neurocod - 2013.11.09 15:57:36
+﻿//DirCacheItem.h by Kostya Kozachuck as neurocod
 #pragma once
 
 class DirCacheItem: public QFileInfo {

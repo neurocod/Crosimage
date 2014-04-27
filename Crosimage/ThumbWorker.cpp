@@ -1,4 +1,4 @@
-﻿//ThumbWorker.cpp by Kostya Kozachuck as neurocod - 2013.10.19 20:55:38
+﻿//ThumbWorker.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "ThumbWorker.h"
 #include "ThumbModel.h"

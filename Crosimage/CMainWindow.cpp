@@ -1,4 +1,4 @@
-//CMainWindow.cpp by Kostya Kozachuck as neurocod - 29.03.2013 8:16:04
+//CMainWindow.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "CMainWindow.h"
 #include "ThumbView.h"

@@ -1,4 +1,4 @@
-﻿//ThumbDelegate.cpp by Kostya Kozachuck as neurocod - 2013.10.19 02:54:32
+﻿//ThumbDelegate.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "ThumbDelegate.h"
 #include "ThumbModel.h"

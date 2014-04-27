@@ -1,4 +1,4 @@
-﻿//FileSystemThread.cpp by Kostya Kozachuck as neurocod - 2013.10.29 10:51:48
+﻿//FileSystemThread.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "FileSystemThread.h"
 #include "ImgDbWorker.h"

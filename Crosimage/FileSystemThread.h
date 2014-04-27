@@ -1,4 +1,4 @@
-﻿//FileSystemThread.h by Kostya Kozachuck as neurocod - 2013.10.29 10:51:48
+﻿//FileSystemThread.h by Kostya Kozachuck as neurocod
 #pragma once
 
 class FileSystemThread: public MyThread {

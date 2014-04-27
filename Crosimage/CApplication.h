@@ -1,4 +1,4 @@
-﻿//CApplication.h by Kostya Kozachuck as neurocod - 2013.10.30 08:37:21
+﻿//CApplication.h by Kostya Kozachuck as neurocod
 #pragma once
 
 class CApplication: public QApplication {

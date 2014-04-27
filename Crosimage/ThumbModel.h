@@ -1,4 +1,4 @@
-//ThumbModel.h by Kostya Kozachuck as neurocod - 29.03.2013 7:44:38
+//ThumbModel.h by Kostya Kozachuck as neurocod
 #pragma once
 #include "FileSystemThread.h"
 #include "ImgDbWorker.h"

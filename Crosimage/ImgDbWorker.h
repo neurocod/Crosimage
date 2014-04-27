@@ -1,4 +1,4 @@
-﻿//ImgDbWorker.h by Kostya Kozachuck as neurocod - 2013.10.29 16:07:06
+﻿//ImgDbWorker.h by Kostya Kozachuck as neurocod
 #pragma once
 #include "../../../qtest/SqliteDb.h"
 

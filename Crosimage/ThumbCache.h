@@ -1,4 +1,4 @@
-﻿//ThumbCache.h by Kostya Kozachuck as neurocod - 2013.10.19 03:08:17
+﻿//ThumbCache.h by Kostya Kozachuck as neurocod
 #pragma once
 
 //lives in main thread

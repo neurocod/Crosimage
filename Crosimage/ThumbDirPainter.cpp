@@ -1,4 +1,4 @@
-﻿//ThumbDirPainter.cpp by Kostya Kozachuck as neurocod - 2013.10.21 07:07:26
+﻿//ThumbDirPainter.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "ThumbDirPainter.h"
 #include "ThumbModel.h"

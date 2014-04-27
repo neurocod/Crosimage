@@ -1,4 +1,4 @@
-﻿//DirCache.h by Kostya Kozachuck as neurocod - 2013.11.04 17:36:06
+﻿//DirCache.h by Kostya Kozachuck as neurocod
 #pragma once
 #include "DirCacheItem.h"
 

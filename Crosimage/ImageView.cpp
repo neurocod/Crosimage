@@ -1,4 +1,4 @@
-﻿//ImageView.cpp by Kostya Kozachuck as neurocod - 2013.10.29 11:44:07
+﻿//ImageView.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "ImageView.h"
 #include "ThumbModel.h"

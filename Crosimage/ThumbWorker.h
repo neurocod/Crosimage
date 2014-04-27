@@ -1,4 +1,4 @@
-﻿//ThumbWorker.h by Kostya Kozachuck as neurocod - 2013.10.19 20:55:38
+﻿//ThumbWorker.h by Kostya Kozachuck as neurocod
 #pragma once
 
 class ThumbWorker: public QThread {

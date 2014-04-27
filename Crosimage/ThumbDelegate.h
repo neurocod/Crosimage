@@ -1,4 +1,4 @@
-﻿//ThumbDelegate.h by Kostya Kozachuck as neurocod - 2013.10.19 02:54:32
+﻿//ThumbDelegate.h by Kostya Kozachuck as neurocod
 #pragma once
 class ThumbModel;
 

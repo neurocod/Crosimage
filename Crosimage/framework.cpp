@@ -1,3 +1,3 @@
-//framework.cpp by Kostya Kozachuck as neurocod - 29.03.2013 12:18:37
+//framework.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "../../../qtest/includeMe.cpp"
