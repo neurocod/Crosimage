@@ -1,6 +1,6 @@
 ﻿//ImgDbWorker.h by Kostya Kozachuck as neurocod
 #pragma once
-#include "../../../qtest/SqliteDb.h"
+#include "Qqt/DB/SqliteDb.h"
 
 class ImgDbWorker: public SqliteDb {
 	public:

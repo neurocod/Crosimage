@@ -1,7 +1,7 @@
 ﻿//FileSystemThread.h by Kostya Kozachuck as neurocod
 #pragma once
 
-class FileSystemThread: public MyThread {
+class FileSystemThread: public QThread {
 	Q_OBJECT
 	public:
 		FileSystemThread();
@@ -10,6 +10,4 @@ class FileSystemThread: public MyThread {
 		void readDir(QDir dir);
 	signals:
 		void items(QDir dir, QStringList items);
-	protected:
-		
 };

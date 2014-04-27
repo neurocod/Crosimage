@@ -20,7 +20,8 @@ void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QStr
 		if(QCoreApplication::instance()->thread() == QThread::currentThread()) {
 			msgBox("Qt message", str);
 		} else {
-			trace(str);
+			//TODO: send to main thread
+			//trace(str);
 		}
 	}
 	//if(QtFatalMsg==type)

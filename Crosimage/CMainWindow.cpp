@@ -259,7 +259,7 @@ void CMainWindow::openInExplorer() {
 		file = index.data().toString();
 		FileFacility::showDirWithFile(file);
 	} else {
-		FileFacility::openUrl(m_model->dir());
+		FileFacility::showDirWithFile(m_model->dir().absolutePath());
 	}
 }
 bool CMainWindow::needSetTextToLineEdit(QString str)const {

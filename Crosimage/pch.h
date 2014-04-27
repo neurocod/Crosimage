@@ -1,4 +1,7 @@
-//pch.h by Kostya Kozachuck as neurocod
-
-#include <QtSql\QtSql>
-#include "../../../qtest/includeMe.h"
+#include <QtCore/QtCore>
+#include <QtGui/QtGui>
+#include <QtWidgets/QtWidgets>
+#include <QtSql/QtSql>
+#include "Qqt/includeMe.h"
+#include "Qqt/ToolButton.h"
+#include "Qqt/MenuButton.h"
