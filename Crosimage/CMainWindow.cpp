@@ -301,7 +301,8 @@ void CMainWindow::beforeQuit() {
 }
 void CMainWindow::setWindowTitle() {
 	QString str = //qApp->applicationName() + " " +
-		toString(m_nInst) + m_model->dir().absolutePath();
+		//toString(m_nInst) +
+		m_model->dir().absolutePath();
 	setWindowTitle(str);
 	str = toString(m_nInst);
 	setWindowIconText(str);
