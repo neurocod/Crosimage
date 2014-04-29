@@ -14,12 +14,13 @@ ThumbView::ThumbView(ThumbModel*m) {
 	setPalette(pal);
 	setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 	setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-	verticalScrollBar()->setSingleStep(40);
-	horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-	verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-	horizontalHeader()->setDefaultSectionSize(ThumbModel::s_nThumbW);
-	verticalHeader()->setDefaultSectionSize(ThumbModel::s_nThumbH);
 	horizontalHeader()->hide();
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	horizontalHeader()->setDefaultSectionSize(ThumbModel::s_nThumbW);
+	verticalScrollBar()->setSingleStep(40);
+	verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	verticalHeader()->hide();
+	verticalHeader()->setDefaultSectionSize(ThumbModel::s_nThumbH);
 	setItemDelegate(new ThumbDelegate(m));
 	setModel(m);
 	connect(this, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(onDoubleClicked(const QModelIndex &)) );

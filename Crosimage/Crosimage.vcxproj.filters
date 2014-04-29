@@ -36,14 +36,14 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;cxx;c;def</Extensions>
     </Filter>
-    <Filter Include="ImageView">
-      <UniqueIdentifier>{10cbff92-e7d4-40eb-a840-4d0a76ff6ceb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Qqt">
       <UniqueIdentifier>{9483fc36-a4b8-48f2-9ffd-d03c683c032f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Qqt\DB">
       <UniqueIdentifier>{47294d2b-427e-474e-9894-849a4445abc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImageView">
+      <UniqueIdentifier>{10cbff92-e7d4-40eb-a840-4d0a76ff6ceb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
