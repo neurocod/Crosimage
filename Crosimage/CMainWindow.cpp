@@ -64,7 +64,7 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 			lay2 << b;
 		}
 		{
-			ToolButton b("", tr("Show in Explorer"), QIcon(":/images/forge/32/folder-horizontal.png"));
+			ToolButton b("", tr("Show in Explorer"), QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-open-32.png"));
 			b.iconSize = szBtn;
 			b.connectClicks(this, SLOT(openInExplorer()));
 			lay2 << b;
