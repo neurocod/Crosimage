@@ -14,6 +14,14 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 		__super::paint(painter, option, index);
 		return;
 	}
+	{
+		QPen pen(Qt::gray);
+		pen.setStyle(Qt::DashLine);
+		painter->setPen(pen);
+		auto rc = option.rect;
+		rc.adjust(0, 0,-1,-1);
+		painter->drawRect(rc);
+	}
 	auto img = ThumbCache::instance().get(*item);
 	auto pt = option.rect.topLeft();
 	if(const bool center = 1) {
