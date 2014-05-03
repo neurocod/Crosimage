@@ -69,6 +69,7 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 			b.connectClicks(this, SLOT(openInExplorer()));
 			lay2 << b;
 		}
+		m_boxSortBy.toolTip = tr("Sort by ...");
 		m_boxSortBy->addItem(tr("Time"), QVariant(QDir::Time));
 		m_boxSortBy->addItem(tr("Name"), QVariant(QDir::Name));
 		m_boxSortBy->addItem(tr("Size"), QVariant(QDir::Size));

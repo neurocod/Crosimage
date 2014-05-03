@@ -35,7 +35,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 		addAction(a);
 	}
 	{
-		Action a("Home", QKeySequence("Home"));
+		Action a("First image", QKeySequence("Home"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->m_indexInParent = 0;
 				this->navigate();
@@ -43,7 +43,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 		addAction(a);
 	}
 	{
-		Action a("End", QKeySequence("End"));
+		Action a("Last image", QKeySequence("End"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->m_indexInParent = this->m_parent->items().count()-1;
 				this->navigate();
@@ -65,7 +65,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 		addAction(a);
 	}
 	{
-		Action a("Fullscreen/normal", QKeySequence("F"));
+		Action a("Fullscreen/Normal", QKeySequence("F"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				if(this->isFullScreen())
 					this->showNormal();
@@ -75,7 +75,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 		addAction(a);
 	}
 	{
-		Action a("Single/muliple images", QKeySequence("1"));
+		Action a("Single/multiple images", QKeySequence("1"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->m_bShowOther = !this->m_bShowOther;
 				this->navigate();
@@ -83,7 +83,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 		addAction(a);
 	}
 	{
-		Action a("Fit sreen/Normal size", QKeySequence("*"));
+		Action a("Fit screen/Normal size", QKeySequence("*"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->m_bFitScreen = !this->m_bFitScreen;
 				this->navigate();
@@ -91,13 +91,13 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 		addAction(a);
 	}
 	{
-		Action a(tr("Edit externally"), QKeySequence("Alt+2"));
-		a.connectClicks(this, SLOT(editExternally()));
+		Action a(tr("View externally"), QKeySequence("Alt+1"));
+		a.connectClicks(this, SLOT(viewExternally()));
 		addAction(a);
 	}
 	{
-		Action a(tr("View externally"), QKeySequence("Alt+1"));
-		a.connectClicks(this, SLOT(viewExternally()));
+		Action a(tr("Edit externally"), QKeySequence("Alt+2"));
+		a.connectClicks(this, SLOT(editExternally()));
 		addAction(a);
 	}
 	addActions(CApplication::s_inst->globalActions());
