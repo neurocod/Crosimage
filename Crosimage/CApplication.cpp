@@ -5,6 +5,7 @@
 #include "ThumbCache.h"
 #include "ThumbWorker.h"
 #include "AltTabView.h"
+#include "ImgDbWorker.h"
 
 CApplication* CApplication::s_inst = 0;
 CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
@@ -26,9 +27,16 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	}
 	qRegisterMetaType<QDir>("QDir");
 	{
+		Settings sett;
+		if(sett.value("firstLaunch", true).toBool()) {
+			sett.setValue("firstLaunch", false);
+			msgBox(tr("First launch warning: Crosimage creates files named '%1' in each folder it has to show."
+				" These files contains thumbnails, sorting order, slideshow settings etc."
+				" This is made to accelerate Crosimage work, better handle situations when folder was renamed or moved,"
+				" as inner file stays unchanged and info is not lost.").arg(ImgDbWorker::dbFileName));
+		}
 		//session
 		quint32 mainWindowsCount = 0;
-		Settings sett;
 		sett.load("mainWindowsCount", mainWindowsCount);
 		mainWindowsCount = qBound<quint32>(1, mainWindowsCount, 20);
 		QList<QWidget*> li;
