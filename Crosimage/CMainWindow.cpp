@@ -33,38 +33,45 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 		lay2 << m_menu;
 
 		ToolButton btnGoUp("", tr("Parent dir"), QIcon(":/qt-project.org/styles/commonstyle/images/up-32.png"), QKeySequence("Alt+Up"));
+		btnGoUp.addShortcutToTooltip();
 		btnGoUp.iconSize = szBtn;
 		btnGoUp.connectClicks(this, SLOT(goUp()));
 		lay2 << btnGoUp;
 
 		ToolButton btnGoBack("", tr("Go back"), QIcon(":/qt-project.org/styles/commonstyle/images/left-32.png"), QKeySequence::Back);
+		btnGoBack.addShortcutToTooltip();
 		btnGoBack.iconSize = szBtn;
 		btnGoBack.connectClicks(this, SLOT(goBack()));
 		lay2 << btnGoBack;
 
 		ToolButton btnGoFwd("", tr("Go forward"), QIcon(":/qt-project.org/styles/commonstyle/images/right-32.png"), QKeySequence::Forward);
+		btnGoFwd.addShortcutToTooltip();
 		btnGoFwd.iconSize = szBtn;
 		btnGoFwd.connectClicks(this, SLOT(goFwd()));
 		lay2 << btnGoFwd;
 
 		ToolButton btnRefresh("", tr("Refresh"), QKeySequence("F5"), QIcon(":/qt-project.org/styles/commonstyle/images/refresh-32.png"));
+		btnRefresh.addShortcutToTooltip();
 		btnRefresh.iconSize = szBtn;
 		btnRefresh.connectClicks(m_model, SLOT(refresh()));
 		lay2 << btnRefresh;
 		{
 			ToolButton b("", tr("Show prev sibling directory"), QIcon(":/images/folder-up-24.png"));
+			b.addShortcutToTooltip();
 			b.iconSize = szBtn;
 			b.connectClicks(this, SLOT(goUpSibling()));
 			lay2 << b;
 		}
 		{
 			ToolButton b("", tr("Show next sibling directory"), QIcon(":/images/folder-down-24.png"));
+			b.addShortcutToTooltip();
 			b.iconSize = szBtn;
 			b.connectClicks(this, SLOT(goDownSibling()));
 			lay2 << b;
 		}
 		{
 			ToolButton b("", tr("Show in Explorer"), QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-open-32.png"));
+			b.addShortcutToTooltip();
 			b.iconSize = szBtn;
 			b.connectClicks(this, SLOT(openInExplorer()));
 			lay2 << b;
