@@ -21,7 +21,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 		m_quitAction = a;
 	}
 	{
-		Action a(tr("Switch window"), QKeySequence("Ctrl+Tab"));
+		Action a(tr("Windows manager"), QKeySequence("Ctrl+Tab"));
 		m_actShowAltTab = a;
 		a.connectClicks(this, SLOT(showAltTab()));
 	}

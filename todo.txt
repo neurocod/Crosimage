@@ -1,3 +1,25 @@
+release
+	Win64 portable, list of files
+		Crosimage.exe
+		icudt51.dll
+		icuin51.dll
+		icuuc51.dll
+		Qt5Core.dll
+		Qt5Gui.dll
+		Qt5Sql.dll
+		Qt5Svg.dll
+		Qt5Widgets.dll
+		imageformats
+			qgif.dll
+			qico.dll
+			qjpeg.dll
+			qmng.dll
+			qsvg.dll
+			qtga.dll
+			qtiff.dll
+			qwbmp.dll
+		platforms
+			qwindows.dll
 settings dialog
 main window/general
 	video to youtube
