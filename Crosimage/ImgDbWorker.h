@@ -5,8 +5,8 @@
 class ImgDbWorker: public SqliteDb {
 	public:
 		virtual ~ImgDbWorker() {}
-		static bool thumbnail(const QFileInfo & file, OUT QImage & img);
-		static bool setThumbnail(const QFileInfo & file, const QImage & img);
+		static ReadStatus thumbnail(const QFileInfo & file, OUT QImage & img);
+		static WriteStatus setThumbnail(const QFileInfo & file, const QImage & img);
 		static const QString dbFileName;
 	protected:
 		static ImgDbWorker* instance(const QDir & dir);
@@ -17,9 +17,9 @@ class ImgDbWorker: public SqliteDb {
 		PreparedSqlQuery _qThumbGetAll;
 		PreparedSqlQuery _qThumbSet;
 		QString _dbPath;
-		virtual bool connectToDbOnce()override;
+		virtual ReadStatus connectToDbOnce()override;
 		bool maybeInstallDb();
-		bool thumbnail_(const QFileInfo & file, OUT QImage & img);
-		bool setThumbnail_(const QFileInfo & file, const QImage & img);
-		bool readAll();
+		ReadStatus thumbnail_(const QFileInfo & file, OUT QImage & img);
+		WriteStatus setThumbnail_(const QFileInfo & file, const QImage & img);
+		ReadStatus readAll();
 };
