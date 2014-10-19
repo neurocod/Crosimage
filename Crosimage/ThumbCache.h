@@ -15,8 +15,8 @@ class ThumbCache: public QObject {
 	protected:
 		QImage get(const QString & path);
 		ThumbCache();
-		QMap<QString, QImage> m_map;
-		QFileIconProvider m_iconProvider;
-		QSet<QString> m_pathQueued;
-		QSet<QString> m_supportedExtensions;
+		QMap<QString, QImage> _map;
+		QFileIconProvider _iconProvider;
+		QSet<QString> _pathQueued;
+		QSet<QString> _supportedExtensions;
 };

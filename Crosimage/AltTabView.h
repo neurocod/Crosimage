@@ -14,12 +14,12 @@ class AltTabView: public QWidget {
 	public slots:
 		void updateUI();
 	protected:
-		QMap<QWidget*, AltTabLabel*> m_mains;
-		QPointer<AltTabLabel> m_selected;
-		QGridLayout* m_lay;
-		int m_colCount;
-		int m_nNextRow;
-		int m_nNextCol;
+		QMap<QWidget*, AltTabLabel*> _mains;
+		QPointer<AltTabLabel> _selected;
+		QGridLayout* _lay;
+		int _colCount;
+		int _nNextRow;
+		int _nNextCol;
 		static QWidgetList topLevelWidgets();
 		QPixmap grab(QWidget*w);
 };

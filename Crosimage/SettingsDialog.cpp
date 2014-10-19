@@ -6,7 +6,7 @@ SettingsDialog::SettingsDialog(QWidget*parent): QDialog(parent) {
 	setWindowTitle(tr("Settings"));
 	VBoxLayout lay(this);
 	FormLayout form(lay);
-	form->addRow(tr("Shutdown command:"), m_editShutdownCommand);
+	form->addRow(tr("Shutdown command:"), _editShutdownCommand);
 	form << tr("  For example, rm thumbnails.sqlite - needed while project is in Alpha state");
 	lay << tr("TODO: add thumbnails width and height here");
 	{
@@ -24,5 +24,5 @@ void SettingsDialog::createAndShow(QWidget*parent) {
 }
 void SettingsDialog::updateSettings(bool save) {
 	Settings sett;
-	sett.updateValue(save, "shutdownCommand", m_editShutdownCommand);
+	sett.updateValue(save, "shutdownCommand", _editShutdownCommand);
 }

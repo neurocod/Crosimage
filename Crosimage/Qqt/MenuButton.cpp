@@ -4,7 +4,7 @@
 #include "MenuButton.h"
 
 MenuButton& MenuButton::operator<<(QAction*act) {
-	m_menu << act;
+	_menu << act;
 	if(m_bFirst) {
 		m_bFirst = false;
 		m_btn.icon = act->icon();

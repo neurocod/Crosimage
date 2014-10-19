@@ -14,10 +14,10 @@ class ThumbWorker: public QThread {
 	protected:
 		ThumbWorker();
 		virtual void run()override;
-		volatile bool m_bNeedExit;
-		volatile bool m_bStarted;
-		QQueue<QString> m_queue;//FIFO
-		QMutex m_lock;
+		volatile bool _bNeedExit;
+		volatile bool _bStarted;
+		QQueue<QString> _queue;//FIFO
+		QMutex _lock;
 
 		QImage thumb(const QString & path);
 		QImage processNextFile(const QString & path, bool innerCall=false);

@@ -15,6 +15,6 @@ class CApplication: public QApplication {
 		void showAltTab();
 		void prioritizeThumbs();
 	protected:
-		QAction* m_quitAction;
-		QAction* m_actShowAltTab;
+		QAction* _quitAction;
+		QAction* _actShowAltTab;
 };

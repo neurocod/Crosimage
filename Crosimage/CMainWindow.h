@@ -11,7 +11,7 @@ class CMainWindow : public QMainWindow {
 		static CMainWindow* instance(QWidget*child);
 		void go(const QString & dir, int addCurrentToHistory);//-1=history, 0=not add, 1==add to fwd
 		void display(const QString & file);
-		ThumbView* view()const { return m_view; }
+		ThumbView* view()const { return _view; }
 		void prioritizeThumbs();
 
 		static void beforeQuit();
@@ -34,18 +34,18 @@ class CMainWindow : public QMainWindow {
 	private:
 		static QList<CMainWindow*> s_inst;//also focus order
 
-		MenuButton m_menu;
-		int m_nInst;
-		QString m_rootDir;
+		MenuButton _menu;
+		int _nInst;
+		QString _rootDir;
 		void createFileTreePanel();
 		void goSibling(bool next);
-		ThumbModel* m_model;//используется как переменная "текущая папка", чтобы не создавать дополнительную переменную
-		ThumbView* m_view;
-		QComboBox* m_editPath;
-		QStringList m_navigateBack;
-		QStringList m_navigateFwd;
-		ComboBox m_boxSortBy;
-		CheckBox m_checkSortReversed;
+		ThumbModel* _model;//используется как переменная "текущая папка", чтобы не создавать дополнительную переменную
+		ThumbView* _view;
+		QComboBox* _editPath;
+		QStringList _navigateBack;
+		QStringList _navigateFwd;
+		ComboBox _boxSortBy;
+		CheckBox _checkSortReversed;
 		bool needSetTextToLineEdit(QString str)const;
 		using QWidget::setWindowTitle;
 		void setWindowTitle();

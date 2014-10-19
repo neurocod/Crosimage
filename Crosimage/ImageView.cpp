@@ -6,24 +6,24 @@
 #include "ThumbCache.h"
 #include "CApplication.h"
 
-ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(parent) {
-	m_parentView = view;
-	m_bShowOther = true;
-	m_bFitScreen = true;
+ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(parent) {
+	_parentView = view;
+	_bShowOther = true;
+	_bFitScreen = true;
 	QFileInfo info(file);
 	ASSERT(info.dir().absolutePath()==parent->dir().absolutePath());
 	setAttribute(Qt::WA_DeleteOnClose);
 	showFullScreen();
 	connect(parent, SIGNAL(modelReset()), SLOT(onModelReset()) );
-	m_files = m_parent->files();
-	m_indexInParent = m_files.indexOf(info.absoluteFilePath());
-	if(-1==m_indexInParent)
-		m_indexInParent = 0;
+	_files = _parent->files();
+	_indexInParent = _files.indexOf(info.absoluteFilePath());
+	if(-1==_indexInParent)
+		_indexInParent = 0;
 	navigate();
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 	{
 		setMouseTracking(true);
-		m_timeMouseMoved = QTime::currentTime();
+		_timeMouseMoved = QTime::currentTime();
 		New<QTimer> timer(this);
 		connect(timer, SIGNAL(timeout()), SLOT(onTimer()) );
 		timer->start(500);
@@ -37,7 +37,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 	{
 		Action a("First image", QKeySequence("Home"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->m_indexInParent = 0;
+				this->_indexInParent = 0;
 				this->navigate();
 			});
 		addAction(a);
@@ -45,7 +45,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 	{
 		Action a("Last image", QKeySequence("End"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->m_indexInParent = this->m_parent->items().count()-1;
+				this->_indexInParent = this->_parent->items().count()-1;
 				this->navigate();
 			});
 		addAction(a);
@@ -77,7 +77,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 	{
 		Action a("Single/multiple images", QKeySequence("1"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->m_bShowOther = !this->m_bShowOther;
+				this->_bShowOther = !this->_bShowOther;
 				this->navigate();
 			});
 		addAction(a);
@@ -85,7 +85,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 	{
 		Action a("Fit screen/Normal size", QKeySequence("*"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->m_bFitScreen = !this->m_bFitScreen;
+				this->_bFitScreen = !this->_bFitScreen;
 				this->navigate();
 			});
 		addAction(a);
@@ -103,13 +103,13 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): m_parent(
 	addActions(CApplication::s_inst->globalActions());
 }
 ImageView::~ImageView() {
-	if(m_parentView && !m_images.isEmpty()) {
-		m_parentView->select(m_images[0].file);
+	if(_parentView && !_images.isEmpty()) {
+		_parentView->select(_images[0].file);
 	}
 }
 void ImageView::onModelReset() {
 	//зачем это надо? отображаемая папка изменится, фигня
-	///m_indexInParent = 0;
+	///_indexInParent = 0;
 	///navigate(0);
 }
 void ImageView::paintEvent(QPaintEvent * event) {
@@ -117,11 +117,11 @@ void ImageView::paintEvent(QPaintEvent * event) {
 	QPainter painter(this);
 	painter.setClipRect(rc);
 	painter.fillRect(rc, Qt::black);
-	if(m_images.isEmpty())
+	if(_images.isEmpty())
 		return;
-	Image & img = m_images[0];
+	Image & img = _images[0];
 	QSize sz;
-	if(m_bFitScreen)
+	if(_bFitScreen)
 		sz = rc.size();
 	else
 		sz = img.orig.size();
@@ -136,28 +136,28 @@ void ImageView::paintEvent(QPaintEvent * event) {
 	if(img.scaled.height()<rc.height())
 		y += (rc.height()-img.scaled.height())/2;
 	painter.drawPixmap(x, y, img.scaled);
-	if(!m_bShowOther)
+	if(!_bShowOther)
 		return;
-	if(m_images.size()>1) {
-		auto & img = m_images[1].orig;
+	if(_images.size()>1) {
+		auto & img = _images[1].orig;
 		int y2 = 0;
 		if(img.height()<rc.height())
 			y2 = (rc.height()-img.height())/2;
 		painter.drawPixmap(x-img.width(), y2, img);
 	}
-	if(m_images.size()>2) {
-		auto & img = m_images[2].orig;
+	if(_images.size()>2) {
+		auto & img = _images[2].orig;
 		int y2 = 0;
 		if(img.height()<rc.height())
 			y2 = (rc.height()-img.height())/2;
-		painter.drawPixmap(x + m_images[0].scaled.width(), y2, img);
+		painter.drawPixmap(x + _images[0].scaled.width(), y2, img);
 	}
 }
 void ImageView::show(const QStringList & files) {
-	m_images.clear();
+	_images.clear();
 	for(auto file: files) {
 		if(file.isEmpty()) {
-			m_images << Image();
+			_images << Image();
 			continue;
 		}
 		QImageReader reader(file);
@@ -168,26 +168,26 @@ void ImageView::show(const QStringList & files) {
 		Image image;
 		image.orig = QPixmap::fromImage(img);
 		image.file = file;
-		m_images << image;
+		_images << image;
 	}
 	update();
 }
 void ImageView::navigate(int step) {
-	auto files = m_files;
-	int test = m_indexInParent + step;
+	auto files = _files;
+	int test = _indexInParent + step;
 	test = qBound(0, test, files.count()-1);
 	if(test>=files.count())
 		return;
-	m_indexInParent = test;
+	_indexInParent = test;
 	QString path = files[test];
 	QStringList li;
 	li << path;
-	if(m_indexInParent>0)
-		li << files[m_indexInParent-1];
+	if(_indexInParent>0)
+		li << files[_indexInParent-1];
 	else
 		li << "";
-	if(m_indexInParent + 1 < files.count())
-		li << files[m_indexInParent+1];
+	if(_indexInParent + 1 < files.count())
+		li << files[_indexInParent+1];
 	else
 		li << "";
 	show(li);
@@ -196,19 +196,19 @@ void ImageView::wheelEvent(QWheelEvent * event) {
 	navigate(event->delta()>0 ? -1 : 1);
 }
 void ImageView::onTimer() {
-	if(m_timeMouseMoved.secsTo(QTime::currentTime())>=1)
+	if(_timeMouseMoved.secsTo(QTime::currentTime())>=1)
 		setCursor(Qt::BlankCursor);	
 }
 void ImageView::mouseMoveEvent(QMouseEvent *e) {
 	setCursor(Qt::ArrowCursor);	
-	m_timeMouseMoved = QTime::currentTime();
+	_timeMouseMoved = QTime::currentTime();
 	__super::mouseMoveEvent(e);
 }
 void ImageView::viewExternally() {
-	if(!m_images.isEmpty())
-		CApplication::viewExternally(m_images[0].file);
+	if(!_images.isEmpty())
+		CApplication::viewExternally(_images[0].file);
 }
 void ImageView::editExternally() {
-	if(!m_images.isEmpty())
-		CApplication::editExternally(m_images[0].file);
+	if(!_images.isEmpty())
+		CApplication::editExternally(_images[0].file);
 }

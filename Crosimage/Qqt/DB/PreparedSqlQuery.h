@@ -13,5 +13,5 @@ class PreparedSqlQuery: public QSqlQuery {
 		void setDB(QSqlDatabase db);
 	protected:
 		QString m_strQueryToPrepare;
-		DbWorker* m_parent;
+		DbWorker* _parent;
 };

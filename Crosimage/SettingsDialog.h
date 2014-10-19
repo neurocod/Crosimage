@@ -7,6 +7,6 @@ class SettingsDialog: public QDialog {
 		virtual ~SettingsDialog() {}
 		static void createAndShow(QWidget*parent);
 	protected:
-		LineEdit m_editShutdownCommand;
+		LineEdit _editShutdownCommand;
 		void updateSettings(bool save);
 };

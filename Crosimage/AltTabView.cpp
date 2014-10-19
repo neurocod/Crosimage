@@ -8,11 +8,11 @@
 
 AltTabView::AltTabView() {
 	setAttribute(Qt::WA_DeleteOnClose);
-	m_lay = new QGridLayout(this);
-	m_lay->setVerticalSpacing(0);
-	m_lay->setHorizontalSpacing(0);
-	m_lay->setContentsMargins(0,0,0,0);
-	m_nNextRow = m_nNextCol = 0;
+	_lay = new QGridLayout(this);
+	_lay->setVerticalSpacing(0);
+	_lay->setHorizontalSpacing(0);
+	_lay->setContentsMargins(0,0,0,0);
+	_nNextRow = _nNextCol = 0;
 	{
 		New<QTimer> timer(this);
 		timer->start(500);
@@ -22,7 +22,7 @@ AltTabView::AltTabView() {
 	for(int i=2; ; ++i) {
 		int test = i*i;
 		if(test>=count) {
-			m_colCount = i;
+			_colCount = i;
 			break;
 		}
 	}
@@ -34,7 +34,7 @@ AltTabView::AltTabView() {
 	updateUI();
 }
 AltTabView::~AltTabView() {
-	qDeleteAll(m_mains.values());//cause their dtors must unregister in this class
+	qDeleteAll(_mains.values());//cause their dtors must unregister in this class
 }
 void AltTabView::showInstance() {
 	New<AltTabView> w;
@@ -42,20 +42,20 @@ void AltTabView::showInstance() {
 }
 void AltTabView::updateUI() {
 	for(auto w: topLevelWidgets()) {
-		if(m_mains.contains(w))
+		if(_mains.contains(w))
 			continue;
 		auto la = new AltTabLabel(this, w);
-		m_mains[w] = la;
-		m_lay->addWidget(la, m_nNextRow, m_nNextCol++);
-		if(m_nNextCol>=m_colCount) {
-			m_nNextCol = 0;
-			m_nNextRow++;
+		_mains[w] = la;
+		_lay->addWidget(la, _nNextRow, _nNextCol++);
+		if(_nNextCol>=_colCount) {
+			_nNextCol = 0;
+			_nNextRow++;
 		}
 	}
 	int h = -1;
-	int divider = qMax(m_lay->rowCount(), m_lay->columnCount());
-	for(auto my: m_mains.values()) {
-		auto w = my->m_widToActivate;
+	int divider = qMax(_lay->rowCount(), _lay->columnCount());
+	for(auto my: _mains.values()) {
+		auto w = my->_widToActivate;
 		if(!w) {
 			delete my;
 			continue;
@@ -64,7 +64,7 @@ void AltTabView::updateUI() {
 		if(h<=1) {
 			h = w->height() / divider;
 		}
-		auto la = m_mains[w];
+		auto la = _mains[w];
 		if(h<1 || !la)
 			continue;
 		la->setPixmap(pix.scaled(la->size(), Qt::KeepAspectRatio));
@@ -83,7 +83,7 @@ void AltTabView::clicked(QWidget*w) {
 	close();
 }
 void AltTabView::select(AltTabLabel*p) {
-	m_selected = p;
+	_selected = p;
 	p->setFocus(Qt::MouseFocusReason);
 }
 QPixmap AltTabView::grab(QWidget*w) {
@@ -102,8 +102,8 @@ QPixmap AltTabView::grab(QWidget*w) {
 	return w->grab();
 }
 void AltTabView::deleted(AltTabLabel*p) {
-	if(auto w = m_mains.key(p, 0)) {
-		m_mains.remove(w);
+	if(auto w = _mains.key(p, 0)) {
+		_mains.remove(w);
 	} else {
 		ASSERT(0);
 	}

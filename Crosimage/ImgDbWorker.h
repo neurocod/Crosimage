@@ -13,10 +13,10 @@ class ImgDbWorker: public SqliteDb {
 		static ImgDbWorker* instance(const QFileInfo & file);
 		ImgDbWorker(const QDir & dir);
 
-		PreparedSqlQuery m_qThumbGet;
-		PreparedSqlQuery m_qThumbGetAll;
-		PreparedSqlQuery m_qThumbSet;
-		QString m_dbPath;
+		PreparedSqlQuery _qThumbGet;
+		PreparedSqlQuery _qThumbGetAll;
+		PreparedSqlQuery _qThumbSet;
+		QString _dbPath;
 		virtual bool connectToDbOnce()override;
 		bool maybeInstallDb();
 		bool _thumbnail(const QFileInfo & file, OUT QImage & img);

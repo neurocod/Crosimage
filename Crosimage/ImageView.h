@@ -18,21 +18,21 @@ class ImageView: public QWidget {
 		virtual void wheelEvent(QWheelEvent * event)override;
 		virtual void mouseMoveEvent(QMouseEvent *event)override;
 
-		QStringList m_files;
-		QPointer<ThumbModel> m_parent;
-		QPointer<ThumbView> m_parentView;
+		QStringList _files;
+		QPointer<ThumbModel> _parent;
+		QPointer<ThumbView> _parentView;
 		struct Image {
 			QString file;
 			QPixmap orig;
 			QPixmap scaled;
 			QSize szScaled;
 		};
-		bool m_bFitScreen;
-		bool m_bShowOther;
-		QList<Image> m_images;//center, left, tight
-		int m_indexInParent;
-	
+		bool _bFitScreen;
+		bool _bShowOther;
+		QList<Image> _images;//center, left, tight
+		int _indexInParent;
+
 		void navigate(int step=0);
 		void show(const QStringList & files);
-		QTime m_timeMouseMoved;
+		QTime _timeMouseMoved;
 };

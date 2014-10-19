@@ -5,11 +5,11 @@
 #include "ThumbCache.h"
 
 ThumbDelegate::ThumbDelegate(ThumbModel*parent): QStyledItemDelegate(parent) {
-	m_parent = parent;
+	_parent = parent;
 	ASSERT(parent);
 }
 void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option, const QModelIndex & index)const {
-	auto item = m_parent->itemAt(index);
+	auto item = _parent->itemAt(index);
 	if(!item) {
 		__super::paint(painter, option, index);
 		return;

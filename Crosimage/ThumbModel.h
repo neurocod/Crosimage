@@ -24,8 +24,8 @@ class ThumbModel: public QAbstractTableModel {
 		QModelIndex indexByIntIndex(int i)const;
 		Item* itemAt(const QModelIndex & index)const;
 		Item* itemAt(int index)const;
-		const QDir & dir()const { return m_dir; }
-		const QList<Item*> & items()const { return m_items; }
+		const QDir & dir()const { return _dir; }
+		const QList<Item*> & items()const { return _items; }
 		QStringList files()const;
 		void setSortFlags(QDir::SortFlags f);
 		void setDir(const QDir & dir);
@@ -36,13 +36,13 @@ class ThumbModel: public QAbstractTableModel {
 		void updateThumb(QString, QImage);
 		void directoryLoaded(QDir path, QStringList items);
 	protected:
-		int m_nColCount;
+		int _nColCount;
 
-		QDir m_dir;
-		FileSystemThread m_dirThread;
-		QList<Item*> m_items;
-		mutable bool m_invalidateFiles;
-		mutable QStringList m_files;
-		QFileIconProvider m_iconProvider;
+		QDir _dir;
+		FileSystemThread _dirThread;
+		QList<Item*> _items;
+		mutable bool _invalidateFiles;
+		mutable QStringList _files;
+		QFileIconProvider _iconProvider;
 		void clear();
 };

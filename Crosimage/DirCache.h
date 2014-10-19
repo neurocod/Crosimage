@@ -8,7 +8,7 @@ class DirCache: public QObject {
 		virtual ~DirCache() {}
 
 	protected:
-		QString m_dir;
-		QVector<DirCacheItem> m_items;
+		QString _dir;
+		QVector<DirCacheItem> _items;
 		void clear();
 };

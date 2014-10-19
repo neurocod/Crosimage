@@ -17,8 +17,8 @@ class ThumbView: public QTableView {
 		void viewExternally();
 		void onModelReset();
 	protected:
-		ThumbModel* m_model;
-		QString m_fileToSelect;
+		ThumbModel* _model;
+		QString _fileToSelect;
 		QString selectedItemFilePath();
 
 		virtual void resizeEvent(QResizeEvent *event)override;

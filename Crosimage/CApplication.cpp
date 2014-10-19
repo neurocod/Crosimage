@@ -18,11 +18,11 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 		Action a("Quit", QKeySequence("Alt+E"));
 		a.shortcutContext = Qt::ApplicationShortcut;
 		a.connectClicks(qApp, SLOT(quit()));
-		m_quitAction = a;
+		_quitAction = a;
 	}
 	{
 		Action a(tr("Windows manager"), QKeySequence("Ctrl+Tab"));
-		m_actShowAltTab = a;
+		_actShowAltTab = a;
 		a.connectClicks(this, SLOT(showAltTab()));
 	}
 	qRegisterMetaType<QDir>("QDir");
@@ -73,8 +73,8 @@ void CApplication::quit() {
 }
 QList<QAction*> CApplication::globalActions()const {
 	QList<QAction*> ret;
-	ret << m_quitAction;
-	ret << m_actShowAltTab;
+	ret << _quitAction;
+	ret << _actShowAltTab;
 	return ret;
 }
 void CApplication::showAltTab() {

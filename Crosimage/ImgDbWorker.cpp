@@ -26,11 +26,11 @@ ImgDbWorker* ImgDbWorker::instance(const QFileInfo & file) {
 	return instance(file.dir());
 }
 ImgDbWorker::ImgDbWorker(const QDir & dir):
-	m_qThumbGet(this, "SELECT thumb, modified FROM files WHERE name=:name;"),
-	m_qThumbGetAll(this, "SELECT name, thumb, modified, rating, show_settings FROM files;"),
-	m_qThumbSet(this, "INSERT OR REPLACE INTO files (name, thumb, modified) VALUES (:name, :thumb, :modified);")
+	_qThumbGet(this, "SELECT thumb, modified FROM files WHERE name=:name;"),
+	_qThumbGetAll(this, "SELECT name, thumb, modified, rating, show_settings FROM files;"),
+	_qThumbSet(this, "INSERT OR REPLACE INTO files (name, thumb, modified) VALUES (:name, :thumb, :modified);")
 {
-	m_dbPath = dir.absoluteFilePath(dbFileName);
+	_dbPath = dir.absoluteFilePath(dbFileName);
 	QElapsedTimer timer;
     timer.start();
 	bool ret = readAll();
@@ -42,7 +42,7 @@ bool ImgDbWorker::thumbnail(const QFileInfo & file, OUT QImage & img) {
 bool ImgDbWorker::readAll() {
 	if(!initSqlOnce())
 		return false;
-	//auto & q = m_qThumbGetAll;
+	//auto & q = _qThumbGetAll;
 	//if(!execOrTrace(q))
 	//	return false;
 	//while(q.next()) {
@@ -62,14 +62,14 @@ bool ImgDbWorker::readAll() {
 	//	item.lastModified = dateTimeFromVariant(q.value(col++));
 	//	item.rating = q.value(col++).toLongLong();
 	//	item.showSettings = q.value(col++).toByteArray();
-	//	m_items << item;
+	//	_items << item;
 	//}
 	return true;
 }
 bool ImgDbWorker::_thumbnail(const QFileInfo & file, OUT QImage & img) {
 	if(!initSqlOnce())
 		return false;
-	auto & q = m_qThumbGet;
+	auto & q = _qThumbGet;
 	q.bindValue(":name", file.fileName());
 	if(!execOrTrace(q))
 		return false;
@@ -101,24 +101,24 @@ bool ImgDbWorker::setThumbnail(const QFileInfo & file, const QImage & img) {
 bool ImgDbWorker::_setThumbnail(const QFileInfo & file, const QImage & img) {
 	if(!initSqlOnce())
 		return false;
-	m_qThumbSet.bindValue(":name", file.fileName());
+	_qThumbSet.bindValue(":name", file.fileName());
 	{
 		QBuffer buff;
 		if(!img.isNull()) { //otherwise - warning
 			QImageWriter writer(&buff, "png");
 			writer.write(img);
 		}
-		m_qThumbSet.bindValue(":thumb", buff.buffer());
+		_qThumbSet.bindValue(":thumb", buff.buffer());
 	}
 	auto modified = file.lastModified();
-	m_qThumbSet.bindValue(":modified", toVariantByteArray(modified));
-	return execOrTrace(m_qThumbSet);
+	_qThumbSet.bindValue(":modified", toVariantByteArray(modified));
+	return execOrTrace(_qThumbSet);
 }
 bool ImgDbWorker::connectToDbOnce() {
 	if(m_db.isOpen())
 		return true;
-	m_db = QSqlDatabase::addDatabase("QSQLITE", m_dbPath);
-	m_db.setDatabaseName(m_dbPath);
+	m_db = QSqlDatabase::addDatabase("QSQLITE", _dbPath);
+	m_db.setDatabaseName(_dbPath);
 	if(!m_db.open())
 		return false;
 	if(!maybeInstallDb())

@@ -18,22 +18,22 @@ QImage ThumbCache::get(const QFileInfo & info) {
 	return get(info.absoluteFilePath());
 }
 QImage ThumbCache::get(const QString & path) {
-	if(!m_map.contains(path)) {
-		auto thumb = m_iconProvider.icon(QFileInfo(path)).pixmap(ThumbModel::s_nThumbW, ThumbModel::s_nThumbH).toImage();
-		m_map[path] = thumb;
+	if(!_map.contains(path)) {
+		auto thumb = _iconProvider.icon(QFileInfo(path)).pixmap(ThumbModel::s_nThumbW, ThumbModel::s_nThumbH).toImage();
+		_map[path] = thumb;
 		ThumbWorker::instance().takeFile(path);
-		m_pathQueued.insert(path);
+		_pathQueued.insert(path);
 		return thumb;
 	}
-	if(m_pathQueued.contains(path)) {//reorder queue
+	if(_pathQueued.contains(path)) {//reorder queue
 		ThumbWorker::instance().makeFirst(path);
 	}
-	return m_map.value(path);
+	return _map.value(path);
 }
 void ThumbCache::update(QString path, QImage thumb) {
-	m_pathQueued.remove(path);
+	_pathQueued.remove(path);
 	if(!thumb.isNull()) {
-		m_map[path] = thumb;
+		_map[path] = thumb;
 		emit updated(path, thumb);
 	}
 }
