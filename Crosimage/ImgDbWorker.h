@@ -19,7 +19,7 @@ class ImgDbWorker: public SqliteDb {
 		QString _dbPath;
 		virtual bool connectToDbOnce()override;
 		bool maybeInstallDb();
-		bool _thumbnail(const QFileInfo & file, OUT QImage & img);
-		bool _setThumbnail(const QFileInfo & file, const QImage & img);
+		bool thumbnail_(const QFileInfo & file, OUT QImage & img);
+		bool setThumbnail_(const QFileInfo & file, const QImage & img);
 		bool readAll();
 };

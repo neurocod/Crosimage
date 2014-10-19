@@ -9,9 +9,9 @@ class PreparedSqlQuery: public QSqlQuery {
 		PreparedSqlQuery(DbWorker*parent, const QString & strQueryToPrepare);
 		virtual ~PreparedSqlQuery();
 
-		QString queryToPrepare()const { return m_strQueryToPrepare; }
+		QString queryToPrepare()const { return _strQueryToPrepare; }
 		void setDB(QSqlDatabase db);
 	protected:
-		QString m_strQueryToPrepare;
+		QString _strQueryToPrepare;
 		DbWorker* _parent;
 };

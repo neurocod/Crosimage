@@ -10,21 +10,21 @@ class DbWorker: public QObject {
 		virtual ~DbWorker() {}
 		void setDB(const QSqlDatabase & db);
 		QSqlDatabase db()const;
-		bool initSqlOnce();
+		WriteStatus initSqlOnce();
 
 		void prepareLater(PreparedSqlQuery*q);
 		void remove(PreparedSqlQuery*q);
-		bool m_bShowErrors;
+		bool _bShowErrors;
 		StringStatus lastError()const;
 	protected:
 		friend class DbTransaction;
-		QSqlDatabase m_db;
-		QList<PreparedSqlQuery*> m_listToPrepare;
-		bool m_bQueriesPrepared;
-		bool m_bShowErrorsInTracer;//otherwise - in message box
+		QSqlDatabase _db;
+		QList<PreparedSqlQuery*> _listToPrepare;
+		bool _bQueriesPrepared;
+		bool _bShowErrorsInTracer;//otherwise - in message box
 
-		bool prepareQueriesOnce();
-		virtual bool connectToDbOnce() { return m_db.isOpen(); }//reimplement
+		WriteStatus prepareQueriesOnce();
+		virtual WriteStatus connectToDbOnce() { return _db.isOpen(); }//reimplement
 		bool prepareOrTrace(QSqlQuery & q, const QString & statement);//trace last error if fail
 		bool execOrTrace(QSqlQuery & q);
 		bool execOrTrace(QSqlQuery & q, const QString & statement);
@@ -42,7 +42,7 @@ class DbWorker: public QObject {
 			int count;//recursion count - commit only on top level, rollback at any
 			StringStatus status;//ok==active and no rollback
 			bool isOpen;
-			bool isResolved;//commit or rollback
+			bool isResolved;//commited or rollbacked
 			bool startedAndOk()const { return isOpen && status.ok(); }
-		} m_transaction;
+		} _transaction;
 };

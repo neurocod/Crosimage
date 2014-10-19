@@ -6,15 +6,15 @@
 
 DbWorker::DbWorker(QObject*parent):
 	QObject(parent),
-	m_bShowErrors(true),
-	m_bShowErrorsInTracer(true),
-	m_bQueriesPrepared(false)
+	_bShowErrors(true),
+	_bShowErrorsInTracer(true),
+	_bQueriesPrepared(false)
 {
 }
 void DbWorker::setDB(const QSqlDatabase & db) {
-	ASSERT(!m_db.isOpen() && db.isOpen());
-	m_bQueriesPrepared = false;
-	m_db = db;
+	ASSERT(!_db.isOpen() && db.isOpen());
+	_bQueriesPrepared = false;
+	_db = db;
 }
 bool DbWorker::execOrTrace(QSqlQuery & q, const QString & statement) {
 	bool ret = q.exec(statement);
@@ -31,11 +31,11 @@ bool DbWorker::execOrTrace(QSqlQuery & q) {
 	return ret;
 }
 void DbWorker::maybeShowLastError(const QString & title, const QString & text) {
-	if(!m_bShowErrors)
+	if(!_bShowErrors)
 		return;
 	qDebug() << (title + " " + text);
 	//msgBox(title, text);
-	/*if(m_bShowErrorsInTracer) {
+	/*if(_bShowErrorsInTracer) {
 		QString str = QString("%1\n%2")
 			.arg(title)
 			.arg(text);
@@ -56,22 +56,22 @@ void DbWorker::traceLastError(const QSqlQuery & q) {
 		.arg(q.lastQuery());
 	maybeShowLastError(QObject::tr("Database query error"), text);
 }
-bool DbWorker::prepareQueriesOnce() {
-	if(!m_db.isOpen() || !m_db.isValid()) {
+WriteStatus DbWorker::prepareQueriesOnce() {
+	if(!_db.isOpen() || !_db.isValid()) {
 		maybeShowLastError(
 			QObject::tr("Trying to prepare queries while database is not open\n"));
 		return false;
 	}
-	if(!m_bQueriesPrepared) {
-		for(PreparedSqlQuery* q: m_listToPrepare) {
-			q->setDB(m_db);
+	if(!_bQueriesPrepared) {
+		for(PreparedSqlQuery* q: _listToPrepare) {
+			q->setDB(_db);
 			if(!prepareOrTrace(*q, q->queryToPrepare())) {
 				return false;
 			}
 		}
-		m_bQueriesPrepared = true;
+		_bQueriesPrepared = true;
 	}
-	return m_bQueriesPrepared;
+	return _bQueriesPrepared;
 }
 bool DbWorker::prepareOrTrace(QSqlQuery & q, const QString & statement) {
 	bool ret = q.prepare(statement);
@@ -82,7 +82,7 @@ bool DbWorker::prepareOrTrace(QSqlQuery & q, const QString & statement) {
 }
 bool DbWorker::deleteAllRecords(const QString & strTableName) {
 	//seems like DELETE FROM name can't be prepared
-	QSqlQuery query(m_db);
+	QSqlQuery query(_db);
 	if(!prepareOrTrace(query,
 			QString("DELETE FROM %1;").arg(strTableName)
 			)) {
@@ -96,61 +96,62 @@ bool DbWorker::deleteAllRecords(const QString & strTableName) {
 	return true;
 }
 StringStatus DbWorker::lastError()const {
-	auto err = m_db.lastError();
+	auto err = _db.lastError();
 	if(err.type()==QSqlError::NoError)
 		return true;
 	return StringStatus(false, err.text());
 }
 void DbWorker::maybeTransaction() {
-	if(1==m_transaction.count) {
-		ASSERT(!m_transaction.isOpen);
-		m_transaction.isOpen = true;
-		m_transaction.isResolved = false;
-		m_transaction.status = StringStatus(true);
-		if(!m_db.transaction()) {
-			m_transaction.status = lastError();
+	if(1==_transaction.count) {
+		ASSERT(!_transaction.isOpen);
+		_transaction.isOpen = true;
+		_transaction.isResolved = false;
+		_transaction.status = StringStatus(true);
+		if(!_db.transaction()) {
+			_transaction.status = lastError();
 		}
 	} else {
-		ASSERT(m_transaction.isOpen);
+		ASSERT(_transaction.isOpen);
 	}
 }
 void DbWorker::maybeCommit() {
-	if(!m_transaction.isOpen || 1!=m_transaction.count)
+	if(!_transaction.isOpen || 1!=_transaction.count)
 		return;
-	m_transaction.isOpen = false;
-	m_transaction.isResolved = true;
-	if(!m_db.commit()) {
-		m_transaction.status = lastError();
+	_transaction.isOpen = false;
+	_transaction.isResolved = true;
+	if(!_db.commit()) {
+		_transaction.status = lastError();
 	}
 }
 void DbWorker::rollback() {
-	if(!m_transaction.isOpen)
+	if(!_transaction.isOpen)
 		return;
-	m_transaction.status = StringStatus(false, tr("rolled back"));
-	m_transaction.isOpen = false;
-	m_transaction.isResolved = true;
-	if(!m_db.rollback()) {
-		m_transaction.status = lastError();
+	_transaction.status = StringStatus(false, tr("rolled back"));
+	_transaction.isOpen = false;
+	_transaction.isResolved = true;
+	if(!_db.rollback()) {
+		_transaction.status = lastError();
 	}
 }
-bool DbWorker::initSqlOnce() {
-	if(!connectToDbOnce()) {
-		return false;
+WriteStatus DbWorker::initSqlOnce() {
+	auto status = connectToDbOnce();
+	if(!status.ok()) {
+		return status;
 	}
 	return prepareQueriesOnce();
 }
 void DbWorker::prepareLater(PreparedSqlQuery*q) {
-	if(m_listToPrepare.contains(q)) {
+	if(_listToPrepare.contains(q)) {
 		ASSERT(0);
 		return;
 	}
-	m_listToPrepare << q;
+	_listToPrepare << q;
 }
 void DbWorker::remove(PreparedSqlQuery*q) {
-	if(1!=m_listToPrepare.removeAll(q)) {
+	if(1!=_listToPrepare.removeAll(q)) {
 		ASSERT(0);
 	}
 }
 QSqlDatabase DbWorker::db()const {
-	return m_db;
+	return _db;
 }

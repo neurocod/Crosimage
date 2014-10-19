@@ -37,7 +37,7 @@ ImgDbWorker::ImgDbWorker(const QDir & dir):
 	//qDebug() << "ImgDbWorker readAll took" << timer.elapsed() << "milliseconds";
 }
 bool ImgDbWorker::thumbnail(const QFileInfo & file, OUT QImage & img) {
-	return instance(file)->_thumbnail(file, img);
+	return instance(file)->thumbnail_(file, img);
 }
 bool ImgDbWorker::readAll() {
 	if(!initSqlOnce())
@@ -66,16 +66,15 @@ bool ImgDbWorker::readAll() {
 	//}
 	return true;
 }
-bool ImgDbWorker::_thumbnail(const QFileInfo & file, OUT QImage & img) {
+bool ImgDbWorker::thumbnail_(const QFileInfo & file, OUT QImage & img) {
 	if(!initSqlOnce())
 		return false;
 	auto & q = _qThumbGet;
 	q.bindValue(":name", file.fileName());
 	if(!execOrTrace(q))
 		return false;
-	if(!q.next()) {
+	if(!q.next())
 		return false;
-	}
 	int col = 0;
 	{
 		auto arrImg = q.value(col++).value<QByteArray>();
@@ -89,16 +88,15 @@ bool ImgDbWorker::_thumbnail(const QFileInfo & file, OUT QImage & img) {
 		}
 	}
 	QDateTime modified = dateTimeFromVariant(q.value(col++));
-	if(file.isDir()) {
+	if(file.isDir())
 		return true;//dirs change too often, no check
-	}
 	bool ret = modified==file.lastModified();
 	return ret;
 }
 bool ImgDbWorker::setThumbnail(const QFileInfo & file, const QImage & img) {
-	return instance(file)->_setThumbnail(file, img);
+	return instance(file)->setThumbnail_(file, img);
 }
-bool ImgDbWorker::_setThumbnail(const QFileInfo & file, const QImage & img) {
+bool ImgDbWorker::setThumbnail_(const QFileInfo & file, const QImage & img) {
 	if(!initSqlOnce())
 		return false;
 	_qThumbSet.bindValue(":name", file.fileName());

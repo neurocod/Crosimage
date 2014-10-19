@@ -14,5 +14,5 @@ class SqliteDb: public DbWorker {
 		QVariant lastInsertedId();
 		bool openDB(const QString & strFile, const QString & strConnection = "", const QString & host = "localhost");
 	protected:
-		PreparedSqlQuery m_queryLastInsertedId;
+		PreparedSqlQuery _queryLastInsertedId;
 };

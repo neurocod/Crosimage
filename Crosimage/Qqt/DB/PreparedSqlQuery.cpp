@@ -5,7 +5,7 @@
 #include "DbWorker.h"
 
 PreparedSqlQuery::PreparedSqlQuery(DbWorker*parent, const QString & strQueryToPrepare):
-		m_strQueryToPrepare(strQueryToPrepare),
+		_strQueryToPrepare(strQueryToPrepare),
 		_parent(parent) {
 	ASSERT(_parent);
 	_parent->prepareLater(this);
