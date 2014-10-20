@@ -10,8 +10,8 @@ ThumbWorker & ThumbWorker::instance() {
 	return p;
 }
 ThumbWorker::ThumbWorker() {
-	m_nThumbnailsCreated = 0;
-	m_nFilesRead = 0;
+	_nThumbnailsCreated = 0;
+	_nFilesRead = 0;
 	_bNeedExit = false;
 	_bStarted = false;
 	moveToThread(this);
@@ -50,10 +50,10 @@ void ThumbWorker::maybeUpdate(bool innerCall, const QString & path, const QImage
 QImage ThumbWorker::processNextFile(const QString & path, bool innerCall) {
 	if(_bNeedExit)
 		return QImage();
-	m_nThumbnailsCreated++;
+	_nThumbnailsCreated++;
 	QFileInfo info(path);
 	QImage ret;
-	if(ImgDbWorker::thumbnail(info, ret)) {
+	if(ImgDbWorker::thumbnail(info, ret).ok()) {
 		maybeUpdate(innerCall, path, ret);
 		return ret;
 	}
@@ -74,7 +74,7 @@ QImage ThumbWorker::processNextFile(const QString & path, bool innerCall) {
 		QString sub = it.next();
 		if(it.fileName()=="." || it.fileName()=="..")
 			continue;
-		m_nFilesRead++;
+		_nFilesRead++;
 		auto img = thumb(sub);
 		if(img.isNull()) {
 			if(subDirs.count()<targImagesCount && it.fileInfo().isDir())

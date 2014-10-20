@@ -18,11 +18,11 @@ class ThumbWorker: public QThread {
 		volatile bool _bStarted;
 		QQueue<QString> _queue;//FIFO
 		QMutex _lock;
+		int _nThumbnailsCreated;
+		int _nFilesRead;
 
 		QImage thumb(const QString & path);
 		QImage processNextFile(const QString & path, bool innerCall=false);
-		int m_nThumbnailsCreated;
-		int m_nFilesRead;
 		void maybeUpdate(bool innerCall, const QString & path, const QImage & image);
 		void maybeUpdate(bool innerCall, const QString & path, const QList<QImage> & images);
 		void writeToDb(bool innerCall, const QFileInfo & info, const QImage & image);

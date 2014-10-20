@@ -9,7 +9,7 @@ class DbWorker: public QObject {
 		DbWorker(QObject*parent = 0);
 		virtual ~DbWorker() {}
 		void setDB(const QSqlDatabase & db);
-		QSqlDatabase db()const;
+		const QSqlDatabase & db()const { return _db; }
 		WriteStatus initSqlOnce();
 
 		void prepareLater(PreparedSqlQuery*q);

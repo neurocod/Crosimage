@@ -152,6 +152,3 @@ void DbWorker::remove(PreparedSqlQuery*q) {
 		ASSERT(0);
 	}
 }
-QSqlDatabase DbWorker::db()const {
-	return _db;
-}
