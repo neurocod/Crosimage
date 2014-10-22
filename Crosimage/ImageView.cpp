@@ -75,7 +75,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a("Single/multiple images", QKeySequence("1"));
+		Action a("Single/multiple images", QList<QKeySequence>() << QKeySequence("1") << QKeySequence("Ctrl+Up"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->_bShowOther = !this->_bShowOther;
 				this->navigate();
@@ -83,7 +83,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a("Fit screen/Normal size", QKeySequence("*"));
+		Action a("Fit screen/Normal size", QList<QKeySequence>() << QKeySequence("*") << QKeySequence("Ctrl+Down"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->_bFitScreen = !this->_bFitScreen;
 				this->navigate();

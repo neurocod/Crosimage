@@ -118,10 +118,8 @@ ReadStatus ImgDbWorker::connectToDbOnce() {
 	_db = QSqlDatabase::addDatabase("QSQLITE", _dbPath);
 	_db.setDatabaseName(_dbPath);
 	if(!_db.open())
-		return false;
-	if(!maybeInstallDb())
-		return false;
-	return true;
+		return ReadStatus(false, _db.lastError().text());
+	return maybeInstallDb();
 }
 bool ImgDbWorker::maybeInstallDb() {
 	QStringList names = _db.tables();

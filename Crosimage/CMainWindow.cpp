@@ -252,16 +252,25 @@ bool compareByNameAndNumber(const QString & s1, const QString & s2) {
 }
 void CMainWindow::goSibling(bool next) {
 	QDir parentDir = _model->dir().absoluteFilePath("..");
-	auto siblings = parentDir.entryList(QDir::AllDirs|QDir::NoDotAndDotDot);
+	QStringList siblings = parentDir.entryList(QDir::AllDirs|QDir::NoDotAndDotDot);
 	if(siblings.isEmpty()) {
 		ASSERT(0);
 		return;
 	}
 	qSort(siblings.begin(), siblings.end(), compareByNameAndNumber);
-	auto index = siblings.indexOf(_model->dir().dirName());
-	if(-1==index) {
-		ASSERT(0);//when this happens?
-		index = 0;
+	Qt::CaseSensitivity cs = Qt::CaseSensitive;
+#ifdef Q_OS_WIN
+	cs = Qt::CaseInsensitive;
+#endif
+	const QString curDir = _model->dir().dirName();
+	auto it = qBinaryFind(siblings.begin(), siblings.end(), [&](const QString & s1)->bool {
+		return curDir.compare(s1, cs)<0;
+	});
+	int index = 0;
+	if(it==siblings.end()) {
+		ASSERT(0);//when this happens? when dir deleted?
+	} else {
+		index = it - siblings.begin();
 	}
 	index += (next ? 1 : -1);
 	index = qBound(0, index, siblings.count()-1);
