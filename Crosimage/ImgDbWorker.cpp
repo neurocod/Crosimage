@@ -87,6 +87,8 @@ ReadStatus ImgDbWorker::thumbnail_(const QFileInfo & file, OUT QImage & img) {
 			return ReadStatus(false, reader.errorString());
 	}
 	QDateTime modified = dateTimeFromVariant(q.value(col++));
+	if(modified.isNull())
+		return false;
 	if(file.isDir())
 		return true;//dirs change too often, no check
 	bool ok = modified==file.lastModified();

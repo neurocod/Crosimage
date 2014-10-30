@@ -16,6 +16,7 @@ class ThumbView: public QTableView {
 		void editExternally();
 		void viewExternally();
 		void onModelReset();
+		void rebuildThumbnail();
 	protected:
 		ThumbModel* _model;
 		QString _fileToSelect;

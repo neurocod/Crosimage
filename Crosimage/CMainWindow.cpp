@@ -263,14 +263,16 @@ void CMainWindow::goSibling(bool next) {
 	cs = Qt::CaseInsensitive;
 #endif
 	const QString curDir = _model->dir().dirName();
-	auto it = qBinaryFind(siblings.begin(), siblings.end(), [&](const QString & s1)->bool {
-		return curDir.compare(s1, cs)<0;
-	});
-	int index = 0;
-	if(it==siblings.end()) {
-		ASSERT(0);//when this happens? when dir deleted?
-	} else {
-		index = it - siblings.begin();
+	int index = -1;
+	for(int i = 0; i<siblings.count(); ++i) {
+		if(0==curDir.compare(siblings[i], cs)) {
+			index = i;
+			break;
+		}
+	}
+	if(-1==index) {
+		ASSERT(0);//when this happens? when dir is deleted?
+		index = 0;
 	}
 	index += (next ? 1 : -1);
 	index = qBound(0, index, siblings.count()-1);

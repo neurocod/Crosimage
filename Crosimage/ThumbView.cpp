@@ -41,6 +41,11 @@ ThumbView::ThumbView(ThumbModel*m) {
 		a.connectClicks(this, SLOT(viewExternally()));
 		addAction(a);
 	}
+	{
+		Action a(tr("Rebuild thumbnail"));
+		a.connectClicks(this, SLOT(rebuildThumbnail()));
+		addAction(a);
+	}
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 void ThumbView::onDoubleClicked() {
@@ -76,19 +81,29 @@ void ThumbView::select(QString file) {
 	}
 }
 void ThumbView::onModelReset() {
-	if(!_fileToSelect.isEmpty())	
+	if(!_fileToSelect.isEmpty())
 		select(_fileToSelect);
 }
 void ThumbView::selectLater(QString file) {
-	_fileToSelect = file;	
+	_fileToSelect = file;
 }
 void ThumbView::viewExternally() {
-	auto s = selectedItemFilePath();
-	CApplication::viewExternally(s);
+	auto path = selectedItemFilePath();
+	if(path.isEmpty())
+		return;
+	CApplication::viewExternally(path);
 }
 void ThumbView::editExternally() {
-	auto s = selectedItemFilePath();
-	CApplication::editExternally(s);
+	auto path = selectedItemFilePath();
+	if(path.isEmpty())
+		return;
+	CApplication::editExternally(path);
+}
+void ThumbView::rebuildThumbnail() {
+	auto path = selectedItemFilePath();
+	if(path.isEmpty())
+		return;
+
 }
 void ThumbView::prioritizeThumbs() {
 	auto r = rect();

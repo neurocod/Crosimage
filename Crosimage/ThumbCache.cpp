@@ -5,7 +5,7 @@
 #include "ThumbWorker.h"
 
 ThumbCache::ThumbCache() {
-	connect(&ThumbWorker::instance(), SIGNAL(update(QString, QImage)), SLOT(update(QString, QImage)), Qt::QueuedConnection);
+	connect(&ThumbWorker::instance(), SIGNAL(update(QString, QImage)), SLOT(loadedByDb(QString, QImage)), Qt::QueuedConnection);
 	//for(auto mime: QImageReader::supportedMimeTypes()) {
 	//	for(auto ext: )
 	//}
@@ -30,10 +30,13 @@ QImage ThumbCache::get(const QString & path) {
 	}
 	return _map.value(path);
 }
-void ThumbCache::update(QString path, QImage thumb) {
+void ThumbCache::rebuild(const QFileInfo & info) {
+
+}
+void ThumbCache::loadedByDb(QString path, QImage thumb) {
 	_pathQueued.remove(path);
 	if(!thumb.isNull()) {
 		_map[path] = thumb;
-		emit updated(path, thumb);
+		emit loadedByCache(path, thumb);
 	}
 }

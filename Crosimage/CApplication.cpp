@@ -88,7 +88,7 @@ void CApplication::viewExternally(const QString & s) {
 void CApplication::editExternally(const QString & s) {
 	if(s.isEmpty())
 		return;
-	QProcess::startDetached("A:\\Program Files\\Paint.NET\\PaintDotNet.exe", QStringList() << s);
+	QProcess::startDetached("C:\\Program Files\\Paint.NET\\PaintDotNet.exe", QStringList() << s);
 }
 void CApplication::prioritizeThumbs() {
 	auto w = activeWindow();

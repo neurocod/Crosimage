@@ -26,16 +26,19 @@ void ThumbWorker::exit() {
 }
 void ThumbWorker::makeFirst(const QString & path) {
 	//return;
+	Job job = {path};
 	QMutexLocker lock(&_lock);
-	int index = _queue.indexOf(path);
+	int index = _queue.indexOf(job);
 	if(-1==index || 0==index) {
 		return;
 	}
 	_queue.QList::swap(0, index);
 }
 void ThumbWorker::takeFile(const QString & path) {
+	Job job;
+	job._path = path;
 	QMutexLocker lock(&_lock);
-	_queue.prepend(path);
+	_queue.prepend(job);
 }
 void ThumbWorker::maybeUpdate(bool innerCall, const QString & path, const QList<QImage> & images) {
 	if(innerCall || _bNeedExit)
@@ -124,17 +127,17 @@ QImage ThumbWorker::thumb(const QString & path) {
 void ThumbWorker::run() {
 	_bStarted = true;
 	while(!_bNeedExit) {
-		QString path;
+		Job job;
 		{
 			QMutexLocker lock(&_lock);
 			if(!_queue.isEmpty()) {
-				path = _queue.dequeue();
+				job = _queue.dequeue();
 			}
 		}
-		if(path.isEmpty())
+		if(job._path.isEmpty())
 			msleep(10);
 		else
-			processNextFile(path);
+			processNextFile(job._path);
 	}
 }
 void ThumbWorker::writeToDb(bool innerCall, const QFileInfo & info, const QImage & image) {

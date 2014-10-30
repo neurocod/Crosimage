@@ -8,7 +8,7 @@ ThumbModel::ThumbModel(QObject*parent):
 {
 	_nColCount = 1;
 	_invalidateFiles = false;
-	connect(&ThumbCache::instance(), SIGNAL(updated(QString, QImage)), SLOT(updateThumb(QString, QImage)) );
+	connect(&ThumbCache::instance(), SIGNAL(loadedByCache(QString, QImage)), SLOT(updateThumb(QString, QImage)) );
 	connect(&_dirThread, SIGNAL(items(QDir, QStringList)), SLOT(directoryLoaded(QDir, QStringList)) );
 }
 ThumbModel::~ThumbModel() {

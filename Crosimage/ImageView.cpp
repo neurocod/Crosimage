@@ -75,7 +75,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a("Single/multiple images", QList<QKeySequence>() << QKeySequence("1") << QKeySequence("Ctrl+Up"));
+		Action a("Single/multiple images", QList<QKeySequence>() << QKeySequence("1") << QKeySequence("Ctrl+Down"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->_bShowOther = !this->_bShowOther;
 				this->navigate();
@@ -83,7 +83,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a("Fit screen/Normal size", QList<QKeySequence>() << QKeySequence("*") << QKeySequence("Ctrl+Down"));
+		Action a("Fit screen/Normal size", QList<QKeySequence>() << QKeySequence("*") << QKeySequence("Ctrl+Up"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->_bFitScreen = !this->_bFitScreen;
 				this->navigate();
@@ -197,10 +197,10 @@ void ImageView::wheelEvent(QWheelEvent * event) {
 }
 void ImageView::onTimer() {
 	if(_timeMouseMoved.secsTo(QTime::currentTime())>=1)
-		setCursor(Qt::BlankCursor);	
+		setCursor(Qt::BlankCursor);
 }
 void ImageView::mouseMoveEvent(QMouseEvent *e) {
-	setCursor(Qt::ArrowCursor);	
+	setCursor(Qt::ArrowCursor);
 	_timeMouseMoved = QTime::currentTime();
 	__super::mouseMoveEvent(e);
 }

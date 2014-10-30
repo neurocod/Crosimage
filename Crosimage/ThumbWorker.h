@@ -16,7 +16,15 @@ class ThumbWorker: public QThread {
 		virtual void run()override;
 		volatile bool _bNeedExit;
 		volatile bool _bStarted;
-		QQueue<QString> _queue;//FIFO
+		struct Job {
+			QString _path;
+			bool _checkModificationTime = true;
+			Job(const QString & path = QString(), bool checkModificationTime = true): _path(path), _checkModificationTime(checkModificationTime) {}
+			bool operator==(const Job & other)const {
+				return other._path == _path && other._checkModificationTime == _checkModificationTime;
+			}
+		};
+		QQueue<Job> _queue;//FIFO
 		QMutex _lock;
 		int _nThumbnailsCreated;
 		int _nFilesRead;
