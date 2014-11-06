@@ -5,6 +5,7 @@
 #include "ThumbDelegate.h"
 #include "CMainWindow.h"
 #include "CApplication.h"
+#include "ThumbCache.h"
 
 ThumbView::ThumbView(ThumbModel*m) {
 	_model = m;
@@ -103,7 +104,7 @@ void ThumbView::rebuildThumbnail() {
 	auto path = selectedItemFilePath();
 	if(path.isEmpty())
 		return;
-
+	ThumbCache::instance().rebuild(path);
 }
 void ThumbView::prioritizeThumbs() {
 	auto r = rect();

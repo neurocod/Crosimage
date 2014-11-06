@@ -34,29 +34,30 @@ void ThumbWorker::makeFirst(const QString & path) {
 	}
 	_queue.QList::swap(0, index);
 }
-void ThumbWorker::takeFile(const QString & path) {
+void ThumbWorker::takeFile(const QString & path, bool updateAnyway) {
 	Job job;
 	job._path = path;
+	job._updateAnyway = updateAnyway;
 	QMutexLocker lock(&_lock);
 	_queue.prepend(job);
 }
 void ThumbWorker::maybeUpdate(bool innerCall, const QString & path, const QList<QImage> & images) {
 	if(innerCall || _bNeedExit)
 		return;
-	emit update(path, ThumbDirPainter::compose(images));
+	emit updated(path, ThumbDirPainter::compose(images));
 }
 void ThumbWorker::maybeUpdate(bool innerCall, const QString & path, const QImage & image) {
 	if(innerCall)
 		return;
-	emit update(path, image);
+	emit updated(path, image);
 }
-QImage ThumbWorker::processNextFile(const QString & path, bool innerCall) {
+QImage ThumbWorker::processNextFile(const QString & path, bool updateAnyway, bool innerCall) {
 	if(_bNeedExit)
 		return QImage();
 	_nThumbnailsCreated++;
 	QFileInfo info(path);
 	QImage ret;
-	if(ImgDbWorker::thumbnail(info, ret).ok()) {
+	if(!updateAnyway && ImgDbWorker::thumbnail(info, ret).ok()) {
 		maybeUpdate(innerCall, path, ret);
 		return ret;
 	}
@@ -103,7 +104,7 @@ QImage ThumbWorker::processNextFile(const QString & path, bool innerCall) {
 		if(innerCall) {
 			images << ThumbDirPainter::subDirThumb();
 		} else {
-			images << processNextFile(subDirs[i], true);
+			images << processNextFile(subDirs[i], updateAnyway, true);
 			maybeUpdate(innerCall, path, images);
 		}
 	}
@@ -137,7 +138,7 @@ void ThumbWorker::run() {
 		if(job._path.isEmpty())
 			msleep(10);
 		else
-			processNextFile(job._path);
+			processNextFile(job._path, job._updateAnyway);
 	}
 }
 void ThumbWorker::writeToDb(bool innerCall, const QFileInfo & info, const QImage & image) {
