@@ -40,30 +40,38 @@ QVariant ThumbModel::data(const QModelIndex & index, int role)const {
 			return icon.pixmap(sizes[0]);
 		}
 	}
+	if(Qt::SizeHintRole==role) {
+		QSize sz(s_nThumbW, rowHeight(index.row()));
+		return sz;
+	}
 	return QVariant();
 }
 int ThumbModel::rowHeight(int row)const {
-	int ret = s_nThumbH;
+	TopResult<int, int> ret;
 	for(int col = 0; col<_nColCount; ++col) {
 		if(auto item = itemBy(index(row, col))) {
 			if(!item->thumbnail.isNull())
-				ret = qMin(ret, item->thumbnail.height());
+				ret.addMaxKey(item->thumbnail.height(), 0);
 		}
 	}
-	return ret;
+	if(ret.isSet())
+		return ret.key();
+	return s_nThumbH;
 }
 QVariant ThumbModel::headerData(int section, Qt::Orientation orientation, int role)const {
-	if(Qt::DisplayRole==role && Qt::Vertical==orientation) {
-		QString str = toString(section*_nColCount);
-		return str;
-	}
-	if(Qt::DisplayRole==role && Qt::Vertical==orientation) {
-		return rowHeight(section);
-	}
-	if(Qt::SizeHintRole==role) {
-		QSize sz(s_nThumbW, s_nThumbH);
-		sz.rheight() = rowHeight(section);
-		return sz;
+	if(Qt::Vertical==orientation) {
+		if(Qt::DisplayRole==role) {
+			QString str = toString(section*_nColCount);
+			return str;
+		}
+		if(Qt::DisplayRole==role) {
+			return section;
+		}
+		if(Qt::SizeHintRole==role) {
+			static int w = 40;
+			QSize sz(w, rowHeight(section));
+			return sz;
+		}
 	}
 	return __super::headerData(section, orientation, role);
 }
