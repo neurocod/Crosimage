@@ -19,9 +19,9 @@ ThumbView::ThumbView(ThumbModel*m) {
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 	horizontalHeader()->setDefaultSectionSize(ThumbModel::s_nThumbW);
 	verticalScrollBar()->setSingleStep(40);
-	verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-	verticalHeader()->hide();
 	verticalHeader()->setDefaultSectionSize(ThumbModel::s_nThumbH);
+	verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	verticalHeader()->hide();
 	setItemDelegate(new ThumbDelegate(m));
 	setModel(m);
 	connect(this, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(onDoubleClicked(const QModelIndex &)) );
@@ -33,13 +33,13 @@ ThumbView::ThumbView(ThumbModel*m) {
 		addAction(a);
 	}
 	{
-		Action a(tr("Edit externally"), QKeySequence("Alt+2"));
-		a.connectClicks(this, SLOT(editExternally()));
+		Action a(tr("View externally"), QKeySequence("Alt+1"));
+		a.connectClicks(this, SLOT(viewExternally()));
 		addAction(a);
 	}
 	{
-		Action a(tr("View externally"), QKeySequence("Alt+1"));
-		a.connectClicks(this, SLOT(viewExternally()));
+		Action a(tr("Edit externally"), QKeySequence("Alt+2"));
+		a.connectClicks(this, SLOT(editExternally()));
 		addAction(a);
 	}
 	{
@@ -53,7 +53,7 @@ void ThumbView::onDoubleClicked() {
 	onDoubleClicked(currentIndex());
 }
 void ThumbView::onDoubleClicked(const QModelIndex & index) {
-	auto item = _model->itemAt(index);
+	auto item = _model->itemBy(index);
 	if(!item)
 		return;
 	CMainWindow::instance(this)->go(item->absoluteFilePath());
@@ -62,7 +62,7 @@ QString ThumbView::selectedItemFilePath() {
 	auto index = currentIndex();
 	if(!index.isValid())
 		return QString();
-	auto item = _model->itemAt(index);
+	auto item = _model->itemBy(index);
 	if(!item)
 		return QString();
 	auto path = item->absoluteFilePath();
@@ -131,4 +131,7 @@ void ThumbView::resizeEvent(QResizeEvent *event) {
 	int w = event->size().width();
 	int cols = qMax<int>(1, w/ThumbModel::s_nThumbW);
 	_model->setColumnCount(cols);
+}
+int ThumbView::sizeHintForRow(int row)const {
+	return _model->rowHeight(row);
 }

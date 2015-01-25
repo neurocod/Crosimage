@@ -29,13 +29,13 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		timer->start(500);
 	}
 	{
-		Action a("Close this window");
+		Action a(tr("Close this window"));
 		a->setShortcuts(QList<QKeySequence>() << QKeySequence("Esc") << QKeySequence("Alt+Up"));
 		a.connectClicks(this, SLOT(close()));
 		addAction(a);
 	}
 	{
-		Action a("First image", QKeySequence("Home"));
+		Action a(tr("First image"), QKeySequence("Home"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->_indexInParent = 0;
 				this->navigate();
@@ -43,7 +43,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a("Last image", QKeySequence("End"));
+		Action a(tr("Last image"), QKeySequence("End"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->_indexInParent = this->_parent->items().count()-1;
 				this->navigate();
@@ -51,21 +51,42 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a("Prev image", QKeySequence("PgUp"));
+		Action a(tr("Prev image"), QKeySequence("PgUp"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->navigate(-1);
 			});
 		addAction(a);
 	}
 	{
-		Action a("Next image", QKeySequence("PgDown"));
+		Action a(tr("Next image"), QKeySequence("PgDown"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->navigate(1);
 			});
 		addAction(a);
 	}
 	{
-		Action a("Fullscreen/Normal", QKeySequence("F"));
+		Action a(tr("Scale +"), QKeySequence("+"));
+		QObject::connect(a, &QAction::triggered, this, [=]() {
+			//this->navigate(1);
+		});
+		addAction(a);
+	}
+	{
+		Action a(tr("Scale -"), QKeySequence("-"));
+		QObject::connect(a, &QAction::triggered, this, [=]() {
+			//this->navigate(1);
+		});
+		addAction(a);
+	}
+	{
+		Action a(tr("Scale 1:1"), QKeySequence("="));
+		QObject::connect(a, &QAction::triggered, this, [=]() {
+			//this->navigate(1);
+		});
+		addAction(a);
+	}
+	{
+		Action a(tr("Fullscreen/Normal"), QKeySequence("F"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				if(this->isFullScreen())
 					this->showNormal();
@@ -75,7 +96,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a("Single/multiple images", QList<QKeySequence>() << QKeySequence("1") << QKeySequence("Ctrl+Down"));
+		Action a(tr("Single/multiple images"), QList<QKeySequence>() << QKeySequence("1") << QKeySequence("Ctrl+Down"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->_bShowOther = !this->_bShowOther;
 				this->navigate();
@@ -83,7 +104,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a("Fit screen/Normal size", QList<QKeySequence>() << QKeySequence("*") << QKeySequence("Ctrl+Up"));
+		Action a(tr("Fit screen/Normal size"), QList<QKeySequence>() << QKeySequence("*") << QKeySequence("Ctrl+Up"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->_bFitScreen = !this->_bFitScreen;
 				this->navigate();
@@ -125,8 +146,8 @@ void ImageView::paintEvent(QPaintEvent * event) {
 		sz = rc.size();
 	else
 		sz = img.orig.size();
-	if(img.szScaled!=sz) {
-		img.szScaled = sz;
+	if(img.szNeeed!=sz) {
+		img.szNeeed = sz;
 		img.scaled = img.orig.scaled(sz, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 	int x = 0;

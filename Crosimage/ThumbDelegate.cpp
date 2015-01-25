@@ -9,7 +9,7 @@ ThumbDelegate::ThumbDelegate(ThumbModel*parent): QStyledItemDelegate(parent) {
 	ASSERT(parent);
 }
 void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option, const QModelIndex & index)const {
-	auto item = _parent->itemAt(index);
+	auto item = _parent->itemBy(index);
 	if(!item) {
 		__super::paint(painter, option, index);
 		return;

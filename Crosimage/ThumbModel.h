@@ -18,12 +18,13 @@ class ThumbModel: public QAbstractTableModel {
 		virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole)const override;
 		virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const override;
 		void setColumnCount(int cols);
+		int rowHeight(int row)const;
 
 		//void setColumnCountByView(int count);
 		typedef DirCacheItem Item;
 		QModelIndex indexByIntIndex(int i)const;
-		Item* itemAt(const QModelIndex & index)const;
-		Item* itemAt(int index)const;
+		Item* itemBy(const QModelIndex & index)const;
+		Item* itemBy(int index)const;
 		const QDir & dir()const { return _dir; }
 		const QList<Item*> & items()const { return _items; }
 		QStringList files()const;

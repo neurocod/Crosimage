@@ -24,7 +24,7 @@ int ThumbModel::columnCount(const QModelIndex & parent)const {
 	return _nColCount;
 }
 QVariant ThumbModel::data(const QModelIndex & index, int role)const {
-	auto item = itemAt(index);
+	auto item = itemBy(index);
 	if(!item)
 		return QVariant();
 	if(Qt::DisplayRole==role) {
@@ -42,24 +42,42 @@ QVariant ThumbModel::data(const QModelIndex & index, int role)const {
 	}
 	return QVariant();
 }
+int ThumbModel::rowHeight(int row)const {
+	int ret = s_nThumbH;
+	for(int col = 0; col<_nColCount; ++col) {
+		if(auto item = itemBy(index(row, col))) {
+			if(!item->thumbnail.isNull())
+				ret = qMin(ret, item->thumbnail.height());
+		}
+	}
+	return ret;
+}
 QVariant ThumbModel::headerData(int section, Qt::Orientation orientation, int role)const {
-	if(Qt::DisplayRole==role && orientation==Qt::Vertical) {
+	if(Qt::DisplayRole==role && Qt::Vertical==orientation) {
 		QString str = toString(section*_nColCount);
 		return str;
 	}
+	if(Qt::DisplayRole==role && Qt::Vertical==orientation) {
+		return rowHeight(section);
+	}
+	if(Qt::SizeHintRole==role) {
+		QSize sz(s_nThumbW, s_nThumbH);
+		sz.rheight() = rowHeight(section);
+		return sz;
+	}
 	return __super::headerData(section, orientation, role);
 }
-ThumbModel::Item* ThumbModel::itemAt(int index)const {
+ThumbModel::Item* ThumbModel::itemBy(int index)const {
 	if(index<0 || index>=_items.count()) {
 		return 0;
 	}
 	return _items[index];
 }
-ThumbModel::Item* ThumbModel::itemAt(const QModelIndex & index)const {
+ThumbModel::Item* ThumbModel::itemBy(const QModelIndex & index)const {
 	if(!index.isValid())
 		return 0;
 	int n = index.row()*_nColCount + index.column();
-	return itemAt(n);
+	return itemBy(n);
 }
 void ThumbModel::setDir(const QString & str, bool check) {
 	QDir dir(str);
@@ -105,6 +123,7 @@ void ThumbModel::updateThumb(QString path, QImage image) {
 	for(int i=0; i<_items.count(); ++i) {
 		auto item = _items[i];
 		if(item->absoluteFilePath()==path) {
+			item->thumbnail = image;
 			auto in = index(i/_nColCount, i % _nColCount);
 			emit dataChanged(in, in);
 			break;
@@ -120,7 +139,7 @@ QStringList ThumbModel::files()const {
 				_files << item->absoluteFilePath();
 		}
 	}
-	return _files;	
+	return _files;
 }
 QModelIndex ThumbModel::indexByIntIndex(int i)const {
 	int row	= i/columnCount();
@@ -140,7 +159,7 @@ void ThumbModel::setColumnCount(int cols) {
 	endResetModel();
 }
 Qt::ItemFlags ThumbModel::flags(const QModelIndex & index)const {
-	auto item = itemAt(index);
+	auto item = itemBy(index);
 	if(!item)
 		return 0;
 	return __super::flags(index);

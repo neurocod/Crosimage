@@ -5,8 +5,7 @@
 
 SqliteDb::SqliteDb(QObject*parent): DbWorker(parent), _queryLastInsertedId(this, "SELECT last_insert_rowid()") {
 }
-//static
-QVariant SqliteDb::toVariantByteArray(const QDateTime & dt) {
+QVariant SqliteDb::toVariantByteArray(const QDateTime & dt) { //static
 	QByteArray arr;
 	{
 		QDataStream stream(&arr, QIODevice::WriteOnly);
@@ -14,8 +13,7 @@ QVariant SqliteDb::toVariantByteArray(const QDateTime & dt) {
 	}
 	return QVariant(arr);
 }
-//static
-QDateTime SqliteDb::dateTimeFromVariant(const QVariant & v) {
+QDateTime SqliteDb::dateTimeFromVariant(const QVariant & v) { //static
 	QDateTime dt;
 	if(v.canConvert(QVariant::ByteArray)) {
 		const QByteArray arr = v.toByteArray();

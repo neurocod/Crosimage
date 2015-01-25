@@ -25,7 +25,7 @@ class ImageView: public QWidget {
 			QString file;
 			QPixmap orig;
 			QPixmap scaled;
-			QSize szScaled;
+			QSize szNeeed;
 		};
 		bool _bFitScreen;
 		bool _bShowOther;
