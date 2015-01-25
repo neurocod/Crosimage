@@ -8,11 +8,13 @@ class DirCacheItem {
 		QString absoluteFilePath()const;
 		QString fileName()const;
 		const QFileInfo & fileInfo()const;
+		const QImage & thumbnail()const;
+		void setThumbnail(const QImage &i);
 
-		QImage _thumbnail;
 		qint64 _rating;
 		QByteArray _showSettings;
 	protected:
+		QImage _thumbnail;
 		QFileInfo _fileInfo;
 		QString _absoluteFilePath;
 		QString _fileName;

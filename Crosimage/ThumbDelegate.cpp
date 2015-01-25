@@ -22,7 +22,8 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 		rc.adjust(0, 0,-1,-1);
 		painter->drawRect(rc);
 	}
-	const auto & img = item->_thumbnail;
+	const auto & img = item->thumbnail();
+	ThumbCache::instance().maybeMakeFirst(item->absoluteFilePath());
 	auto pt = option.rect.topLeft();
 	if(const bool center = 1) {
 		int diffX = ThumbModel::s_nThumbW - img.width();

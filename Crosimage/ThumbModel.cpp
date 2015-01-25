@@ -51,8 +51,8 @@ int ThumbModel::rowHeight(int row)const {
 	TopResult<int, int> ret;
 	for(int col = 0; col<_nColCount; ++col) {
 		if(auto item = itemBy(index(row, col))) {
-			if(!item->_thumbnail.isNull())
-				ret.addMaxKey(item->_thumbnail.height(), 0);
+			if(!item->thumbnail().isNull())
+				ret.addMaxKey(item->thumbnail().height(), 0);
 		}
 	}
 	if(ret.isSet())
@@ -123,14 +123,11 @@ void ThumbModel::refresh() {
 void ThumbModel::updateThumb(const QString & path, const QImage & image) {
 	if(_items.isEmpty())
 		return;
-	//auto i0 = index(0,0);
-	//auto i1 = index(rowCount()-1, columnCount()-1);
-	//emit dataChanged(i0, i0);
 	for(int i=0; i<_items.count(); ++i) {
 		auto item = _items[i];
 		if(item->absoluteFilePath()==path) {
-			item->_thumbnail = image;
-			auto in = index(i/_nColCount, i % _nColCount);
+			item->setThumbnail(image);
+			auto in = indexByIntIndex(i);
 			emit dataChanged(in, in);
 			break;
 		}
@@ -148,8 +145,8 @@ QStringList ThumbModel::files()const {
 	return _files;
 }
 QModelIndex ThumbModel::indexByIntIndex(int i)const {
-	int row	= i/columnCount();
-	int col = i%columnCount();
+	int row	= i / _nColCount;
+	int col = i % _nColCount;
 	return createIndex(row, col);
 }
 void ThumbModel::setSortFlags(QDir::SortFlags f) {

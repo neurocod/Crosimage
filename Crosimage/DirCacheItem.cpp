@@ -17,3 +17,9 @@ QString DirCacheItem::fileName()const {
 const QFileInfo & DirCacheItem::fileInfo()const {
 	return _fileInfo;
 }
+const QImage & DirCacheItem::thumbnail()const {
+	return _thumbnail;
+}
+void DirCacheItem::setThumbnail(const QImage &i) {
+	_thumbnail = i;
+}

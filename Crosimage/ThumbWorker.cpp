@@ -25,7 +25,6 @@ void ThumbWorker::exit() {
 	wait(10000);
 }
 void ThumbWorker::makeFirst(const QString & path) {
-	//return;
 	Job job = {path};
 	QMutexLocker lock(&_lock);
 	int index = _queue.indexOf(job);

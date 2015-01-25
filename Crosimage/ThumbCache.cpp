@@ -22,10 +22,13 @@ QImage ThumbCache::get(const QFileInfo & info, const QString & path) {
 		_pathQueued.insert(path);
 		return thumb;
 	}
+	maybeMakeFirst(path);
+	return _map.value(path);
+}
+void ThumbCache::maybeMakeFirst(const QString & path) {
 	if(_pathQueued.contains(path)) {//reorder queue
 		ThumbWorker::instance().makeFirst(path);
 	}
-	return _map.value(path);
 }
 void ThumbCache::rebuild(const QString & path) {
 	_map.remove(path);
