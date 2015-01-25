@@ -8,7 +8,8 @@ ThumbModel::ThumbModel(QObject*parent):
 {
 	_nColCount = 1;
 	_invalidateFiles = false;
-	connect(&ThumbCache::instance(), SIGNAL(loadedByCache(QString, QImage)), SLOT(updateThumb(QString, QImage)) );
+	connect(&ThumbCache::instance(), SIGNAL(loadedByCache(const QString &, const QImage&)),
+		SLOT(updateThumb(const QString&, const QImage&)) );
 	connect(&_dirThread, SIGNAL(items(QDir, QStringList)), SLOT(directoryLoaded(QDir, QStringList)) );
 }
 ThumbModel::~ThumbModel() {
@@ -34,7 +35,7 @@ QVariant ThumbModel::data(const QModelIndex & index, int role)const {
 		return item->fileName();
 	}
 	if(Qt::DecorationRole==role) {
-		QIcon icon = _iconProvider.icon(*item);
+		QIcon icon = _iconProvider.icon(item->fileInfo());
 		auto sizes = icon.availableSizes();
 		if(!sizes.isEmpty()) {
 			return icon.pixmap(sizes[0]);
@@ -50,8 +51,8 @@ int ThumbModel::rowHeight(int row)const {
 	TopResult<int, int> ret;
 	for(int col = 0; col<_nColCount; ++col) {
 		if(auto item = itemBy(index(row, col))) {
-			if(!item->thumbnail.isNull())
-				ret.addMaxKey(item->thumbnail.height(), 0);
+			if(!item->_thumbnail.isNull())
+				ret.addMaxKey(item->_thumbnail.height(), 0);
 		}
 	}
 	if(ret.isSet())
@@ -115,14 +116,11 @@ void ThumbModel::directoryLoaded(QDir dir, QStringList items) {
 	for(auto item: items)
 		_items << new Item(_dir, item);
 	endResetModel();
-	for (int i = _items.count() - 1; i >= 0 ; i--) {
-		ThumbCache::instance().get(*_items[i]);
-	}
 }
 void ThumbModel::refresh() {
 	setDir(_dir.absolutePath(), false);
 }
-void ThumbModel::updateThumb(QString path, QImage image) {
+void ThumbModel::updateThumb(const QString & path, const QImage & image) {
 	if(_items.isEmpty())
 		return;
 	//auto i0 = index(0,0);
@@ -131,7 +129,7 @@ void ThumbModel::updateThumb(QString path, QImage image) {
 	for(int i=0; i<_items.count(); ++i) {
 		auto item = _items[i];
 		if(item->absoluteFilePath()==path) {
-			item->thumbnail = image;
+			item->_thumbnail = image;
 			auto in = index(i/_nColCount, i % _nColCount);
 			emit dataChanged(in, in);
 			break;
@@ -143,7 +141,7 @@ QStringList ThumbModel::files()const {
 		_invalidateFiles = false;
 		_files.clear();
 		for(auto item: _items) {
-			if(item->isFile())
+			if(item->fileInfo().isFile())
 				_files << item->absoluteFilePath();
 		}
 	}

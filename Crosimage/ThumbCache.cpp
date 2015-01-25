@@ -14,12 +14,9 @@ ThumbCache & ThumbCache::instance() {
 	static ThumbCache p;
 	return p;
 }
-QImage ThumbCache::get(const QFileInfo & info) {
-	return get(info.absoluteFilePath());
-}
-QImage ThumbCache::get(const QString & path) {
+QImage ThumbCache::get(const QFileInfo & info, const QString & path) {
 	if(!_map.contains(path)) {
-		auto thumb = _iconProvider.icon(QFileInfo(path)).pixmap(ThumbModel::s_nThumbW, ThumbModel::s_nThumbH).toImage();
+		auto thumb = _iconProvider.icon(info).pixmap(ThumbModel::s_nThumbW, ThumbModel::s_nThumbH).toImage();
 		_map[path] = thumb;
 		ThumbWorker::instance().takeFile(path);
 		_pathQueued.insert(path);

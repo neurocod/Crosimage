@@ -68,24 +68,24 @@ QString ThumbView::selectedItemFilePath() {
 	auto path = item->absoluteFilePath();
 	return path;
 }
-void ThumbView::select(QString file) {
+void ThumbView::select(const QString & file) {
 	QFileInfo info(file);
-	int nIndex = 0;
-	for(auto item: _model->items()) {
-		QString path = item->filePath();
-		if(info==*item) {
-			auto index = _model->indexByIntIndex(nIndex);
+	QString abs = info.absoluteFilePath();
+	const auto & items = _model->items();
+	for(int n = 0; n<items.count(); ++n) {
+		const auto & item = items.at(n);
+		if(abs==item->absoluteFilePath()) {
+			auto index = _model->indexByIntIndex(n);
 			setCurrentIndex(index);
 			break;
 		}
-		nIndex++;
 	}
 }
 void ThumbView::onModelReset() {
 	if(!_fileToSelect.isEmpty())
 		select(_fileToSelect);
 }
-void ThumbView::selectLater(QString file) {
+void ThumbView::selectLater(const QString & file) {
 	_fileToSelect = file;
 }
 void ThumbView::viewExternally() {

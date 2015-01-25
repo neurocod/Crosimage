@@ -184,7 +184,8 @@ void ImageView::show(const QStringList & files) {
 		QImageReader reader(file);
 		QImage img;
 		if(!reader.read(&img)) {
-			img = ThumbCache::instance().get(QFileInfo(file));
+			QFileInfo fileInfo(file);
+			img = ThumbCache::instance().get(fileInfo, fileInfo.absoluteFilePath());
 		}
 		Image image;
 		image.orig = QPixmap::fromImage(img);

@@ -34,7 +34,7 @@ class ThumbModel: public QAbstractTableModel {
 	public slots:
 		void setDir(const QString & str, bool check=true);
 		void refresh();
-		void updateThumb(QString, QImage);
+		void updateThumb(const QString & path, const QImage & thumb);
 		void directoryLoaded(QDir path, QStringList items);
 	protected:
 		int _nColCount;

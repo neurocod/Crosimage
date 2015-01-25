@@ -7,8 +7,8 @@ class ThumbView: public QTableView {
 	public:
 		ThumbView(ThumbModel*m);
 		virtual ~ThumbView() {}
-		void select(QString file);
-		void selectLater(QString file);
+		void select(const QString & file);
+		void selectLater(const QString & file);
 		void prioritizeThumbs();
 	public slots:
 		void onDoubleClicked(const QModelIndex & index);

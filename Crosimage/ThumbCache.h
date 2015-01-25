@@ -7,14 +7,13 @@ class ThumbCache: public QObject {
 	public:
 		virtual ~ThumbCache() {}
 		static ThumbCache& instance();
-		QImage get(const QFileInfo & info);
+		QImage get(const QFileInfo & info, const QString & absoluteFilePath);
 		void rebuild(const QString & path);
 	public slots:
 		void loadedByDb(QString path, QImage thumb);
 	signals:
-		void loadedByCache(QString path, QImage thumb);
+		void loadedByCache(const QString & path, const QImage & thumb);
 	protected:
-		QImage get(const QString & path);
 		ThumbCache();
 		QMap<QString, QImage> _map;
 		QFileIconProvider _iconProvider;
