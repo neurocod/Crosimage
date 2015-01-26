@@ -12,6 +12,5 @@ class ThumbVideoWorker {
 		static QImage thumbFromVideo(ThumbWorker*worker, const QString & path);
 		static QImage thumbFromVideo(ThumbWorker*worker, const QString & path, int secsOffset);
 		static bool isGoodThumb(const QImage & img);
-		static bool isBlackOrWhite(const QImage & img);
 		static bool hasMonopolisticColors(const QImage & img);
 };

@@ -53,33 +53,6 @@ bool ThumbVideoWorker::isGoodThumb(const QImage & img) {
 		return false;
 	return !hasMonopolisticColors(img);
 }
-bool ThumbVideoWorker::isBlackOrWhite(const QImage & img) {
-	if(img.size().isEmpty())
-		return false;
-	int whitePixels = 0;
-	int blackPixels = 0;
-	int cx = img.size().width();
-	int cy = img.size().height();
-	int pixels = cx * cy;
-	for(int y = 0; y<cy; ++y) {
-		for(int x = 0; x<cx; ++x) {
-			QRgb rgb = img.pixel(x, y);
-			int sum = qRed(rgb)+qGreen(rgb)+qBlue(rgb);
-			if(sum<64)
-				blackPixels++;
-			else if(sum>400)
-				whitePixels++;
-		}
-	}
-	qreal white = whitePixels;
-	qreal black = blackPixels;
-	white /= pixels;
-	black /= pixels;
-	const qreal threshld = 0.8;
-	if(white>threshld || black>threshld)
-		return true;
-	return false;
-}
 bool ThumbVideoWorker::hasMonopolisticColors(const QImage & img) {
 	int cx = img.size().width();
 	int cy = img.size().height();
