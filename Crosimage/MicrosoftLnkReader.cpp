@@ -12,79 +12,65 @@ QString MicrosoftLnkReader::printf(const QString & str, T t) {
 	QString ret = str.arg(t);
 	return ret;
 }
-struct TLinkHeaderInfo {
-	static const int Signature = 0x4C000000;
-	quint32 _signature;
-	unsigned char GUID[16];//The current GUID for shortcuts is 01 14 02 00 00 00 00 00 C0 00 00 00 00 00 46, It may change in the future.
-	quint32 ShortcutFlags;//Shortcut flags are explained below
-	quint32 TargetFileFlags;//Target file flags - Flags are explained below
-	unsigned char CreationTime[8];//Windows FILETIME structure
-	unsigned char LastAccessTime[8];//FILETIME
-	unsigned char ModificationTime[8];//FILETIME
-	quint32 FileLength;//The length of the target file. 0 if the target is not a file.
-		//This value is used to find the target when the link is broken.
-	quint32 IconNumber;//If the file has a custom icon (set by the flags bit 6),
-		//then this long integer indicates the index of the icon to use. Otherwise it is zero.
-	quint32 ShowWindow;//SW_SHOWNORMAL=1, SW_SHOWMAXIMIZED=3, SW_SHOWMINNOACTIVE=7, all other values MUST be treated as SW_SHOWNORMAL
-	quint32 HotKey;//The hot key assigned for this shortcut
-	quint32 Reserved1;//Reserved - Always 0
-	quint32 Reserved2;//Reserved - Always 0
-};
 QString MicrosoftLnkReader::targetOrSame(const QString & path) {
-	TLinkHeaderInfo HeaderStructure;
-
+	MicrosoftLnkReader reader;
+	if(!reader.loadAndParse(path))
+		return path;
+	return path;
+}
+StringStatus MicrosoftLnkReader::loadAndParse(const QString & path) {
 	char LinkFileContent[10240];
 	QByteArray fileContent;
 	if(!FileReader::read(path, fileContent))
-		return path;
+		return false;
 	fileContent.append((char)0);
 
 	int LinkFileSize = fileContent.size();
 	for(int i = 0; i<fileContent.size() && i<sizeof(LinkFileContent); ++i) {
 		LinkFileContent[i] = fileContent.at(i);
 	}
-	HeaderStructure._signature = LinkFileContent[0]*65536*256;
-	HeaderStructure._signature += LinkFileContent[1]*65536;
-	HeaderStructure._signature += LinkFileContent[2]*256+LinkFileContent[3];
-	printf("Signature: %1\n", HeaderStructure.Signature);
+	_signature = LinkFileContent[0]*65536*256;
+	_signature += LinkFileContent[1]*65536;
+	_signature += LinkFileContent[2]*256+LinkFileContent[3];
+	printf("Signature: %1\n", Signature);
 
 	for(int i = 0; i<16; i++) {
-		HeaderStructure.GUID[i] = LinkFileContent[4+i];
+		GUID[i] = LinkFileContent[4+i];
 	};
 
-	HeaderStructure.ShortcutFlags = LinkFileContent[23]*65536*256;
-	HeaderStructure.ShortcutFlags += LinkFileContent[22]*65536;
-	HeaderStructure.ShortcutFlags += LinkFileContent[21]*256+LinkFileContent[20];
-	printf("Shortcut Flags: %1\n", HeaderStructure.ShortcutFlags);
+	ShortcutFlags = LinkFileContent[23]*65536*256;
+	ShortcutFlags += LinkFileContent[22]*65536;
+	ShortcutFlags += LinkFileContent[21]*256+LinkFileContent[20];
+	printf("Shortcut Flags: %1\n", ShortcutFlags);
 
-	HeaderStructure.TargetFileFlags = LinkFileContent[27]*65536*256;
-	HeaderStructure.TargetFileFlags += LinkFileContent[26]*65536;
-	HeaderStructure.TargetFileFlags += LinkFileContent[25]*256+LinkFileContent[24];
-	printf("Target File Flags: %1\n", HeaderStructure.TargetFileFlags);
+	TargetFileFlags = LinkFileContent[27]*65536*256;
+	TargetFileFlags += LinkFileContent[26]*65536;
+	TargetFileFlags += LinkFileContent[25]*256+LinkFileContent[24];
+	printf("Target File Flags: %1\n", TargetFileFlags);
 
-	for(int i = 0; i<8; i++) { HeaderStructure.CreationTime[i] = LinkFileContent[28+i]; };
-	for(int i = 0; i<8; i++) { HeaderStructure.LastAccessTime[i] = LinkFileContent[36+i]; };
-	for(int i = 0; i<8; i++) { HeaderStructure.LastAccessTime[i] = LinkFileContent[44+i]; };
+	for(int i = 0; i<8; i++) { CreationTime[i] = LinkFileContent[28+i]; };
+	for(int i = 0; i<8; i++) { LastAccessTime[i] = LinkFileContent[36+i]; };
+	for(int i = 0; i<8; i++) { LastAccessTime[i] = LinkFileContent[44+i]; };
 
-	HeaderStructure.FileLength = LinkFileContent[55]*65536*256;
-	HeaderStructure.FileLength += LinkFileContent[54]*65536;
-	HeaderStructure.FileLength += LinkFileContent[53]*256+LinkFileContent[52];
-	printf("Target File Size (bytes): %1\n", HeaderStructure.FileLength);
+	FileLength = LinkFileContent[55]*65536*256;
+	FileLength += LinkFileContent[54]*65536;
+	FileLength += LinkFileContent[53]*256+LinkFileContent[52];
+	printf("Target File Size (bytes): %1\n", FileLength);
 
-	HeaderStructure.IconNumber = LinkFileContent[59]*65536*256;
-	HeaderStructure.IconNumber += LinkFileContent[58]*65536;
-	HeaderStructure.IconNumber += LinkFileContent[57]*256+LinkFileContent[56];
-	printf("IconNumber: %1\n", HeaderStructure.IconNumber);
+	IconNumber = LinkFileContent[59]*65536*256;
+	IconNumber += LinkFileContent[58]*65536;
+	IconNumber += LinkFileContent[57]*256+LinkFileContent[56];
+	printf("IconNumber: %1\n", IconNumber);
 
-	HeaderStructure.ShowWindow = LinkFileContent[63]*65536*256;
-	HeaderStructure.ShowWindow += LinkFileContent[62]*65536;
-	HeaderStructure.ShowWindow += LinkFileContent[61]*256+LinkFileContent[60];
-	printf("ShowWindow Attributes: %1\n", HeaderStructure.IconNumber);
+	ShowWindow = LinkFileContent[63]*65536*256;
+	ShowWindow += LinkFileContent[62]*65536;
+	ShowWindow += LinkFileContent[61]*256+LinkFileContent[60];
+	printf("ShowWindow Attributes: %1\n", IconNumber);
 
-	HeaderStructure.HotKey = LinkFileContent[67]*65536*256;
-	HeaderStructure.HotKey += LinkFileContent[66]*65536;
-	HeaderStructure.HotKey += LinkFileContent[65]*256+LinkFileContent[64];
-	printf("HotKey Attributes: %1\n", HeaderStructure.HotKey);
+	HotKey = LinkFileContent[67]*65536*256;
+	HotKey += LinkFileContent[66]*65536;
+	HotKey += LinkFileContent[65]*256+LinkFileContent[64];
+	printf("HotKey Attributes: %1\n", HotKey);
 
 	// Now extract file name and path
 
