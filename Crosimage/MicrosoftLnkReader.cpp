@@ -8,55 +8,30 @@
 #include <sys/stat.h>
 
 template<class T>
-void MicrosoftLnkReader::printf(const QString & str, T t) {
+QString MicrosoftLnkReader::printf(const QString & str, T t) {
 	QString ret = str.arg(t);
-	int n = 3;
+	return ret;
 }
 struct TLinkHeaderInfo {
-	//4 bytes         Always 4C 00 00 00          This is how windows knows it is a shortcut file
-	unsigned long Signature;
-	//16 bytes       GUID for shortcut files       The current GUID for shortcuts.
-	//It may change in the future. 01 14 02 00 00 00 00 00 C0 00 00 00 00 00 46
-	unsigned char GUID[16];
-	//4 bytes         Shortcut flags                    Shortcut flags are explained below
-	unsigned long ShortcutFlags;
-	//4 bytes         Target file flags                   Flags are explained below
-	unsigned long TargetFileFlags;
-	//8 bytes         Creation time
-	unsigned char CreationTime[8];
-	//8 bytes         Last Access time
-	unsigned char LastAccessTime[8];
-	//8 bytes         Modification time
-	unsigned char ModificationTime[8];
-	//4 bytes         File length
-	//The length of the target file. 0 if the target is not a file.
-	//This value is used to find the target when the link is broken.
-	unsigned long FileLength;
-	//4 bytes         Icon number
-	//If the file has a custom icon (set by the flags bit 6),
-	//then this long integer indicates the index of the icon to use. Otherwise it is zero.
-	unsigned long IconNumber;
-	//4 bytes         Show Window
-	//the ShowWnd value to pass to the target application when starting it.
-	//1:Normal Window 2:Minimized 3:Maximized
-	unsigned long ShowWindow;
-	//      4 bytes         Hot Key                 The hot key assigned for this shortcut
-	unsigned long HotKey;
-	//      4 bytes         Reserved                Always 0
-	unsigned long Reserved1;
-	//      4 bytes         Reserved                Always 0
-	unsigned long Reserved2;
+	static const int Signature = 0x4C000000;
+	quint32 _signature;
+	unsigned char GUID[16];//The current GUID for shortcuts is 01 14 02 00 00 00 00 00 C0 00 00 00 00 00 46, It may change in the future.
+	quint32 ShortcutFlags;//Shortcut flags are explained below
+	quint32 TargetFileFlags;//Target file flags - Flags are explained below
+	unsigned char CreationTime[8];//Windows FILETIME structure
+	unsigned char LastAccessTime[8];//FILETIME
+	unsigned char ModificationTime[8];//FILETIME
+	quint32 FileLength;//The length of the target file. 0 if the target is not a file.
+		//This value is used to find the target when the link is broken.
+	quint32 IconNumber;//If the file has a custom icon (set by the flags bit 6),
+		//then this long integer indicates the index of the icon to use. Otherwise it is zero.
+	quint32 ShowWindow;//SW_SHOWNORMAL=1, SW_SHOWMAXIMIZED=3, SW_SHOWMINNOACTIVE=7, all other values MUST be treated as SW_SHOWNORMAL
+	quint32 HotKey;//The hot key assigned for this shortcut
+	quint32 Reserved1;//Reserved - Always 0
+	quint32 Reserved2;//Reserved - Always 0
 };
 QString MicrosoftLnkReader::targetOrSame(const QString & path) {
-	const int HEADER_SIZE = 76;
-	const int FILE_ALLOCATION_INFO_HEADER_SIZE = 28;
-	char TempString[255];
-	int i, LinkFileSize;
-	char ExtractedFileName[255];
-	struct stat FileStatInfo;
-	struct TLinkHeaderInfo HeaderStructure;
-	size_t result;
-	long TempInt = 0;
+	TLinkHeaderInfo HeaderStructure;
 
 	char LinkFileContent[10240];
 	QByteArray fileContent;
@@ -64,18 +39,17 @@ QString MicrosoftLnkReader::targetOrSame(const QString & path) {
 		return path;
 	fileContent.append((char)0);
 
-	LinkFileSize = fileContent.size();
+	int LinkFileSize = fileContent.size();
 	for(int i = 0; i<fileContent.size() && i<sizeof(LinkFileContent); ++i) {
 		LinkFileContent[i] = fileContent.at(i);
 	}
-	HeaderStructure.Signature = LinkFileContent[0]*65536*256;
-	HeaderStructure.Signature += LinkFileContent[1]*65536;
-	HeaderStructure.Signature += LinkFileContent[2]*256+LinkFileContent[3];
+	HeaderStructure._signature = LinkFileContent[0]*65536*256;
+	HeaderStructure._signature += LinkFileContent[1]*65536;
+	HeaderStructure._signature += LinkFileContent[2]*256+LinkFileContent[3];
 	printf("Signature: %1\n", HeaderStructure.Signature);
 
-	for(i = 0; i<16; i++) {
+	for(int i = 0; i<16; i++) {
 		HeaderStructure.GUID[i] = LinkFileContent[4+i];
-		printf("GUID: %1\n", HeaderStructure.GUID[i]);
 	};
 
 	HeaderStructure.ShortcutFlags = LinkFileContent[23]*65536*256;
@@ -88,9 +62,9 @@ QString MicrosoftLnkReader::targetOrSame(const QString & path) {
 	HeaderStructure.TargetFileFlags += LinkFileContent[25]*256+LinkFileContent[24];
 	printf("Target File Flags: %1\n", HeaderStructure.TargetFileFlags);
 
-	for(i = 0; i<8; i++) { HeaderStructure.CreationTime[i] = LinkFileContent[28+i]; };
-	for(i = 0; i<8; i++) { HeaderStructure.LastAccessTime[i] = LinkFileContent[36+i]; };
-	for(i = 0; i<8; i++) { HeaderStructure.LastAccessTime[i] = LinkFileContent[44+i]; };
+	for(int i = 0; i<8; i++) { HeaderStructure.CreationTime[i] = LinkFileContent[28+i]; };
+	for(int i = 0; i<8; i++) { HeaderStructure.LastAccessTime[i] = LinkFileContent[36+i]; };
+	for(int i = 0; i<8; i++) { HeaderStructure.LastAccessTime[i] = LinkFileContent[44+i]; };
 
 	HeaderStructure.FileLength = LinkFileContent[55]*65536*256;
 	HeaderStructure.FileLength += LinkFileContent[54]*65536;
