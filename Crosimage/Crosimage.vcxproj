@@ -464,6 +464,7 @@
     <ClCompile Include="ThumbDelegate.cpp" />
     <ClCompile Include="ThumbDirPainter.cpp" />
     <ClCompile Include="ThumbModel.cpp" />
+    <ClCompile Include="ThumbVideoWorker.cpp" />
     <ClCompile Include="ThumbView.cpp" />
     <ClCompile Include="GeneratedFiles\qrc_crosimage.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -658,6 +659,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ThumbVideoWorker.h" />
     <CustomBuild Include="FileSystemThread.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing FileSystemThread.h...</Message>

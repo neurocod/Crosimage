@@ -338,6 +338,9 @@
     <ClCompile Include="Qqt\DialogButtonBox.cpp">
       <Filter>Qqt</Filter>
     </ClCompile>
+    <ClCompile Include="ThumbVideoWorker.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="crosimage.qrc">
@@ -554,6 +557,9 @@
     </ClInclude>
     <ClInclude Include="Qqt\DialogButtonBox.h">
       <Filter>Qqt</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbVideoWorker.h">
+      <Filter>Thumb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
