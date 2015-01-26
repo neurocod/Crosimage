@@ -344,6 +344,9 @@
     <ClCompile Include="MicrosoftLnkReader.cpp">
       <Filter>Thumb</Filter>
     </ClCompile>
+    <ClCompile Include="TxtLnkProcessor.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="crosimage.qrc">
@@ -565,6 +568,9 @@
       <Filter>Thumb</Filter>
     </ClInclude>
     <ClInclude Include="MicrosoftLnkReader.h">
+      <Filter>Thumb</Filter>
+    </ClInclude>
+    <ClInclude Include="TxtLnkProcessor.h">
       <Filter>Thumb</Filter>
     </ClInclude>
   </ItemGroup>

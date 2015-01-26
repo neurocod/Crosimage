@@ -7,7 +7,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
-quint8 MicrosoftLnkReader::CorrectGuid[16] = {0x01, 0x14, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46};
+quint8 MicrosoftLnkReader::CorrectGuid[16] = {1, 0x14, 2, 0, 0, 0, 0, 0, 0xC0, 0, 0, 0, 0, 0, 0, 0x46};
 QString MicrosoftLnkReader::targetOrSame(const QString & path) {
 	MicrosoftLnkReader reader;
 	if(!reader.loadAndParse(path).ok())
@@ -20,9 +20,10 @@ StringStatus MicrosoftLnkReader::loadAndParse(const QString & path) {
 		return ReadStatus(false, file.errorString());
 
 	QDataStream stream(&file);
-	stream >> _signature;
-	if(_signature!=CorrectSignature)
-		return ReadStatus(false, QString("Unknown link signature: %1, correct is %2").arg(_signature).arg(CorrectSignature));
+	stream.setByteOrder(QDataStream::LittleEndian);
+	stream >> _headerSize;
+	if(_headerSize!=CorrectHeaderSize)
+		return ReadStatus(false, QString("Unknown link signature: %1, correct is %2").arg(_headerSize).arg(CorrectHeaderSize));
 
 	for(int i = 0; i<16; i++) {
 		quint8 ch;
@@ -36,14 +37,17 @@ StringStatus MicrosoftLnkReader::loadAndParse(const QString & path) {
 	stream >> _targetFileFlags;
 	stream >> _creationTime;
 	stream >> _lastAccessTime;
-	stream >> _lastAccessTime;
+	stream >> _modificationTime;
 
 	stream >> _fileLength;
 	stream >> _iconNumber;
 	stream >> _showWindow;
 	stream >> _hotKey;
+	stream >> _reserved1;
+	stream >> _reserved2;
+	stream >> _reserved3;
 
-	QString sharedName= read0Terminated(stream, true);
+	QString sharedName = read0Terminated(stream, true);
 	_fileName = read0Terminated(stream, true);
 	return true;
 }

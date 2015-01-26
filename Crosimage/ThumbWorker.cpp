@@ -5,7 +5,7 @@
 #include "ThumbDirPainter.h"
 #include "ImgDbWorker.h"
 #include "ThumbVideoWorker.h"
-#include "MicrosoftLnkReader.h"
+#include "TxtLnkProcessor.h"
 
 ThumbWorker & ThumbWorker::instance() {
 	static ThumbWorker p;
@@ -116,9 +116,9 @@ QImage ThumbWorker::processNextFile(const QString & path, bool updateAnyway, boo
 }
 QImage ThumbWorker::thumb(const QString & path) {
 	QString pathLowercase = path.toLower();
-	if(pathLowercase.endsWith(".lnk")) {
-		QString path2 = MicrosoftLnkReader::targetOrSame(path);
-		if(!path2.endsWith(".lnk"))
+	if(pathLowercase.endsWith(TxtLnkProcessor::extensionWithDot)) {
+		QString path2 = TxtLnkProcessor::pathFromFileOrSame(path);
+		if(!path2.endsWith(TxtLnkProcessor::extensionWithDot))
 			return thumb(path2);
 	}
 	if(ThumbVideoWorker::isVideoFile(pathLowercase))

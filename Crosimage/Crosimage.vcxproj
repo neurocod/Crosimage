@@ -490,6 +490,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ThumbWorker.cpp" />
+    <ClCompile Include="TxtLnkProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="CMainWindow.h">
@@ -662,6 +663,7 @@
   <ItemGroup>
     <ClInclude Include="MicrosoftLnkReader.h" />
     <ClInclude Include="ThumbVideoWorker.h" />
+    <ClInclude Include="TxtLnkProcessor.h" />
     <CustomBuild Include="FileSystemThread.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing FileSystemThread.h...</Message>

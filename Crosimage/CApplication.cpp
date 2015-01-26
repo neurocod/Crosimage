@@ -6,12 +6,27 @@
 #include "ThumbWorker.h"
 #include "AltTabView.h"
 #include "ImgDbWorker.h"
+#include "TxtLnkProcessor.h"
 
 CApplication* CApplication::s_inst = 0;
 CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	s_inst = this;
 	QCoreApplication::setApplicationName("Crosimage");
 	QCoreApplication::setOrganizationName("neurocod");
+
+	QCommandLineParser parser;
+	parser.process(*this);
+	auto args = parser.positionalArguments();
+	if(!args.isEmpty()) {
+		QString str = args[0];
+		if(str.toLower().endsWith(TxtLnkProcessor::extensionWithDot)) {
+			TxtLnkProcessor::shellExecute(str);
+			QTimer::singleShot(1, this, SLOT(quit()));
+			return;
+		} else {
+			msgBox(tr("Unknown command line parameter: %1").arg(str));
+		}
+	}
 	ThumbWorker::instance();
 	ThumbCache::instance();
 	{
