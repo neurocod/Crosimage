@@ -112,7 +112,38 @@ QImage ThumbWorker::processNextFile(const QString & path, bool updateAnyway, boo
 	writeToDb(innerCall, info, ret);
 	return ret;
 }
+QImage ThumbWorker::thumbFromVideo(const QString & path) {
+	QStringList params;
+	static QString tempFile;
+	if(tempFile.isEmpty())
+		tempFile = QDir(QDir::tempPath()).absoluteFilePath(QUuid::createUuid().toString()+".jpg");
+	if(QFile::exists(tempFile)) {
+		QFile file(tempFile);
+		bool b = file.remove();
+		ASSERT(b);
+	}
+	QString program = "C:\\Program Files\\ffmpeg\\bin\\ffmpeg.exe";
+	params << "-ss" << "00:00:04" << "-i" << path << "-f" << "image2" << "-vframes" << "1" << tempFile;
+	int code = QProcess::execute(program, params);
+	if(QFile::exists(tempFile))
+		return thumb(tempFile);
+	return QImage();
+}
+bool ThumbWorker::isVideoFile(const QString & path) {
+	static QStringList videos;
+	if(videos.isEmpty())
+		videos << ".avi" << ".flv" << ".mkv" << ".avi" << ".wmv" << ".mp4" << ".mpg";
+	auto str = path.toLower();
+	for(auto ext: videos) {
+		if(str.endsWith(ext)) {
+			return true;
+		}
+	}
+	return false;
+}
 QImage ThumbWorker::thumb(const QString & path) {
+	if(isVideoFile(path))
+		return thumbFromVideo(path);
 	QImageReader reader(path);
 	QImage img;
 	QImage thumb;

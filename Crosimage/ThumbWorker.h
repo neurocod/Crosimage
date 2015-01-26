@@ -34,4 +34,6 @@ class ThumbWorker: public QThread {
 		void maybeUpdate(bool innerCall, const QString & path, const QImage & image);
 		void maybeUpdate(bool innerCall, const QString & path, const QList<QImage> & images);
 		void writeToDb(bool innerCall, const QFileInfo & info, const QImage & image);
+		QImage thumbFromVideo(const QString & path);
+		static bool isVideoFile(const QString & path);
 };
