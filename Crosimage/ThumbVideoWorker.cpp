@@ -6,10 +6,9 @@
 QStringList ThumbVideoWorker::s_extensions = {".avi", ".flv", ".mkv", ".avi", ".wmv", ".mp4", ".mpg"};
 ThumbVideoWorker::ThumbVideoWorker() {
 }
-bool ThumbVideoWorker::isVideoFile(const QString & path) {
-	auto str = path.toLower();
+bool ThumbVideoWorker::isVideoFile(const QString & pathLowercase) {
 	for(auto ext: s_extensions) {
-		if(str.endsWith(ext)) {
+		if(pathLowercase.endsWith(ext)) {
 			return true;
 		}
 	}
@@ -36,24 +35,24 @@ QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker*worker, const QString & path
 	return QImage();
 }
 QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker*worker, const QString & path) {
-	QImage ret;
 	int secs = 6;
-	int step = 3;
+	const int step = 3;
+	TopResult<qreal, QImage> ret;
 	for(int iter = 0; iter<4; ++iter) {
-		ret = thumbFromVideo(worker, path, secs);
-		if(ret.isNull() || isGoodThumb(ret))
+		QImage img = thumbFromVideo(worker, path, secs);
+		if(img.isNull())
 			break;
-		emit worker->maybeUpdate(false, path, ret);
+		qreal factor = colorMonopolization(img);
+		if(ret.addMinKey(factor, img)) {
+			emit worker->maybeUpdate(false, path, img);
+		}
+		if(factor<0.5)
+			break;
 		secs += step;
 	}
-	return ret;
+	return ret.value();
 }
-bool ThumbVideoWorker::isGoodThumb(const QImage & img) {
-	if(img.size().isEmpty())
-		return false;
-	return !hasMonopolisticColors(img);
-}
-bool ThumbVideoWorker::hasMonopolisticColors(const QImage & img) {
+qreal ThumbVideoWorker::colorMonopolization(const QImage & img) {
 	int cx = img.size().width();
 	int cy = img.size().height();
 	int pixels = cx*cy;
@@ -77,7 +76,7 @@ bool ThumbVideoWorker::hasMonopolisticColors(const QImage & img) {
 	}
 	qSort(colors, colors+sz);
 	int sum = colors[sz-1] + colors[sz-2] + colors[sz-3];
-	qreal has = sum;
-	has /= pixels;
-	return has>0.6;
+	qreal ret = sum;
+	ret /= pixels;
+	return ret;
 }

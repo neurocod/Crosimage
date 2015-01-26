@@ -405,6 +405,7 @@
     <ClCompile Include="ImageView.cpp" />
     <ClCompile Include="ImgDbWorker.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MicrosoftLnkReader.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -659,6 +660,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MicrosoftLnkReader.h" />
     <ClInclude Include="ThumbVideoWorker.h" />
     <CustomBuild Include="FileSystemThread.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

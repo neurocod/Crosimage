@@ -341,6 +341,9 @@
     <ClCompile Include="ThumbVideoWorker.cpp">
       <Filter>Thumb</Filter>
     </ClCompile>
+    <ClCompile Include="MicrosoftLnkReader.cpp">
+      <Filter>Thumb</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="crosimage.qrc">
@@ -559,6 +562,9 @@
       <Filter>Qqt</Filter>
     </ClInclude>
     <ClInclude Include="ThumbVideoWorker.h">
+      <Filter>Thumb</Filter>
+    </ClInclude>
+    <ClInclude Include="MicrosoftLnkReader.h">
       <Filter>Thumb</Filter>
     </ClInclude>
   </ItemGroup>

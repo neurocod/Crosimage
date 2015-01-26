@@ -40,8 +40,9 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 		sett.load("mainWindowsCount", mainWindowsCount);
 		mainWindowsCount = qBound<quint32>(1, mainWindowsCount, 20);
 		QList<QWidget*> li;
+		mainWindowsCount = 1;
 		for(int i=0; i<mainWindowsCount; ++i) {
-			li << New<CMainWindow>();
+			li << new CMainWindow();
 		}
 		CMainWindow::s_loadingComplete = true;
 		li = reversed(li);

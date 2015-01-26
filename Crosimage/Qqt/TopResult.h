@@ -17,33 +17,41 @@ class TopResult {
 		void setKey(const Key & key) { _key = key; }
 		Value value()const { return _value; }
 		void setValue(const Value & value) { _value = value; }
-		void addMaxKey(const Key & key, const Value & value) {
+		bool addMaxKey(const Key & key, const Value & value) {
 			if(!_isSet || key>_key) {
 				_isSet = true;
 				_key = key;
 				_value = value;
+				return true;
 			}
+			return false;
 		}
-		void addMinKey(const Key & key, const Value & value) {
+		bool addMinKey(const Key & key, const Value & value) {
 			if(!_isSet || key<_key) {
 				_isSet = true;
 				_key = key;
 				_value = value;
+				return true;
 			}
+			return false;
 		}
-		void addMaxValue(const Key & key, const Value & value) {
+		bool addMaxValue(const Key & key, const Value & value) {
 			if(!_isSet || value>_value) {
 				_isSet = true;
 				_key = key;
 				_value = value;
+				return true;
 			}
+			return false;
 		}
-		void addMinValue(const Key & key, const Value & value) {
+		bool addMinValue(const Key & key, const Value & value) {
 			if(!_isSet || value<_value) {
 				_isSet = true;
 				_key = key;
 				_value = value;
+				return true;
 			}
+			return false;
 		}
 		template<class T>
 		void addMaxKeyByMap(const T & map) {

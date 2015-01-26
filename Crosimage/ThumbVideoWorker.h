@@ -8,9 +8,8 @@ class ThumbVideoWorker {
 		virtual ~ThumbVideoWorker() {}
 
 		static QStringList s_extensions;
-		static bool isVideoFile(const QString & path);
+		static bool isVideoFile(const QString & pathLowercase);
 		static QImage thumbFromVideo(ThumbWorker*worker, const QString & path);
 		static QImage thumbFromVideo(ThumbWorker*worker, const QString & path, int secsOffset);
-		static bool isGoodThumb(const QImage & img);
-		static bool hasMonopolisticColors(const QImage & img);
+		static qreal colorMonopolization(const QImage & img);
 };
