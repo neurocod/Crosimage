@@ -9,7 +9,7 @@ class ThumbVideoWorker {
 
 		static QStringList s_extensions;
 		static bool isVideoFile(const QString & pathLowercase);
-		static QImage thumbFromVideo(ThumbWorker*worker, const QString & path);
-		static QImage thumbFromVideo(ThumbWorker*worker, const QString & path, int secsOffset);
+		static QImage thumbFromVideo(ThumbWorker&worker, const QString & path);
+		static QImage thumbFromVideo(ThumbWorker&worker, const QString & path, int secsOffset);
 		static qreal colorMonopolization(const QImage & img);
 };

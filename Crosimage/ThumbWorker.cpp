@@ -122,7 +122,7 @@ QImage ThumbWorker::thumb(const QString & path) {
 			return thumb(path2);
 	}
 	if(ThumbVideoWorker::isVideoFile(pathLowercase))
-		return ThumbVideoWorker::thumbFromVideo(this, path);
+		return ThumbVideoWorker::thumbFromVideo(*this, path);
 	QImageReader reader(path);
 	QImage img;
 	QImage thumb;

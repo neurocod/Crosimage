@@ -3,7 +3,7 @@
 #include "ThumbVideoWorker.h"
 #include "ThumbWorker.h"
 
-QStringList ThumbVideoWorker::s_extensions = {".avi", ".flv", ".mkv", ".avi", ".wmv", ".mp4", ".mpg"};
+QStringList ThumbVideoWorker::s_extensions = {".avi", ".flv", ".mkv", ".avi", ".wmv", ".mp4", ".mpg", ".mov"};
 ThumbVideoWorker::ThumbVideoWorker() {
 }
 bool ThumbVideoWorker::isVideoFile(const QString & pathLowercase) {
@@ -14,11 +14,13 @@ bool ThumbVideoWorker::isVideoFile(const QString & pathLowercase) {
 	}
 	return false;
 }
-QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker*worker, const QString & path, int secsOffset) {
+QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path, int secsOffset) {
 	QStringList params;
 	static QString tempFile;
-	if(tempFile.isEmpty())
-		tempFile = QDir(QDir::tempPath()).absoluteFilePath(QUuid::createUuid().toString()+".jpg");
+	if(tempFile.isEmpty()) {
+		//QUuid::createUuid().toString()+".jpg"
+		tempFile = QDir(QDir::tempPath()).absoluteFilePath("Crosimage_ffmpeg.jpg");
+	}
 	if(QFile::exists(tempFile)) {
 		QFile file(tempFile);
 		bool b = file.remove();
@@ -31,24 +33,27 @@ QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker*worker, const QString & path
 	params << "-ss" << strTime << "-i" << path << "-f" << "image2" << "-vframes" << "1" << tempFile;
 	int code = QProcess::execute(program, params);
 	if(QFile::exists(tempFile))
-		return worker->thumb(tempFile);
+		return worker.thumb(tempFile);
 	return QImage();
 }
-QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker*worker, const QString & path) {
-	int secs = 6;
+QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path) {
+	QList<int> secs = { 1, 5 };
 	const int step = 3;
-	TopResult<qreal, QImage> ret;
 	for(int iter = 0; iter<4; ++iter) {
-		QImage img = thumbFromVideo(worker, path, secs);
+		secs << secs.last() + step;
+	}
+
+	TopResult<qreal, QImage> ret;
+	for(int sec: secs) {
+		QImage img = thumbFromVideo(worker, path, sec);
 		if(img.isNull())
 			break;
 		qreal factor = colorMonopolization(img);
 		if(ret.addMinKey(factor, img)) {
-			emit worker->maybeUpdate(false, path, img);
+			emit worker.maybeUpdate(false, path, img);
 		}
 		if(factor<0.5)
 			break;
-		secs += step;
 	}
 	return ret.value();
 }
@@ -59,23 +64,44 @@ qreal ThumbVideoWorker::colorMonopolization(const QImage & img) {
 	if(pixels<=0)
 		return false;
 	const int sz = 512;//2**(3 rgb*3 bits per pixel)
+	QMap<QRgb, int> stat;
 	int colors[sz];
 	for(int & c: colors)
 		c = 0;
 	const int quantizationBits = 5;
+	auto adr = img.scanLine(0);
+	QImage img2 = img;
+	img2.save("d:\\v\\test.jpg");
+	ASSERT(img.format()==QImage::Format_RGB32);
 	for(int y = 0; y<cy; ++y) {
-		for(int x = 0; x<cx; ++x) {
-			QRgb rgb = img.pixel(x, y);
+		auto p = img.scanLine(y);
+		int x = 0;
+		for(auto end = p + cx; p<end; ++p) {
+			if(x==100 && y==90)
+				int t = 3;
+			const QRgb rgb = *p;
 			int r = qRed(rgb) >> quantizationBits;
 			int g = qGreen(rgb) >> quantizationBits;
 			int b = qBlue(rgb) >> quantizationBits;
-			rgb = r + (g<<3) + (b<<6);
-			ASSERT(rgb<sz && r<=8 && g<=8 && b<=8);
-			colors[rgb]++;
+			QRgb rgb2 = r + (g<<3) + (b<<6);
+			ASSERT(rgb2<sz && r<=8 && g<=8 && b<=8);
+			colors[rgb2]++;
+			QRgb rgbPosterized = qRgb(r<<quantizationBits, g<<quantizationBits, b<<quantizationBits);
+			stat[rgbPosterized] = colors[rgb2];
+			img2.setPixel(x, y, rgbPosterized);
+			++x;
 		}
 	}
+	img2.save("d:\\v\\test2.jpg");
 	qSort(colors, colors+sz);
-	int sum = colors[sz-1] + colors[sz-2] + colors[sz-3];
+	int sum = 0;
+	QString str;
+	for(int i = 0; i<3; ++i) {
+		int pixelCount = colors[sz-1-i];
+		QColor clr = stat.keys(pixelCount).first();
+		str += toString(clr) + '\n';
+		sum += pixelCount;
+	}
 	qreal ret = sum;
 	ret /= pixels;
 	return ret;
