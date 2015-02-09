@@ -28,6 +28,17 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 	{
 		HBoxLayout00 lay2(lay);
 
+		{
+			ToolButton label;
+			auto f = font();
+			f.setPixelSize(20);
+			f.setPointSize(20);
+			f.setPointSizeF(20);
+			label.font = f;
+			label.text = tr("wnd %1").arg(_nInst+1);
+			lay2 << label;
+			QTimer::singleShot(1000, label, SLOT(deleteLater()));
+		}
 		QSize szBtn(24, 24);
 
 		lay2 << _menu;
@@ -106,7 +117,6 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 	}
 	lay << _view;
 	setCentralWidget(w);
-
 	//createFileTreePanel();
 	showFullScreen();
 	updateSettings(false);
