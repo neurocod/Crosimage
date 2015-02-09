@@ -3,6 +3,10 @@
 #include "FileSystemThread.h"
 #include "ImgDbWorker.h"
 
+FileSystemThread& FileSystemThread::instance() {
+	static FileSystemThread p;
+	return p;
+}
 FileSystemThread::FileSystemThread() {
 	moveToThread(this);
 	start();
@@ -18,8 +22,11 @@ bool compareByNameAndNumber(const QString & s1, const QString & s2);
 void FileSystemThread::readDir(QDir dir) {
 	QElapsedTimer t;
 	t.start();
-	ASSERT(QThread::currentThread()!=qApp->thread());
-	QStringList entryList = dir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot|QDir::Hidden);
+	QString dirPath = dir.path();//for debug
+	ASSERT(QThread::currentThread()!=qApp->thread());//don't call directly from gui thread cause gui thread will slow down
+	QStringList entryList = dir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot
+		|QDir::Hidden|QDir::System//without this it hides broken shortcuts
+		);
 	//qDebug() << t.elapsed();
 	entryList.removeOne(ImgDbWorker::dbFileName);
 	entryList.removeOne("Thumbs.db");
@@ -27,7 +34,7 @@ void FileSystemThread::readDir(QDir dir) {
 		ASSERT(dir.sorting() & QDir::DirsFirst);
 		QStringList dirs;
 		QStringList other;
-		bool goDirs = true;//optimization to no to check isDir()
+		bool goDirs = true;//optimization to not to check isDir()
 		for(auto s: entryList) {
 			if(goDirs) {
 				if(QFileInfo(dir.absoluteFilePath(s)).isDir())

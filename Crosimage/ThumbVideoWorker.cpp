@@ -18,7 +18,6 @@ QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path
 	QStringList params;
 	static QString tempFile;
 	if(tempFile.isEmpty()) {
-		//QUuid::createUuid().toString()+".jpg"
 		tempFile = QDir(QDir::tempPath()).absoluteFilePath("Crosimage_ffmpeg.jpg");
 	}
 	if(QFile::exists(tempFile)) {
