@@ -4,7 +4,8 @@
 #include "ThumbCache.h"
 
 ThumbModel::ThumbModel(QObject*parent):
-	QAbstractTableModel(parent)
+	QAbstractTableModel(parent),
+	_dirThread(FileSystemThread::instance())
 {
 	_nColCount = 1;
 	_invalidateFiles = false;

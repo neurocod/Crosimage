@@ -40,7 +40,7 @@ class ThumbModel: public QAbstractTableModel {
 		int _nColCount;
 
 		QDir _dir;
-		FileSystemThread _dirThread;
+		FileSystemThread & _dirThread;
 		QList<Item*> _items;
 		mutable bool _invalidateFiles;
 		mutable QStringList _files;
