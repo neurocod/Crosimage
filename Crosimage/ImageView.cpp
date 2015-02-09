@@ -29,8 +29,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		timer->start(500);
 	}
 	{
-		Action a(tr("Close this window"));
-		a->setShortcuts(QList<QKeySequence>() << QKeySequence("Esc") << QKeySequence("Alt+Up"));
+		Action a(tr("Close this window"), QList<QKeySequence>() << QKeySequence("Esc") << QKeySequence("Alt+Up"));
 		a.connectClicks(this, SLOT(close()));
 		addAction(a);
 	}
@@ -112,7 +111,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a(tr("View externally"), QKeySequence("Alt+1"));
+		Action a(tr("View externally"), QList<QKeySequence>() << QKeySequence("F3") << QKeySequence("Alt+1"));
 		a.connectClicks(this, SLOT(viewExternally()));
 		addAction(a);
 	}
