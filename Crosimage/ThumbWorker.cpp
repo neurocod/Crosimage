@@ -71,7 +71,7 @@ QImage ThumbWorker::processNextFile(const QString & path, bool updateAnyway, boo
 	maybeUpdate(innerCall, path, ThumbDirPainter::dirStub());
 	QDir dir(path);
 	QList<QImage> images;
-	QStringList subDirs;
+	QStringList subDirs, nullImages;
 	const int targImagesCount = 6;
 	for(QDirIterator it(path); images.size()<targImagesCount && it.hasNext(); ) {
 		if(_bNeedExit)
@@ -82,33 +82,47 @@ QImage ThumbWorker::processNextFile(const QString & path, bool updateAnyway, boo
 		_nFilesRead++;
 		auto img = thumb(sub);
 		if(img.isNull()) {
-			if(subDirs.count()<targImagesCount && it.fileInfo().isDir())
+			if(it.fileInfo().isDir() && subDirs.count()<targImagesCount)
 				subDirs << sub;
+			if(it.fileInfo().isFile() && nullImages.count()<targImagesCount)
+				nullImages << sub;
 		} else {
 			images << img;
-			maybeUpdate(innerCall, path, images);//чтобы видеть промежуточные результаты и почему так долго считает
+			maybeUpdate(innerCall, path, images);//to see intermediate results and why is it takes so long
 		}
 	}
-	int nDirs = targImagesCount - images.count();
-	nDirs = qMin(nDirs, subDirs.count());
-	nDirs = qMin(nDirs, 4);//c учетом идеальных пропорций, больше и не будет показано на экране
-	if(!innerCall && nDirs>0) {
-		auto images2 = images;
-		for(int i=0; i<nDirs; ++i) {
-			images2 << ThumbDirPainter::subDirThumb();
+	{	//subDirs
+		int nDirs = targImagesCount - images.count();
+		nDirs = qMin(nDirs, subDirs.count());
+		nDirs = qMin(nDirs, 4);//c учетом идеальных пропорций, больше и не будет показано на экране
+		if(!innerCall && nDirs>0) {//show subdirs loading
+			auto images2 = images;
+			for(int i = 0; i<nDirs; ++i) {
+				images2 << ThumbDirPainter::subDirThumb();
+			}
+			maybeUpdate(innerCall, path, images2);
 		}
-		maybeUpdate(innerCall, path, images2);
-	}
-	for(int i=0; i<nDirs; ++i) {
-		if(_bNeedExit)
-			return QImage();
-		if(innerCall) {
-			images << ThumbDirPainter::subDirThumb();
-		} else {
-			images << processNextFile(subDirs[i], updateAnyway, true);
-			maybeUpdate(innerCall, path, images);
+		for(int i = 0; i<nDirs; ++i) {
+			if(_bNeedExit)
+				return QImage();
+			if(innerCall) {
+				images << ThumbDirPainter::subDirThumb();
+			} else {
+				images << processNextFile(subDirs[i], updateAnyway, true);
+				maybeUpdate(innerCall, path, images);
+			}
 		}
 	}
+	//TODO: ask QFileIconProvider in gui thread
+	//{	//nullImages
+	//	int count = targImagesCount - images.count();
+	//	count = qMin(count, nullImages.count());
+	//	for(int i = 0; i<count; ++i) {
+	//		int x = ThumbModel::s_nThumbW/2;
+	//		int y = ThumbModel::s_nThumbH/2;
+	//		images << _iconProvider.icon(nullImages[i]).pixmap(x, y).toImage();
+	//	}
+	//}
 	ret = ThumbDirPainter::compose(images);
 	maybeUpdate(innerCall, path, ret);
 	writeToDb(innerCall, info, ret);

@@ -7,6 +7,8 @@
 #include "AltTabView.h"
 #include "ImgDbWorker.h"
 #include "TxtLnkProcessor.h"
+#include "ThumbVideoWorker.h"
+#include "ThumbWorker.h"
 
 CApplication* CApplication::s_inst = 0;
 CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
@@ -14,6 +16,8 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	QCoreApplication::setApplicationName("Crosimage");
 	QCoreApplication::setOrganizationName("neurocod");
 
+	//ThumbVideoWorker::thumbFromVideo(ThumbWorker::instance(), "C:\\v\\TSN_1+1.(2014_08)\\Tsn 1+1 (01.08.2014) IPTVRip.avi");
+	//return;
 	QCommandLineParser parser;
 	parser.process(*this);
 	auto args = parser.positionalArguments();
@@ -55,7 +59,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 		sett.load("mainWindowsCount", mainWindowsCount);
 		mainWindowsCount = qBound<quint32>(1, mainWindowsCount, 20);
 		QList<QWidget*> li;
-		mainWindowsCount = 1;
+		//mainWindowsCount = 1;//to ease debug
 		for(int i=0; i<mainWindowsCount; ++i) {
 			li << new CMainWindow();
 		}

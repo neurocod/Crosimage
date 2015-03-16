@@ -4,7 +4,7 @@
 
 class ImgDbWorker: public SqliteDb {
 	public:
-		virtual ~ImgDbWorker() {}
+		virtual ~ImgDbWorker();
 		static ReadStatus thumbnail(const QFileInfo & file, OUT QImage & img);
 		static WriteStatus setThumbnail(const QFileInfo & file, const QImage & img);
 		static const QString dbFileName;
@@ -21,5 +21,18 @@ class ImgDbWorker: public SqliteDb {
 		bool maybeInstallDb();
 		ReadStatus thumbnail_(const QFileInfo & file, OUT QImage & img);
 		WriteStatus setThumbnail_(const QFileInfo & file, const QImage & img);
-		ReadStatus readAll();
+		ReadStatus readAllToCache();
+		struct Item {
+			Item(const QString & name): _name(name) { }
+			const QString _name;
+			QByteArray _thumb;
+			QDateTime _modified;
+			int _rating = 0;
+			QByteArray _showSettings;
+			QImage _iThumb;
+		};
+		static bool compareByRating(const Item * i1, const Item * i2);
+		QList<Item*> _items;
+		QMap<QString, Item*> _byName;
+		Item* getOrCreate(const QString & name);
 };

@@ -33,85 +33,113 @@ ImgDbWorker::ImgDbWorker(const QDir & dir):
 	_dbPath = dir.absoluteFilePath(dbFileName);
 	QElapsedTimer timer;
     timer.start();
-	auto ret = readAll();
+	auto ret = readAllToCache();
 	//qDebug() << "ImgDbWorker readAll took" << timer.elapsed() << "milliseconds";
+}
+ImgDbWorker::~ImgDbWorker() {
+	qDeleteAll(_items);
 }
 ReadStatus ImgDbWorker::thumbnail(const QFileInfo & file, OUT QImage & img) {
 	return instance(file)->thumbnail_(file, img);
 }
-ReadStatus ImgDbWorker::readAll() {
+ReadStatus ImgDbWorker::readAllToCache() {
 	if(!initSqlOnce().ok())
 		return false;
-	//auto & q = _qThumbGetAll;
-	//if(!execOrTrace(q))
-	//	return false;
-	//while(q.next()) {
-	//	Item item;
-	//	int col = 0;
-	//	item.name = q.value(col++).value<QString>();
-	//	{
-	//		auto arrImg = q.value(col++).value<QByteArray>();
-	//		if(!arrImg.isEmpty()) {
-	//			QBuffer stream(&arrImg);
-	//			QImageReader reader(&stream);
-	//			if(!reader.read(&item.thumbnail)) {
-	//				QString str = reader.errorString();
-	//			}
-	//		}
-	//	}
-	//	item.lastModified = dateTimeFromVariant(q.value(col++));
-	//	item.rating = q.value(col++).toLongLong();
-	//	item.showSettings = q.value(col++).toByteArray();
-	//	_items << item;
-	//}
-	return true;
-}
-ReadStatus ImgDbWorker::thumbnail_(const QFileInfo & file, OUT QImage & img) {
-	auto ret = initSqlOnce();
-	if(!ret.ok())
-		return ret;
-	auto & q = _qThumbGet;
-	q.bindValue(":name", file.fileName());
+	auto & q = _qThumbGetAll;
 	if(!execOrTrace(q))
 		return false;
-	if(!q.next())
-		return false;
-	int col = 0;
-	{
-		auto arrImg = q.value(col++).value<QByteArray>();
-		if(arrImg.isEmpty())
-			return true;
-		QBuffer stream(&arrImg);
-		QImageReader reader(&stream);
-		if(!reader.read(&img))
-			return ReadStatus(false, reader.errorString());
+	while(q.next()) {
+		int col = 0;
+		QString name = q.value(col++).value<QString>();
+		auto item = getOrCreate(name);
+		item->_thumb = q.value(col++).value<QByteArray>();
+		item->_modified = dateTimeFromVariant(q.value(col++));
+		item->_rating = q.value(col++).value<int>();
+		item->_showSettings = q.value(col++).value<QByteArray>();
 	}
-	QDateTime modified = dateTimeFromVariant(q.value(col++));
-	if(modified.isNull())
+	qStableSort(_items.begin(), _items.end(), &ImgDbWorker::compareByRating);
+	return true;
+}
+bool ImgDbWorker::compareByRating(const Item * i1, const Item * i2) {
+	return i1->_rating > i1->_rating;
+}
+ReadStatus ImgDbWorker::thumbnail_(const QFileInfo & file, OUT QImage & img) {
+	QString name = file.fileName();
+	auto it = _byName.find(name);
+	if(it==_byName.end())
 		return false;
-	if(file.isDir())
-		return true;//dirs change too often, no check
-	bool ok = modified==file.lastModified();
-	return ok;
+	Item* item = *it;
+	if(item->_iThumb.isNull()) {
+		if(item->_thumb.isNull())
+			return false;
+		QBuffer stream(&item->_thumb);
+		QImageReader reader(&stream);
+		if(!reader.read(&item->_iThumb)) {
+			QString str = reader.errorString();
+			return false;
+		}
+	}
+	img = item->_iThumb;
+	return true;
+	//auto ret = initSqlOnce();
+	//if(!ret.ok())
+	//	return ret;
+	//auto & q = _qThumbGet;
+	//q.bindValue(":name", name);
+	//if(!execOrTrace(q))
+	//	return false;
+	//if(!q.next())
+	//	return false;
+	//int col = 0;
+	//{
+	//	auto arrImg = q.value(col++).value<QByteArray>();
+	//	if(arrImg.isEmpty())
+	//		return true;
+	//	QBuffer stream(&arrImg);
+	//	QImageReader reader(&stream);
+	//	if(!reader.read(&img))
+	//		return ReadStatus(false, reader.errorString());
+	//}
+	//QDateTime modified = dateTimeFromVariant(q.value(col++));
+	//if(modified.isNull())
+	//	return false;
+	//if(file.isDir())
+	//	return true;//dirs change too often, no check
+	//bool ok = modified==file.lastModified();
+	//return ok;
+}
+ImgDbWorker::Item* ImgDbWorker::getOrCreate(const QString & name) {
+	auto it = _byName.find(name);
+	if(it!=_byName.end())
+		return *it;
+	auto item = new Item(name);
+	_byName.insert(name, item);
+	_items << item;
+	return item;
 }
 ReadStatus ImgDbWorker::setThumbnail(const QFileInfo & file, const QImage & img) {
 	return instance(file)->setThumbnail_(file, img);
 }
 WriteStatus ImgDbWorker::setThumbnail_(const QFileInfo & file, const QImage & img) {
-	auto ret = initSqlOnce();
-	if(!ret.ok())
-		return ret;
-	_qThumbSet.bindValue(":name", file.fileName());
+	QString name = file.fileName();
+	auto item = getOrCreate(name);
+	item->_modified = file.lastModified();
+	item->_iThumb = img;
 	{
-		QBuffer buff;
-		if(!img.isNull()) { //otherwise - warning
+		QBuffer buff(&item->_thumb);
+		if(img.isNull()) {//otherwise - warning in QImageWriter
+			item->_thumb.clear();
+		} else {
 			QImageWriter writer(&buff, "png");
 			writer.write(img);
 		}
-		_qThumbSet.bindValue(":thumb", buff.buffer());
 	}
-	auto modified = file.lastModified();
-	_qThumbSet.bindValue(":modified", toVariantByteArray(modified));
+	auto ret = initSqlOnce();
+	if(!ret.ok())
+		return ret;
+	_qThumbSet.bindValue(":name", name);
+	_qThumbSet.bindValue(":thumb", item->_thumb);
+	_qThumbSet.bindValue(":modified", toVariantByteArray(item->_modified));
 	return execOrTrace(_qThumbSet);
 }
 ReadStatus ImgDbWorker::connectToDbOnce() {

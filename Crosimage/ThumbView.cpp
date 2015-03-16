@@ -27,8 +27,8 @@ ThumbView::ThumbView(ThumbModel*m) {
 	connect(this, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(onDoubleClicked(const QModelIndex &)) );
 	connect(_model, SIGNAL(modelReset()), SLOT(onModelReset()) );
 	{
-		Action a(tr("Show fullscreen"));
-		a->setShortcuts(QList<QKeySequence>() << QKeySequence("Enter") << QKeySequence("Return"));
+		Action a(tr("Show fullscreen"),
+			QList<QKeySequence>() << QKeySequence("F3") << QKeySequence("Enter") << QKeySequence("Return"));
 		a.connectClicks(this, SLOT(onDoubleClicked()));
 		addAction(a);
 	}
@@ -45,6 +45,11 @@ ThumbView::ThumbView(ThumbModel*m) {
 	{
 		Action a(tr("Rebuild thumbnail"));
 		a.connectClicks(this, SLOT(rebuildThumbnail()));
+		addAction(a);
+	}
+	{
+		Action a(tr("Delete file"), QKeySequence("Shift+Del"));
+		a.connectClicks(this, SLOT(deleteFile()));
 		addAction(a);
 	}
 	setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -134,4 +139,26 @@ void ThumbView::resizeEvent(QResizeEvent *event) {
 }
 int ThumbView::sizeHintForRow(int row)const {
 	return _model->rowHeight(row);
+}
+void ThumbView::deleteFile() {
+	QList<ThumbModel::Item*> items;
+	for(auto index: selectedIndexes())
+		if(auto item = _model->itemBy(index))
+			items << item;
+	if(items.isEmpty())
+		return;
+	QString str;
+	if(items.size()==1) {
+		str = tr("Do you realy want to delete the selected file %1?").arg(items[0]->fileName());
+	} else {
+		str = tr("Do you realy want to delete the %1 selected files?\n\n").arg(items.count());
+		for(int i = 0; i<items.count(); ++i) {
+			if(i>=10) {
+				str += tr("...\nAnd %1 more").arg(items.count()-i);
+				break;
+			}
+			str += items[i]->fileName() + '\n';
+		}
+	}
+	//if(QMessageBox::Yes!=QMessageBox::question(this, tr("Delete file"), str, StandardButtons buttons = StandardButtons(Yes | No), StandardButton defaultButton = NoButton)[static]
 }
