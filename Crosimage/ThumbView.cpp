@@ -1,7 +1,6 @@
 //ThumbView.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "ThumbView.h"
-#include "ThumbModel.h"
 #include "ThumbDelegate.h"
 #include "CMainWindow.h"
 #include "CApplication.h"
@@ -45,6 +44,16 @@ ThumbView::ThumbView(ThumbModel*m) {
 	{
 		Action a(tr("Rebuild thumbnail"));
 		a.connectClicks(this, SLOT(rebuildThumbnail()));
+		addAction(a);
+	}
+	{
+		Action a(tr("Copy path"), QKeySequence("Ctrl+C"));
+		a.connectClicks(this, SLOT(copyPath()));
+		addAction(a);
+	}
+	{
+		Action a(tr("New dir"), QList<QKeySequence>() << QKeySequence("F7") << QKeySequence("Ctrl+Shift+N"));
+		a.connectClicks(this, SLOT(newDir()));
 		addAction(a);
 	}
 	{
@@ -141,10 +150,7 @@ int ThumbView::sizeHintForRow(int row)const {
 	return _model->rowHeight(row);
 }
 void ThumbView::deleteFile() {
-	QList<ThumbModel::Item*> items;
-	for(auto index: selectedIndexes())
-		if(auto item = _model->itemBy(index))
-			items << item;
+	QList<ThumbModel::Item*> items = selectedItems();
 	if(items.isEmpty())
 		return;
 	QString str;
@@ -161,4 +167,31 @@ void ThumbView::deleteFile() {
 		}
 	}
 	//if(QMessageBox::Yes!=QMessageBox::question(this, tr("Delete file"), str, StandardButtons buttons = StandardButtons(Yes | No), StandardButton defaultButton = NoButton)[static]
+}
+QList<ThumbModel::Item*> ThumbView::selectedItems()const {
+	QList<ThumbModel::Item*> items;
+	for(auto index: selectedIndexes())
+		if(auto item = _model->itemBy(index))
+			items << item;
+	return items;
+}
+void ThumbView::copyPath() {
+	QList<ThumbModel::Item*> items = selectedItems();
+	if(items.isEmpty())
+		return;
+	QString str;
+	for(auto i: items) {
+		if(!str.isEmpty())
+			str += '\n';
+		str += i->absoluteFilePath();
+	}
+	qApp->clipboard()->setText(str);
+}
+void ThumbView::newDir() {
+	QString name= QInputDialog::getText(this, tr("New dir"), tr("New dir name:"));
+	if(name.isEmpty())
+		return;
+	bool b = _model->dir().mkdir(name);
+	if(b)
+		_model->refresh();
 }

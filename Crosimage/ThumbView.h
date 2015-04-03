@@ -1,6 +1,6 @@
 //ThumbView.h by Kostya Kozachuck as neurocod
 #pragma once
-class ThumbModel;
+#include "ThumbModel.h"
 
 class ThumbView: public QTableView {
 	Q_OBJECT
@@ -18,10 +18,13 @@ class ThumbView: public QTableView {
 		void onModelReset();
 		void rebuildThumbnail();
 		void deleteFile();
+		void copyPath();
+		void newDir();
 	protected:
 		ThumbModel* _model;
 		QString _fileToSelect;
 		QString selectedItemFilePath();
+		QList<ThumbModel::Item*> selectedItems()const;
 
 		virtual void resizeEvent(QResizeEvent *event)override;
 		virtual int sizeHintForRow(int row)const override;
