@@ -57,7 +57,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
-		Action a(tr("Next image"), QKeySequence("PgDown"));
+		Action a(tr("Next image"), QList<QKeySequence>() << QKeySequence("PgDown") << QKeySequence("Space"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				this->navigate(1);
 			});
