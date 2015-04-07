@@ -29,6 +29,7 @@ void FileSystemThread::readDir(QDir dir) {
 		);
 	//qDebug() << t.elapsed();
 	entryList.removeOne(ImgDbWorker::dbFileName);
+	entryList.removeOne(ImgDbWorker::dbFileName2);
 	entryList.removeOne("Thumbs.db");
 	if((dir.sorting() & QDir::SortByMask)==QDir::Name) {
 		ASSERT(dir.sorting() & QDir::DirsFirst);

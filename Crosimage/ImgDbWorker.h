@@ -8,6 +8,7 @@ class ImgDbWorker: public SqliteDb {
 		static ReadStatus thumbnail(const QFileInfo & file, OUT QImage & img);
 		static WriteStatus setThumbnail(const QFileInfo & file, const QImage & img);
 		static const QString dbFileName;
+		static const QString dbFileName2;
 	protected:
 		static ImgDbWorker* instance(const QDir & dir);
 		static ImgDbWorker* instance(const QFileInfo & file);

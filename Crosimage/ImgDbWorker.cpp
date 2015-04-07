@@ -3,6 +3,7 @@
 #include "ImgDbWorker.h"
 
 const QString ImgDbWorker::dbFileName = "thumbnails.sqlite";
+const QString ImgDbWorker::dbFileName2 = dbFileName + "-journal";
 
 ImgDbWorker* ImgDbWorker::instance(const QDir & dir) {
 	QString str = dir.absolutePath();
