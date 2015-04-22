@@ -3,10 +3,11 @@
 #include "ThumbVideoWorker.h"
 #include "ThumbWorker.h"
 
-QStringList ThumbVideoWorker::s_extensions = {".avi", ".flv", ".mkv", ".avi", ".wmv", ".mp4", ".mpg", ".mov"};
-ThumbVideoWorker::ThumbVideoWorker() {
-}
+const QStringList ThumbVideoWorker::s_extensions = {".avi", ".flv", ".mkv", ".wmv", ".mp4", ".mpg", ".mov", ".vob"};
 bool ThumbVideoWorker::isVideoFile(const QString & pathLowercase) {
+#ifdef _DEBUG
+	ASSERT(0==QStringList(s_extensions).removeDuplicates());
+#endif
 	for(auto ext: s_extensions) {
 		if(pathLowercase.endsWith(ext)) {
 			return true;
@@ -38,9 +39,10 @@ QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path
 }
 QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path) {
 	QList<int> secs = { 1, 5 };
-	const int step = 3;
-	for(int iter = 0; iter<4; ++iter) {
+	int step = 3;
+	for(int iter = 0; iter<6; ++iter) {
 		secs << secs.last() + step;
+		step++;
 	}
 
 	TopResult<qreal, QImage> ret;
