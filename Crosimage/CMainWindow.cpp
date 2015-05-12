@@ -321,7 +321,7 @@ void CMainWindow::onFocus() {
 	if(!s_loadingComplete)
 		return;
 	s_inst.removeOne(this);
-	s_inst.prepend(this);	
+	s_inst.prepend(this);
 }
 void CMainWindow::beforeQuit() {
 	for(int i=0; i<s_inst.count(); ++i) {

@@ -4,23 +4,7 @@
 #include "ThumbWorker.h"
 
 bool ThumbVideoWorker::isVideoFile(const QString & pathLowercase) {
-	struct Extensions: public QStringList {
-		void add(const QString & str) {
-			ASSERT(!contains(str));
-			append(str);
-		}
-		Extensions() {
-			add(".avi");
-			add(".flv");
-			add(".mkv");
-			add(".wmv");
-			add(".mp4");
-			add(".mpg");
-			add(".mov");
-			add(".vob");
-		}
-	};
-	static const Extensions list;
+	static const QStringList list = {".avi", ".flv", ".mkv", ".wmv", ".mp4", ".mpg", ".mov", ".vob" };
 	for(const QString & ext: list) {
 		if(pathLowercase.endsWith(ext)) {
 			return true;
