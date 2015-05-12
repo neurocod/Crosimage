@@ -13,10 +13,13 @@ class ImageView: public QWidget {
 		void onTimer();
 		void editExternally();
 		void viewExternally();
+		void openLinkedFile();
+		void copyPath();
 	protected:
 		virtual void paintEvent(QPaintEvent * event)override;
 		virtual void wheelEvent(QWheelEvent * event)override;
 		virtual void mouseMoveEvent(QMouseEvent *event)override;
+		virtual void contextMenuEvent(QContextMenuEvent * event)override;
 
 		QStringList _files;
 		QPointer<ThumbModel> _parent;
@@ -31,8 +34,12 @@ class ImageView: public QWidget {
 		bool _bShowOther;
 		QList<Image> _images;//center, left, tight
 		int _indexInParent;
+		QAction* _actOpenLinkedFile =0;
 
 		void navigate(int step=0);
 		void show(const QStringList & files);
 		QTime _timeMouseMoved;
+
+		QString centerFile()const;
+		static QString findLinkedFile(QString str);
 };

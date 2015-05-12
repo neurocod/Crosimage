@@ -5,6 +5,8 @@
 #include "ThumbView.h"
 #include "ThumbCache.h"
 #include "CApplication.h"
+#include "CMainWindow.h"
+#include "TxtLnkProcessor.h"
 
 ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(parent) {
 	_parentView = view;
@@ -20,13 +22,24 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 	if(-1==_indexInParent)
 		_indexInParent = 0;
 	navigate();
-	setContextMenuPolicy(Qt::ActionsContextMenu);
+	//setContextMenuPolicy(Qt::ActionsContextMenu);
 	{
 		setMouseTracking(true);
 		_timeMouseMoved = QTime::currentTime();
 		New<QTimer> timer(this);
 		connect(timer, SIGNAL(timeout()), SLOT(onTimer()) );
 		timer->start(500);
+	}
+	{
+		Action a(tr("Copy path"), QKeySequence("Ctrl+C"));
+		a.connectClicks(this, SLOT(copyPath()));
+		addAction(a);
+	}
+	{
+		Action a(tr("Open linked file"));
+		a.connectClicks(this, SLOT(openLinkedFile()));
+		_actOpenLinkedFile = a;
+		addAction(a);
 	}
 	{
 		Action a(tr("Close this window"), QList<QKeySequence>() << QKeySequence("Esc") << QKeySequence("Alt+Up"));
@@ -232,4 +245,29 @@ void ImageView::viewExternally() {
 void ImageView::editExternally() {
 	if(!_images.isEmpty())
 		CApplication::editExternally(_images[0].file);
+}
+void ImageView::contextMenuEvent(QContextMenuEvent * event) {
+	QMenu m;
+	auto li = actions();
+	if(findLinkedFile(centerFile()).isEmpty())
+		li.removeOne(_actOpenLinkedFile);
+	m.addActions(li);
+	m.exec(event->pos());
+}
+void ImageView::openLinkedFile() {
+	QString str = findLinkedFile(centerFile());
+	if(str.isEmpty())
+		return;
+	QDesktopServices::openUrl(QUrl::fromLocalFile(str));
+}
+QString ImageView::findLinkedFile(QString str) {
+	return TxtLnkProcessor::existingLinkedFileFromParentDir(str);
+}
+QString ImageView::centerFile()const {
+	if(_images.isEmpty())
+		return QString();
+	return _images[0].file;
+}
+void ImageView::copyPath() {
+	qApp->clipboard()->setText(centerFile());
 }
