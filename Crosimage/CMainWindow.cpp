@@ -13,7 +13,16 @@ bool CMainWindow::s_loadingComplete = false;
 class CComboBox: public QComboBox {
 	public:
 		virtual void enterEvent(QEvent * event)override {
+			if(hasFocus())
+				return;
 			setFocus(Qt::MouseFocusReason);
+			auto l = lineEdit();
+			if(!l || l->hasSelectedText())
+				return;
+			int pos = l->text().lastIndexOf('\\');
+			if(-1==pos)
+				return;
+			l->setCursorPosition(pos+1);
 		}
 };
 CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(parent, flags) {
