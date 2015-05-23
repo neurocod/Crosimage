@@ -42,6 +42,11 @@ ThumbView::ThumbView(ThumbModel*m) {
 		addAction(a);
 	}
 	{
+		Action a(tr("Open in explorer"), QKeySequence("Alt+3"), QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-open-32.png"));
+		a.connectClicks(this, SLOT(openInExplorer()));
+		addAction(a);
+	}
+	{
 		Action a(tr("Rebuild thumbnail"));
 		a.connectClicks(this, SLOT(rebuildThumbnail()));
 		addAction(a);
@@ -194,4 +199,12 @@ void ThumbView::newDir() {
 	bool b = _model->dir().mkdir(name);
 	if(b)
 		_model->refresh();
+}
+void ThumbView::openInExplorer() {
+	QString file = selectedItemFilePath();
+	if(file.isEmpty()) {
+		FileFacility::showDirWithFile(_model->dir().absolutePath());
+	} else {
+		FileFacility::showDirWithFile(file);
+	}
 }

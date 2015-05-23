@@ -24,7 +24,6 @@ class CMainWindow: public QMainWindow {
 		void goDownSibling();
 		void goBack();
 		void goFwd();
-		void openInExplorer();
 		void sortingUpdated();
 	protected:
 		virtual void focusInEvent(QFocusEvent * event)override;

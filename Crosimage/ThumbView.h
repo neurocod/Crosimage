@@ -15,6 +15,7 @@ class ThumbView: public QTableView {
 		void onDoubleClicked();
 		void editExternally();
 		void viewExternally();
+		void openInExplorer();
 		void onModelReset();
 		void rebuildThumbnail();
 		void deleteFile();
@@ -23,8 +24,8 @@ class ThumbView: public QTableView {
 	protected:
 		ThumbModel* _model;
 		QString _fileToSelect;
-		QString selectedItemFilePath();
 		QList<ThumbModel::Item*> selectedItems()const;
+		QString selectedItemFilePath();
 
 		virtual void resizeEvent(QResizeEvent *event)override;
 		virtual int sizeHintForRow(int row)const override;

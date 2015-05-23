@@ -91,9 +91,8 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 		}
 		{
 			ToolButton b("", tr("Show in Explorer"), QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-open-32.png"));
-			b.addShortcutToTooltip();
 			b.iconSize = szBtn;
-			b.connectClicks(this, SLOT(openInExplorer()));
+			b.connectClicks(_view, SLOT(openInExplorer()));
 			lay2 << b;
 		}
 		_boxSortBy.toolTip = tr("Sort by ...");
@@ -297,16 +296,6 @@ void CMainWindow::goSibling(bool next) {
 	index = qBound(0, index, siblings.count()-1);
 	QString strNew = parentDir.absoluteFilePath(siblings[index]);
 	go(strNew);
-}
-void CMainWindow::openInExplorer() {
-	QString file;
-	auto index = _view->selectionModel()->currentIndex();
-	if(index.isValid()) {
-		file = index.data().toString();
-		FileFacility::showDirWithFile(file);
-	} else {
-		FileFacility::showDirWithFile(_model->dir().absolutePath());
-	}
 }
 bool CMainWindow::needSetTextToLineEdit(QString str)const {
 	if(!_editPath->hasFocus())
