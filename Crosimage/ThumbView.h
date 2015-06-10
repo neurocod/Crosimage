@@ -21,6 +21,7 @@ class ThumbView: public QTableView {
 		void deleteFile();
 		void copyPath();
 		void newDir();
+		void moveFiles();
 	protected:
 		ThumbModel* _model;
 		QString _fileToSelect;

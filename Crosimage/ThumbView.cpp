@@ -66,6 +66,11 @@ ThumbView::ThumbView(ThumbModel*m) {
 		a.connectClicks(this, SLOT(deleteFile()));
 		addAction(a);
 	}
+	{
+		Action a(tr("Move files..."), QKeySequence("F6"));
+		a.connectClicks(this, SLOT(moveFiles()));
+		addAction(a);
+	}
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 void ThumbView::onDoubleClicked() {
@@ -207,4 +212,29 @@ void ThumbView::openInExplorer() {
 	} else {
 		FileFacility::showDirWithFile(file);
 	}
+}
+void ThumbView::moveFiles() {
+	auto selected = selectionModel()->selectedIndexes();
+	if(selected.isEmpty())
+		return;
+	static QMap<QString, QString> dirsToMove;
+	QString curDir = _model->dir().path();
+	QString & dirToMove = dirsToMove[curDir];
+	if(dirToMove.isEmpty()) {
+		dirToMove = QFileDialog::getExistingDirectory(this, tr("Dir to move files:"), curDir);
+	}
+	if(dirToMove.isEmpty())
+		return;
+	QDir dir2(dirToMove);
+	for(auto index: selected) {
+		const QFileInfo & file = _model->itemBy(index)->fileInfo();
+		QString from = file.absoluteFilePath();
+		QString to = dir2.absoluteFilePath(file.fileName());
+		bool b = QDir().rename(from, to);
+		if(!b) {
+			msgBox(tr("error moving %1 -> %2").arg(from, to));
+			break;
+		}
+	}
+	_model->refresh();
 }
