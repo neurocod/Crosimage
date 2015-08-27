@@ -133,6 +133,11 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		a.connectClicks(this, SLOT(editExternally()));
 		addAction(a);
 	}
+	{
+		Action a(tr("Open in explorer"), QKeySequence("Alt+3"), QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-open-32.png"));
+		a.connectClicks(this, SLOT(openInExplorer()));
+		addAction(a);
+	}
 	addActions(CApplication::s_inst->globalActions());
 }
 ImageView::~ImageView() {
@@ -245,6 +250,10 @@ void ImageView::viewExternally() {
 void ImageView::editExternally() {
 	if(!_images.isEmpty())
 		CApplication::editExternally(_images[0].file);
+}
+void ImageView::openInExplorer() {
+	if(!_images.isEmpty())
+		FileFacility::showDirWithFile(_images[0].file);
 }
 void ImageView::contextMenuEvent(QContextMenuEvent * event) {
 	QMenu m;

@@ -15,6 +15,7 @@ class ImageView: public QWidget {
 		void viewExternally();
 		void openLinkedFile();
 		void copyPath();
+		void openInExplorer();
 	protected:
 		virtual void paintEvent(QPaintEvent * event)override;
 		virtual void wheelEvent(QWheelEvent * event)override;
