@@ -113,22 +113,19 @@ void ThumbView::selectLater(const QString & file) {
 	_fileToSelect = file;
 }
 void ThumbView::viewExternally() {
-	auto path = selectedItemFilePath();
-	if(path.isEmpty())
-		return;
-	CApplication::viewExternally(path);
+	for(auto item: selectedItems()) {
+		CApplication::viewExternally(item->absoluteFilePath());
+	}
 }
 void ThumbView::editExternally() {
-	auto path = selectedItemFilePath();
-	if(path.isEmpty())
-		return;
-	CApplication::editExternally(path);
+	for(auto item: selectedItems()) {
+		CApplication::editExternally(item->absoluteFilePath());
+	}
 }
 void ThumbView::rebuildThumbnail() {
-	auto path = selectedItemFilePath();
-	if(path.isEmpty())
-		return;
-	ThumbCache::instance().rebuild(path);
+	for(auto item: selectedItems()) {
+		ThumbCache::instance().rebuild(item->absoluteFilePath());
+	}
 }
 void ThumbView::prioritizeThumbs() {
 	auto r = rect();
