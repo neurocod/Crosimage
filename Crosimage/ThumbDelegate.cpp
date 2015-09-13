@@ -3,6 +3,7 @@
 #include "ThumbDelegate.h"
 #include "ThumbModel.h"
 #include "ThumbCache.h"
+#include "ThumbDirPainter.h"
 
 ThumbDelegate::ThumbDelegate(ThumbModel*parent): QStyledItemDelegate(parent) {
 	_parent = parent;
@@ -13,6 +14,9 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 	if(!item) {
 		__super::paint(painter, option, index);
 		return;
+	}
+	if(item->fileInfo().isDir()) {
+		painter->fillRect(option.rect, ThumbDirPainter::dirColor());
 	}
 	{
 		QPen pen(Qt::gray);

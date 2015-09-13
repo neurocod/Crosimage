@@ -4,17 +4,26 @@
 #include "ThumbModel.h"
 
 QRgb ThumbDirPainter::s_rgbDir = 0xFFCD52;
+QColor ThumbDirPainter::dirColor() {
+	return s_rgbDir;
+}
 QImage ThumbDirPainter::dirStub() {
 	static QImage ret;
 	if(ret.isNull()) {
 		QSize sz(ThumbModel::s_nThumbW, ThumbModel::s_nThumbH);
+		//QSize sz(1, 1);
 		ret = QImage(sz, QImage::Format_RGB32);
 		ret.fill(QColor(s_rgbDir));
 		s_rgbDir = ret.pixel(0, 0);//update alpha
 	}
 	return ret;
 }
-QImage ThumbDirPainter::compose(const QList<QImage> & _images) {
+QImage ThumbDirPainter::compose(const QList<QImage> & images) {
+	auto ret = compose2(images);
+	compactImage(ret);
+	return ret;
+}
+QImage ThumbDirPainter::compose2(const QList<QImage> & _images) {
 	if(_images.isEmpty())
 		return dirStub();
 	if(_images.size()==1) {
@@ -165,4 +174,24 @@ QImage ThumbDirPainter::subDirThumb() {
 		painter.drawRoundedRect(QRect(0, 0, sz.width(), sz.height()), 10, 10);
 	}
 	return ret;
+}
+void ThumbDirPainter::compactImage(QImage & img) {
+	int newH = img.height();
+	for(int y = img.height()-1; y>1; --y) {
+		bool foundOtherColor = false;
+		QRgb* line = (QRgb*)img.scanLine(y);
+		QRgb* end = line + img.width();
+		for(auto x = line; x!=end; ++x) {
+			if(*x!=s_rgbDir) {
+				foundOtherColor = true;
+				break;
+			}
+		}
+		if(foundOtherColor)
+			break;
+		newH--;
+	}
+	int pixelsToLeaveAtTop = 2;
+	if(newH + pixelsToLeaveAtTop < img.height())
+		img = img.copy(0, 0, img.width(), newH+pixelsToLeaveAtTop);
 }
