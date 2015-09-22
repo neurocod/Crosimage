@@ -140,9 +140,6 @@
     <ClCompile Include="GeneratedFiles\Template\moc_ImageView.cpp">
       <Filter>Generated Files\Template</Filter>
     </ClCompile>
-    <ClCompile Include="ImgDbWorker.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="CApplication.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -347,6 +344,9 @@
     <ClCompile Include="TxtLnkProcessor.cpp">
       <Filter>Thumb</Filter>
     </ClCompile>
+    <ClCompile Include="DirDb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="crosimage.qrc">
@@ -395,9 +395,6 @@
     </ClInclude>
     <ClInclude Include="ThumbDirPainter.h">
       <Filter>Thumb</Filter>
-    </ClInclude>
-    <ClInclude Include="ImgDbWorker.h">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="DirCache.h">
       <Filter>src</Filter>
@@ -572,6 +569,9 @@
     </ClInclude>
     <ClInclude Include="TxtLnkProcessor.h">
       <Filter>Thumb</Filter>
+    </ClInclude>
+    <ClInclude Include="DirDb.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

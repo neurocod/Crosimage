@@ -18,6 +18,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 	showFullScreen();
 	connect(parent, SIGNAL(modelReset()), SLOT(onModelReset()) );
 	_files = _parent->files();
+	removeUnsupportedFiles();
 	_indexInParent = _files.indexOf(info.absoluteFilePath());
 	if(-1==_indexInParent)
 		_indexInParent = 0;
@@ -279,4 +280,32 @@ QString ImageView::centerFile()const {
 }
 void ImageView::copyPath() {
 	qApp->clipboard()->setText(centerFile());
+}
+void ImageView::removeUnsupportedFiles() {
+	for(auto it = _files.begin(); it!=_files.end(); ) {
+		QString str = *it;
+		if(isSupportedFile(*it))
+			++it;
+		else
+			it = _files.erase(it);
+	}
+}
+bool ImageView::isSupportedFile(const QString & path)const {
+	auto str = path;
+	int index = str.lastIndexOf('/');
+	if(-1!=index)
+		str = str.mid(index+1);
+	index = str.lastIndexOf('\\');
+	if(-1!=index)
+		str = str.mid(index+1);
+	index = str.lastIndexOf('.');
+	if(-1!=index)
+		str = str.mid(index+1);
+	if(str.isEmpty())
+		return false;
+	if(str.endsWith("sld"))
+		return false;
+	//path = path.toLower();
+	//
+	return true;
 }

@@ -43,4 +43,6 @@ class ImageView: public QWidget {
 
 		QString centerFile()const;
 		static QString findLinkedFile(QString str);
+		void removeUnsupportedFiles();
+		bool isSupportedFile(const QString & path)const;
 };

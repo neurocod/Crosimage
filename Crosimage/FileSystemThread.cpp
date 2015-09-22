@@ -1,7 +1,7 @@
 ﻿//FileSystemThread.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "FileSystemThread.h"
-#include "ImgDbWorker.h"
+#include "DirDb.h"
 
 FileSystemThread& FileSystemThread::instance() {
 	static FileSystemThread p;
@@ -28,8 +28,8 @@ void FileSystemThread::readDir(QDir dir) {
 		|QDir::Hidden|QDir::System//without this it hides broken shortcuts
 		);
 	//qDebug() << t.elapsed();
-	entryList.removeOne(ImgDbWorker::dbFileName);
-	entryList.removeOne(ImgDbWorker::dbFileName2);
+	entryList.removeOne(DirDb::dbFileName);
+	entryList.removeOne(DirDb::dbFileName2);
 	entryList.removeOne("Thumbs.db");
 	if((dir.sorting() & QDir::SortByMask)==QDir::Name) {
 		ASSERT(dir.sorting() & QDir::DirsFirst);

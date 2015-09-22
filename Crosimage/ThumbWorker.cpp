@@ -3,7 +3,7 @@
 #include "ThumbWorker.h"
 #include "ThumbModel.h"
 #include "ThumbDirPainter.h"
-#include "ImgDbWorker.h"
+#include "DirDb.h"
 #include "ThumbVideoWorker.h"
 #include "TxtLnkProcessor.h"
 
@@ -58,7 +58,7 @@ QImage ThumbWorker::processNextFile(const QString & path, bool updateAnyway, boo
 	_nThumbnailsCreated++;
 	QFileInfo info(path);
 	QImage ret;
-	if(!updateAnyway && ImgDbWorker::thumbnail(info, ret).ok()) {
+	if(!updateAnyway && DirDb::thumbnail(info, ret).ok()) {
 		maybeUpdate(innerCall, path, ret);
 		return ret;
 	}
@@ -167,5 +167,5 @@ void ThumbWorker::run() {
 void ThumbWorker::writeToDb(bool innerCall, const QFileInfo & info, const QImage & image) {
 	if(innerCall || _bNeedExit)
 		return;
-	ImgDbWorker::setThumbnail(info, image);
+	DirDb::setThumbnail(info, image);
 }

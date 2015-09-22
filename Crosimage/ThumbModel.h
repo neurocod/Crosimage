@@ -1,7 +1,7 @@
 //ThumbModel.h by Kostya Kozachuck as neurocod
 #pragma once
 #include "FileSystemThread.h"
-#include "ImgDbWorker.h"
+#include "DirDb.h"
 #include "DirCache.h"
 #include "DirCacheItem.h"
 

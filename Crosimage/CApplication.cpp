@@ -5,7 +5,7 @@
 #include "ThumbCache.h"
 #include "ThumbWorker.h"
 #include "AltTabView.h"
-#include "ImgDbWorker.h"
+#include "DirDb.h"
 #include "TxtLnkProcessor.h"
 #include "ThumbVideoWorker.h"
 #include "ThumbWorker.h"
@@ -52,7 +52,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 			msgBox(tr("First launch warning: Crosimage creates files named '%1' in each folder it has to show."
 				" These files contains thumbnails, sorting order, slideshow settings etc."
 				" This is made to accelerate Crosimage work, better handle situations when folder was renamed or moved,"
-				" as inner file stays unchanged and info is not lost.").arg(ImgDbWorker::dbFileName));
+				" as inner file stays unchanged and info is not lost.").arg(DirDb::dbFileName));
 		}
 		//session
 		quint32 mainWindowsCount = 0;

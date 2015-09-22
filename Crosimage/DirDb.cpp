@@ -1,11 +1,11 @@
-﻿//ImgDbWorker.cpp by Kostya Kozachuck as neurocod
+﻿//DirDb.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
-#include "ImgDbWorker.h"
+#include "DirDb.h"
 
-const QString ImgDbWorker::dbFileName = "thumbnails.sqlite";
-const QString ImgDbWorker::dbFileName2 = dbFileName + "-journal";
+const QString DirDb::dbFileName = "thumbnails.sqlite";
+const QString DirDb::dbFileName2 = dbFileName + "-journal";
 
-ImgDbWorker* ImgDbWorker::instance(const QDir & dir) {
+DirDb* DirDb::instance(const QDir & dir) {
 	QString str = dir.absolutePath();
 #ifdef _DEBUG //всегда вызывается из одного и того же потока, не нужна синхронизация и защита
 	static QThread* thread = 0;
@@ -15,18 +15,18 @@ ImgDbWorker* ImgDbWorker::instance(const QDir & dir) {
 		thread = QThread::currentThread();
 	}
 #endif
-	static QMap<QString, ImgDbWorker*> map;
+	static QMap<QString, DirDb*> map;
 	auto ret = map.value(str);
 	if(!ret) {
-		ret = new ImgDbWorker(dir);
+		ret = new DirDb(dir);
 		map.insert(str, ret);
 	}
 	return ret;
 }
-ImgDbWorker* ImgDbWorker::instance(const QFileInfo & file) {
+DirDb* DirDb::instance(const QFileInfo & file) {
 	return instance(file.dir());
 }
-ImgDbWorker::ImgDbWorker(const QDir & dir):
+DirDb::DirDb(const QDir & dir):
 	_qThumbGet(this, "SELECT thumb, modified FROM files WHERE name=:name;"),
 	_qThumbGetAll(this, "SELECT name, thumb, modified, rating, show_settings FROM files;"),
 	_qThumbSet(this, "INSERT OR REPLACE INTO files (name, thumb, modified) VALUES (:name, :thumb, :modified);")
@@ -35,15 +35,15 @@ ImgDbWorker::ImgDbWorker(const QDir & dir):
 	QElapsedTimer timer;
     timer.start();
 	auto ret = readAllToCache();
-	//qDebug() << "ImgDbWorker readAll took" << timer.elapsed() << "milliseconds";
+	//qDebug() << "DirDb readAll took" << timer.elapsed() << "milliseconds";
 }
-ImgDbWorker::~ImgDbWorker() {
+DirDb::~DirDb() {
 	qDeleteAll(_items);
 }
-ReadStatus ImgDbWorker::thumbnail(const QFileInfo & file, OUT QImage & img) {
+ReadStatus DirDb::thumbnail(const QFileInfo & file, OUT QImage & img) {
 	return instance(file)->thumbnail_(file, img);
 }
-ReadStatus ImgDbWorker::readAllToCache() {
+ReadStatus DirDb::readAllToCache() {
 	if(!initSqlOnce().ok())
 		return false;
 	auto & q = _qThumbGetAll;
@@ -58,13 +58,13 @@ ReadStatus ImgDbWorker::readAllToCache() {
 		item->_rating = q.value(col++).value<int>();
 		item->_showSettings = q.value(col++).value<QByteArray>();
 	}
-	qStableSort(_items.begin(), _items.end(), &ImgDbWorker::compareByRating);
+	qStableSort(_items.begin(), _items.end(), &DirDb::compareByRating);
 	return true;
 }
-bool ImgDbWorker::compareByRating(const Item * i1, const Item * i2) {
+bool DirDb::compareByRating(const Item * i1, const Item * i2) {
 	return i1->_rating > i1->_rating;
 }
-ReadStatus ImgDbWorker::thumbnail_(const QFileInfo & file, OUT QImage & img) {
+ReadStatus DirDb::thumbnail_(const QFileInfo & file, OUT QImage & img) {
 	QString name = file.fileName();
 	auto it = _byName.find(name);
 	if(it==_byName.end())
@@ -109,7 +109,7 @@ ReadStatus ImgDbWorker::thumbnail_(const QFileInfo & file, OUT QImage & img) {
 	//bool ok = modified==file.lastModified();
 	//return ok;
 }
-ImgDbWorker::Item* ImgDbWorker::getOrCreate(const QString & name) {
+DirDb::Item* DirDb::getOrCreate(const QString & name) {
 	auto it = _byName.find(name);
 	if(it!=_byName.end())
 		return *it;
@@ -118,10 +118,10 @@ ImgDbWorker::Item* ImgDbWorker::getOrCreate(const QString & name) {
 	_items << item;
 	return item;
 }
-ReadStatus ImgDbWorker::setThumbnail(const QFileInfo & file, const QImage & img) {
+ReadStatus DirDb::setThumbnail(const QFileInfo & file, const QImage & img) {
 	return instance(file)->setThumbnail_(file, img);
 }
-WriteStatus ImgDbWorker::setThumbnail_(const QFileInfo & file, const QImage & img) {
+WriteStatus DirDb::setThumbnail_(const QFileInfo & file, const QImage & img) {
 	QString name = file.fileName();
 	auto item = getOrCreate(name);
 	item->_modified = file.lastModified();
@@ -143,7 +143,7 @@ WriteStatus ImgDbWorker::setThumbnail_(const QFileInfo & file, const QImage & im
 	_qThumbSet.bindValue(":modified", toVariantByteArray(item->_modified));
 	return execOrTrace(_qThumbSet);
 }
-ReadStatus ImgDbWorker::connectToDbOnce() {
+ReadStatus DirDb::connectToDbOnce() {
 	if(_db.isOpen())
 		return true;
 	_db = QSqlDatabase::addDatabase("QSQLITE", _dbPath);
@@ -152,7 +152,7 @@ ReadStatus ImgDbWorker::connectToDbOnce() {
 		return ReadStatus(false, _db.lastError().text());
 	return maybeInstallDb();
 }
-bool ImgDbWorker::maybeInstallDb() {
+bool DirDb::maybeInstallDb() {
 	QStringList names = _db.tables();
 	QSqlQuery q(_db);
 	if(!names.contains("settings")) {

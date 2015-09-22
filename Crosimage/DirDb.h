@@ -1,18 +1,18 @@
-﻿//ImgDbWorker.h by Kostya Kozachuck as neurocod
+﻿//DirDb.h by Kostya Kozachuck as neurocod
 #pragma once
 #include "Qqt/DB/SqliteDb.h"
 
-class ImgDbWorker: public SqliteDb {
+class DirDb: public SqliteDb {
 	public:
-		virtual ~ImgDbWorker();
+		virtual ~DirDb();
 		static ReadStatus thumbnail(const QFileInfo & file, OUT QImage & img);
 		static WriteStatus setThumbnail(const QFileInfo & file, const QImage & img);
 		static const QString dbFileName;
 		static const QString dbFileName2;
 	protected:
-		static ImgDbWorker* instance(const QDir & dir);
-		static ImgDbWorker* instance(const QFileInfo & file);
-		ImgDbWorker(const QDir & dir);
+		static DirDb* instance(const QDir & dir);
+		static DirDb* instance(const QFileInfo & file);
+		DirDb(const QDir & dir);
 
 		PreparedSqlQuery _qThumbGet;
 		PreparedSqlQuery _qThumbGetAll;

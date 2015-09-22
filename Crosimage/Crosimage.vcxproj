@@ -409,7 +409,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ImageView.cpp" />
-    <ClCompile Include="ImgDbWorker.cpp" />
+    <ClCompile Include="DirDb.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MicrosoftLnkReader.cpp" />
     <ClCompile Include="pch.cpp">
@@ -777,7 +777,7 @@
     <ClInclude Include="AltTabLabel.h" />
     <ClInclude Include="DirCache.h" />
     <ClInclude Include="DirCacheItem.h" />
-    <ClInclude Include="ImgDbWorker.h" />
+    <ClInclude Include="DirDb.h" />
     <ClInclude Include="Qqt\AbstractButtonPropertyRedirects.h" />
     <ClInclude Include="Qqt\AbstractSpinBoxPropertyRedirects.h" />
     <ClInclude Include="Qqt\Action.h" />
