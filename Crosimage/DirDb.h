@@ -2,26 +2,28 @@
 #pragma once
 #include "Qqt/DB/SqliteDb.h"
 
+//accessed from non-gui thread
 class DirDb: public SqliteDb {
 	public:
+		static DirDb& instance(const QDir & dir);
+		static DirDb& instance(const QFileInfo & file);
 		virtual ~DirDb();
-		static ReadStatus thumbnail(const QFileInfo & file, OUT QImage & img);
-		static WriteStatus setThumbnail(const QFileInfo & file, const QImage & img);
+		ReadStatus thumbnail(const QFileInfo & file, OUT QImage & img);
+		WriteStatus setThumbnail(const QFileInfo & file, const QImage & img);
+		WriteStatus setRating(const QFileInfo & file, int n);
 		static const QString dbFileName;
 		static const QString dbFileName2;
 	protected:
-		static DirDb* instance(const QDir & dir);
-		static DirDb* instance(const QFileInfo & file);
 		DirDb(const QDir & dir);
 
+		QString _dbPath;
 		PreparedSqlQuery _qThumbGet;
 		PreparedSqlQuery _qThumbGetAll;
 		PreparedSqlQuery _qThumbSet;
-		QString _dbPath;
+		PreparedSqlQuery _qThumbSetRating;
+
 		virtual ReadStatus connectToDbOnce()override;
 		bool maybeInstallDb();
-		ReadStatus thumbnail_(const QFileInfo & file, OUT QImage & img);
-		WriteStatus setThumbnail_(const QFileInfo & file, const QImage & img);
 		ReadStatus readAllToCache();
 		struct Item {
 			Item(const QString & name): _name(name) { }

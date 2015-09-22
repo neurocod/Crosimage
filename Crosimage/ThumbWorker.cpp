@@ -58,7 +58,7 @@ QImage ThumbWorker::processNextFile(const QString & path, bool updateAnyway, boo
 	_nThumbnailsCreated++;
 	QFileInfo info(path);
 	QImage ret;
-	if(!updateAnyway && DirDb::thumbnail(info, ret).ok()) {
+	if(!updateAnyway && DirDb::instance(info).thumbnail(info, ret).ok()) {
 		maybeUpdate(innerCall, path, ret);
 		return ret;
 	}
@@ -154,6 +154,12 @@ void ThumbWorker::run() {
 		Job job;
 		{
 			QMutexLocker lock(&_lock);
+			if(!_newRatings.isEmpty()) {
+				auto p = _newRatings.first();
+				_newRatings.removeFirst();
+				DirDb::instance(p.first).setRating(p.first, p.second);
+				continue;
+			}
 			if(!_queue.isEmpty()) {
 				job = _queue.dequeue();
 			}
@@ -167,5 +173,5 @@ void ThumbWorker::run() {
 void ThumbWorker::writeToDb(bool innerCall, const QFileInfo & info, const QImage & image) {
 	if(innerCall || _bNeedExit)
 		return;
-	DirDb::setThumbnail(info, image);
+	DirDb::instance(info).setThumbnail(info, image);
 }

@@ -24,6 +24,7 @@ class ThumbWorker: public QThread {
 				return other._path == _path && other._updateAnyway == _updateAnyway;
 			}
 		};
+		QList<QPair<QFileInfo, int>> _newRatings;
 		QQueue<Job> _queue;//FIFO
 		QMutex _lock;
 		int _nThumbnailsCreated;

@@ -5,15 +5,11 @@
 const QString DirDb::dbFileName = "thumbnails.sqlite";
 const QString DirDb::dbFileName2 = dbFileName + "-journal";
 
-DirDb* DirDb::instance(const QDir & dir) {
+DirDb& DirDb::instance(const QDir & dir) {
 	QString str = dir.absolutePath();
 #ifdef _DEBUG //всегда вызывается из одного и того же потока, не нужна синхронизация и защита
-	static QThread* thread = 0;
-	if(thread) {
-		ASSERT(thread==QThread::currentThread());
-	} else {
-		thread = QThread::currentThread();
-	}
+	static QThread* thread = QThread::currentThread();
+	ASSERT(thread==QThread::currentThread());
 #endif
 	static QMap<QString, DirDb*> map;
 	auto ret = map.value(str);
@@ -21,15 +17,16 @@ DirDb* DirDb::instance(const QDir & dir) {
 		ret = new DirDb(dir);
 		map.insert(str, ret);
 	}
-	return ret;
+	return *ret;
 }
-DirDb* DirDb::instance(const QFileInfo & file) {
+DirDb& DirDb::instance(const QFileInfo & file) {
 	return instance(file.dir());
 }
 DirDb::DirDb(const QDir & dir):
 	_qThumbGet(this, "SELECT thumb, modified FROM files WHERE name=:name;"),
 	_qThumbGetAll(this, "SELECT name, thumb, modified, rating, show_settings FROM files;"),
-	_qThumbSet(this, "INSERT OR REPLACE INTO files (name, thumb, modified) VALUES (:name, :thumb, :modified);")
+	_qThumbSet(this, "INSERT OR REPLACE INTO files (name, thumb, modified) VALUES (:name, :thumb, :modified);"),
+	_qThumbSetRating(this, "UPDATE files SET rating=:rating WHERE name=:name;")
 {
 	_dbPath = dir.absoluteFilePath(dbFileName);
 	QElapsedTimer timer;
@@ -39,9 +36,6 @@ DirDb::DirDb(const QDir & dir):
 }
 DirDb::~DirDb() {
 	qDeleteAll(_items);
-}
-ReadStatus DirDb::thumbnail(const QFileInfo & file, OUT QImage & img) {
-	return instance(file)->thumbnail_(file, img);
 }
 ReadStatus DirDb::readAllToCache() {
 	if(!initSqlOnce().ok())
@@ -64,7 +58,7 @@ ReadStatus DirDb::readAllToCache() {
 bool DirDb::compareByRating(const Item * i1, const Item * i2) {
 	return i1->_rating > i1->_rating;
 }
-ReadStatus DirDb::thumbnail_(const QFileInfo & file, OUT QImage & img) {
+ReadStatus DirDb::thumbnail(const QFileInfo & file, OUT QImage & img) {
 	QString name = file.fileName();
 	auto it = _byName.find(name);
 	if(it==_byName.end())
@@ -118,10 +112,10 @@ DirDb::Item* DirDb::getOrCreate(const QString & name) {
 	_items << item;
 	return item;
 }
-ReadStatus DirDb::setThumbnail(const QFileInfo & file, const QImage & img) {
-	return instance(file)->setThumbnail_(file, img);
-}
-WriteStatus DirDb::setThumbnail_(const QFileInfo & file, const QImage & img) {
+WriteStatus DirDb::setThumbnail(const QFileInfo & file, const QImage & img) {
+	auto ret = initSqlOnce();
+	if(!ret.ok())
+		return ret;
 	QString name = file.fileName();
 	auto item = getOrCreate(name);
 	item->_modified = file.lastModified();
@@ -135,9 +129,6 @@ WriteStatus DirDb::setThumbnail_(const QFileInfo & file, const QImage & img) {
 			writer.write(img);
 		}
 	}
-	auto ret = initSqlOnce();
-	if(!ret.ok())
-		return ret;
 	_qThumbSet.bindValue(":name", name);
 	_qThumbSet.bindValue(":thumb", item->_thumb);
 	_qThumbSet.bindValue(":modified", toVariantByteArray(item->_modified));
@@ -171,4 +162,14 @@ bool DirDb::maybeInstallDb() {
 			return false;
 	}
 	return true;
+}
+WriteStatus DirDb::setRating(const QFileInfo & file, int n) {
+	auto ret = initSqlOnce();
+	if(!ret.ok())
+		return ret;
+	auto & q = _qThumbSetRating;
+	q.bindValue(":name", file.fileName());
+	q.bindValue(":rating", n);
+	getOrCreate(file.fileName())->_rating = n;
+	return execOrTrace(q);
 }
