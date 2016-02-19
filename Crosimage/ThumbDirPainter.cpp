@@ -10,7 +10,7 @@ QColor ThumbDirPainter::dirColor() {
 QImage ThumbDirPainter::dirStub() {
 	static QImage ret;
 	if(ret.isNull()) {
-		QSize sz(ThumbModel::s_nThumbW, ThumbModel::s_nThumbH);
+		QSize sz(CrSettings::inst()._thumbW, CrSettings::inst()._thumbH);
 		//QSize sz(1, 1);
 		ret = QImage(sz, QImage::Format_RGB32);
 		ret.fill(QColor(s_rgbDir));
@@ -33,7 +33,7 @@ QImage ThumbDirPainter::compose2(const QList<QImage> & _images) {
 		return ret;
 	}
 	QList<QImage> images = _images;
-	QSize sz2(ThumbModel::s_nThumbW/2, ThumbModel::s_nThumbH/2);
+	QSize sz2(CrSettings::inst()._thumbW/2, CrSettings::inst()._thumbH/2);
 	for(auto & img: images)
 		img = img.scaled(sz2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	qSort(images.begin(), images.end(),
@@ -68,7 +68,7 @@ void ThumbDirPainter::concatAndWriteAllImages(QString path, const QList<QImage> 
 	while(rows*cols<rets.count()) {
 		rows++;
 	}
-	QSize sz(cols*ThumbModel::s_nThumbW, rows*ThumbModel::s_nThumbH);
+	QSize sz(cols*CrSettings::inst()._thumbW, rows*CrSettings::inst()._thumbH);
 	QImage back(sz, QImage::Format_RGB32);
 	back.fill(Qt::black);
 	QPainter painter(&back);
@@ -79,12 +79,12 @@ void ThumbDirPainter::concatAndWriteAllImages(QString path, const QList<QImage> 
 		for(int x=0; x<cols; ++x) {
 			if(nImage>=rets.count())
 				break;
-			int xx = x*ThumbModel::s_nThumbW;
-			int yy = y*ThumbModel::s_nThumbH;
+			int xx = x*CrSettings::inst()._thumbW;
+			int yy = y*CrSettings::inst()._thumbH;
 			painter.drawImage(xx, yy, rets[nImage]);
-			painter.drawText(xx, yy+ThumbModel::s_nThumbH/4, toString(goodPixels(rets[nImage])));
+			painter.drawText(xx, yy+CrSettings::inst()._thumbH/4, toString(goodPixels(rets[nImage])));
 			if(keyImage==nImage)
-				painter.drawRect(QRect(xx, yy, ThumbModel::s_nThumbW, ThumbModel::s_nThumbH));
+				painter.drawRect(QRect(xx, yy, CrSettings::inst()._thumbW, CrSettings::inst()._thumbH));
 			nImage++;
 		}
 	}
@@ -115,8 +115,8 @@ void ThumbDirPainter::generateVariants(const QList<QImage> & images, const QList
 			auto pt = rc.topRight();
 			pt.rx()++;
 			QRect rcTest(pt, image.size());
-			if(rcTest.left()<ThumbModel::s_nThumbW
-				&& rcTest.bottom()<ThumbModel::s_nThumbH
+			if(rcTest.left()<CrSettings::inst()._thumbW
+				&& rcTest.bottom()<CrSettings::inst()._thumbH
 				&& !intersects(rcTest, _used))
 			{
 				auto used = _used;
@@ -130,8 +130,8 @@ void ThumbDirPainter::generateVariants(const QList<QImage> & images, const QList
 			auto pt = rc.bottomLeft();
 			pt.ry()++;
 			QRect rcTest(pt, image.size());
-			if(rcTest.left()<ThumbModel::s_nThumbW
-				&& rcTest.bottom()<ThumbModel::s_nThumbH
+			if(rcTest.left()<CrSettings::inst()._thumbW
+				&& rcTest.bottom()<CrSettings::inst()._thumbH
 				&& !intersects(rcTest, _used))
 			{
 				auto used = _used;
@@ -166,7 +166,7 @@ QImage ThumbDirPainter::paint(const QList<QImage> & images, const QList<QRect> &
 QImage ThumbDirPainter::subDirThumb() {
 	static QImage ret;
 	if(ret.isNull()) {
-		QSize sz(ThumbModel::s_nThumbW, ThumbModel::s_nThumbH);
+		QSize sz(CrSettings::inst()._thumbW, CrSettings::inst()._thumbH);
 		ret = QImage(sz, QImage::Format_RGB32);
 		ret.fill(QColor(s_rgbDir));
 		QPainter painter(&ret);

@@ -43,7 +43,7 @@ QVariant ThumbModel::data(const QModelIndex & index, int role)const {
 		}
 	}
 	if(Qt::SizeHintRole==role) {
-		QSize sz(s_nThumbW, rowHeight(index.row()));
+		QSize sz(CrSettings::inst()._thumbW, rowHeight(index.row()));
 		return sz;
 	}
 	return QVariant();
@@ -58,7 +58,7 @@ int ThumbModel::rowHeight(int row)const {
 	}
 	if(ret.isSet())
 		return ret.key();
-	return s_nThumbH;
+	return CrSettings::inst()._thumbH;
 }
 QVariant ThumbModel::headerData(int section, Qt::Orientation orientation, int role)const {
 	if(Qt::Vertical==orientation) {

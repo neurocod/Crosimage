@@ -225,6 +225,7 @@
     <ClCompile Include="AltTabView.cpp" />
     <ClCompile Include="CApplication.cpp" />
     <ClCompile Include="CMainWindow.cpp" />
+    <ClCompile Include="CrSettings.cpp" />
     <ClCompile Include="DirCache.cpp" />
     <ClCompile Include="DirCacheItem.cpp" />
     <ClCompile Include="FileSystemThread.cpp" />
@@ -667,6 +668,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CrSettings.h" />
     <ClInclude Include="MicrosoftLnkReader.h" />
     <ClInclude Include="ThumbVideoWorker.h" />
     <ClInclude Include="TxtLnkProcessor.h" />

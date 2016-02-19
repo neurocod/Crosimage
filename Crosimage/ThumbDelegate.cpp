@@ -26,11 +26,13 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 		rc.adjust(0, 0,-1,-1);
 		painter->drawRect(rc);
 	}
+	const QRectF clipBoundingRect = painter->clipBoundingRect();
+	painter->setClipRect(option.rect);
 	const auto & img = item->thumbnail();
 	ThumbCache::instance().maybeMakeFirst(item->absoluteFilePath());
 	auto pt = option.rect.topLeft();
 	if(const bool center = 1) {
-		int diffX = ThumbModel::s_nThumbW - img.width();
+		int diffX = CrSettings::inst()._thumbW - img.width();
 		if(diffX>0) {
 			if(index.column()==0 && index.model()->columnCount()>1)
 				pt.rx() += diffX;
@@ -51,6 +53,7 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 		rc.adjust(1, 1,-1,-1);
 		painter->drawRect(rc);
 	}
+	painter->setClipRect(clipBoundingRect);
 }
 void ThumbDelegate::paintTextWhereMoreSpace(QPainter* painter, const QString & str, const QStyleOptionViewItem & option,
 	const QSize & szImg)const
@@ -61,7 +64,7 @@ void ThumbDelegate::paintTextWhereMoreSpace(QPainter* painter, const QString & s
 	auto fontH = option.fontMetrics.height();
 	int szFreeRight = option.rect.width() - szImg.width();
 	int szFreeBottom = option.rect.height() - szImg.height();
-	if(szFreeBottom<=fontH && szFreeRight<=ThumbModel::s_nThumbW/3) {
+	if(szFreeBottom<=fontH && szFreeRight<=CrSettings::inst()._thumbW/3) {
 		if(rc.height() > fontH)
 			rc.setTop(rc.bottom()-fontH);
 		QColor clr = option.palette.color(QPalette::Base);

@@ -146,7 +146,7 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 		addAction(a);
 	}
 	{
-		Action a(tr("Settings..."), QIcon(":/qt-project.org/styles/commonstyle/images/computer-16.png"));
+		Action a(tr("Settings..."), QIcon(":/qt-project.org/styles/commonstyle/images/computer-16.png"), QKeySequence("F9"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
 				SettingsDialog::createAndShow(this);
 			});

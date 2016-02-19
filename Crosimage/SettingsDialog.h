@@ -8,5 +8,8 @@ class SettingsDialog: public QDialog {
 		static void createAndShow(QWidget*parent);
 	protected:
 		LineEdit _editShutdownCommand;
-		void updateSettings(bool save);
+		SpinBox _thumbW;
+		SpinBox _thumbH;
+
+		void updateSettings(bool toGui);
 };

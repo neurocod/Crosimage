@@ -45,6 +45,9 @@
     <Filter Include="ImageView">
       <UniqueIdentifier>{10cbff92-e7d4-40eb-a840-4d0a76ff6ceb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\settings">
+      <UniqueIdentifier>{25fb4f3a-06d7-4633-bcf5-5ce988c042c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -329,9 +332,6 @@
     <ClCompile Include="Qqt\DB\SqliteDb.cpp">
       <Filter>Qqt\DB</Filter>
     </ClCompile>
-    <ClCompile Include="SettingsDialog.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="Qqt\DialogButtonBox.cpp">
       <Filter>Qqt</Filter>
     </ClCompile>
@@ -346,6 +346,12 @@
     </ClCompile>
     <ClCompile Include="DirDb.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="CrSettings.cpp">
+      <Filter>src\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsDialog.cpp">
+      <Filter>src\settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -555,9 +561,6 @@
     <ClInclude Include="Qqt\DB\SqliteDb.h">
       <Filter>Qqt\DB</Filter>
     </ClInclude>
-    <ClInclude Include="SettingsDialog.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="Qqt\DialogButtonBox.h">
       <Filter>Qqt</Filter>
     </ClInclude>
@@ -572,6 +575,12 @@
     </ClInclude>
     <ClInclude Include="DirDb.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="CrSettings.h">
+      <Filter>src\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsDialog.h">
+      <Filter>src\settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

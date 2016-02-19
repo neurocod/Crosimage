@@ -15,22 +15,23 @@ ThumbCache & ThumbCache::instance() {
 	return p;
 }
 QImage ThumbCache::get(const QFileInfo & info, const QString & path) {
-	if(!_map.contains(path)) {
-		int x = ThumbModel::s_nThumbW;
-		int y = ThumbModel::s_nThumbH;
-		if(info.isFile()) {
-			x = qMin(64, x);
-			y = qMin(64, y);
-		}
-		auto thumb = _iconProvider.icon(info).pixmap(x, y).toImage();
-		auto sz = thumb.size();
-		_map[path] = thumb;
-		ThumbWorker::instance().takeFile(path);
-		_pathQueued.insert(path);
-		return thumb;
+	auto it = _map.constFind(path);
+	if(it!=_map.constEnd()) {
+		maybeMakeFirst(path);
+		return it.value();
 	}
-	maybeMakeFirst(path);
-	return _map.value(path);
+	int x = CrSettings::inst()._thumbW;
+	int y = CrSettings::inst()._thumbH;
+	if(info.isFile()) {
+		x = qMin(64, x);
+		y = qMin(64, y);
+	}
+	auto thumb = _iconProvider.icon(info).pixmap(x, y).toImage();
+	auto sz = thumb.size();
+	_map[path] = thumb;
+	ThumbWorker::instance().takeFile(path);
+	_pathQueued.insert(path);
+	return thumb;
 }
 void ThumbCache::maybeMakeFirst(const QString & path) {
 	if(_pathQueued.contains(path)) {//reorder queue

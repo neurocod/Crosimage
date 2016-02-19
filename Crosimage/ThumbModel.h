@@ -4,12 +4,11 @@
 #include "DirDb.h"
 #include "DirCache.h"
 #include "DirCacheItem.h"
+#include "CrSettings.h"
 
 class ThumbModel: public QAbstractTableModel {
 	Q_OBJECT
 	public:
-		static const int s_nThumbW = 325;
-		static const int s_nThumbH = 325;
 		ThumbModel(QObject*parent=0);
 		virtual ~ThumbModel();
 

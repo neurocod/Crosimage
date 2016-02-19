@@ -118,8 +118,8 @@ QImage ThumbWorker::processNextFile(const QString & path, bool updateAnyway, boo
 	//	int count = targImagesCount - images.count();
 	//	count = qMin(count, nullImages.count());
 	//	for(int i = 0; i<count; ++i) {
-	//		int x = ThumbModel::s_nThumbW/2;
-	//		int y = ThumbModel::s_nThumbH/2;
+	//		int x = CrSettings::inst()._thumbW/2;
+	//		int y = CrSettings::inst()._thumbH/2;
 	//		images << _iconProvider.icon(nullImages[i]).pixmap(x, y).toImage();
 	//	}
 	//}
@@ -141,8 +141,8 @@ QImage ThumbWorker::thumb(const QString & path) {
 	QImage img;
 	QImage thumb;
 	if(reader.read(&img)) {
-		if(img.width()>ThumbModel::s_nThumbW || img.height()>ThumbModel::s_nThumbH)
-			thumb = img.scaled(ThumbModel::s_nThumbW, ThumbModel::s_nThumbH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		if(img.width()>CrSettings::inst()._thumbW || img.height()>CrSettings::inst()._thumbH)
+			thumb = img.scaled(CrSettings::inst()._thumbW, CrSettings::inst()._thumbH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		else
 			thumb = img;
 	}

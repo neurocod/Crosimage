@@ -9,13 +9,14 @@
 #include "TxtLnkProcessor.h"
 #include "ThumbVideoWorker.h"
 #include "ThumbWorker.h"
+#include "CrSettings.h"
 
 CApplication* CApplication::s_inst = 0;
 CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	s_inst = this;
 	QCoreApplication::setApplicationName("Crosimage");
 	QCoreApplication::setOrganizationName("neurocod");
-
+	CrSettings::load();
 	//ThumbVideoWorker::thumbFromVideo(ThumbWorker::instance(), "C:\\v\\TSN_1+1.(2014_08)\\Tsn 1+1 (01.08.2014) IPTVRip.avi");
 	//return;
 	QCommandLineParser parser;

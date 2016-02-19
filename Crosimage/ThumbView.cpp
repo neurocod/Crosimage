@@ -16,9 +16,9 @@ ThumbView::ThumbView(ThumbModel*m) {
 	setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 	horizontalHeader()->hide();
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-	horizontalHeader()->setDefaultSectionSize(ThumbModel::s_nThumbW);
+	horizontalHeader()->setDefaultSectionSize(CrSettings::inst()._thumbW);
 	verticalScrollBar()->setSingleStep(40);
-	verticalHeader()->setDefaultSectionSize(ThumbModel::s_nThumbH);
+	verticalHeader()->setDefaultSectionSize(CrSettings::inst()._thumbH);
 	verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	verticalHeader()->hide();
 	setItemDelegate(new ThumbDelegate(m));
@@ -150,7 +150,7 @@ void ThumbView::prioritizeThumbs() {
 void ThumbView::resizeEvent(QResizeEvent *event) {
 	__super::resizeEvent(event);
 	int w = event->size().width();
-	int cols = qMax<int>(1, w/ThumbModel::s_nThumbW);
+	int cols = qMax<int>(1, w/CrSettings::inst()._thumbW);
 	_model->setColumnCount(cols);
 }
 int ThumbView::sizeHintForRow(int row)const {
