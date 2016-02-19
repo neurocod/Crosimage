@@ -4,9 +4,13 @@
 #include "ThumbWorker.h"
 
 bool ThumbVideoWorker::isVideoFile(const QString & pathLowercase) {
-	static const QStringList list = {".avi", ".flv", ".mkv", ".wmv", ".mp4", ".mpg", ".mov", ".vob" };
+	static const QStringList list = {".avi", ".flv", ".mkv", ".wmv", ".mp4", ".mpg", ".mov", ".vob"};
+	const QString chromeDownload = ".crdownload";
+	QString path = pathLowercase;
+	if(path.endsWith(chromeDownload))
+		path.truncate(path.length()-chromeDownload.length());
 	for(const QString & ext: list) {
-		if(pathLowercase.endsWith(ext)) {
+		if(path.endsWith(ext)) {
 			return true;
 		}
 	}
