@@ -9,6 +9,7 @@ class ThumbWorker: public QThread {
 		void exit();
 		void takeFile(const QString & path, bool updateAnyway = false);
 		void makeFirst(const QString & path);
+		void generateRecursive(const QDir & dir);
 	signals:
 		void updated(QString path, QImage thumb);
 	protected:
@@ -16,6 +17,7 @@ class ThumbWorker: public QThread {
 		virtual void run()override;
 		volatile bool _bNeedExit;
 		volatile bool _bStarted;
+		QDirIterator* _dirIterator = 0;
 		struct Job {
 			QString _path;
 			bool _updateAnyway = true;

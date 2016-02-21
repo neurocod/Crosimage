@@ -353,6 +353,9 @@
     <ClCompile Include="SettingsDialog.cpp">
       <Filter>src\settings</Filter>
     </ClCompile>
+    <ClCompile Include="LogFile.cpp">
+      <Filter>Qqt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="crosimage.qrc">
@@ -581,6 +584,9 @@
     </ClInclude>
     <ClInclude Include="SettingsDialog.h">
       <Filter>src\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="LogFile.h">
+      <Filter>Qqt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

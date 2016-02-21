@@ -152,6 +152,13 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 			});
 		addAction(a);
 	}
+	{
+		Action a(tr("Regenerate thumbnails recursive"));
+		QObject::connect(a, &QAction::triggered, this, [=]() {
+			ThumbWorker::instance().generateRecursive(_model->dir());
+		});
+		addAction(a);
+	}
 	addActions(CApplication::s_inst->globalActions());
 	_menu << actions();
 }

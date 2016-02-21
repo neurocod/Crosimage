@@ -6,6 +6,7 @@
 #include "DirDb.h"
 #include "ThumbVideoWorker.h"
 #include "TxtLnkProcessor.h"
+#include "LogFile.h"
 
 ThumbWorker & ThumbWorker::instance() {
 	static ThumbWorker p;
@@ -151,27 +152,54 @@ QImage ThumbWorker::thumb(const QString & path) {
 void ThumbWorker::run() {
 	_bStarted = true;
 	while(!_bNeedExit) {
-		Job job;
-		{
-			QMutexLocker lock(&_lock);
-			if(!_newRatings.isEmpty()) {
-				auto p = _newRatings.first();
-				_newRatings.removeFirst();
-				DirDb::instance(p.first).setRating(p.first, p.second);
+		_lock.lock();
+		if(!_queue.isEmpty()) {
+			Job job = _queue.takeFirst();
+			_lock.unlock();
+			processNextFile(job._path, job._updateAnyway);
+			continue;
+		}
+		if(!_newRatings.isEmpty()) {
+			auto p = _newRatings.takeFirst();
+			_lock.unlock();
+			DirDb::instance(p.first).setRating(p.first, p.second);
+			continue;
+		}
+		if(_dirIterator) {
+			if(_dirIterator->hasNext()) {
+				QString path = _dirIterator->next();
+				_lock.unlock();
+				if(path.endsWith("/..") || path.endsWith("/."))
+					continue;
+				processNextFile(path, true);
+				QFileInfo fi(path);
+				DirDb::instance(fi).freeCacheMemory();
+				if(fi.isDir() || 0==(_nThumbnailsCreated%100)) {
+					LogFile::debug() << QString("%1 %2\n").arg(_nThumbnailsCreated).arg(path);
+				}
+				continue;
+			} else {
+				delete _dirIterator; _dirIterator = 0;
+				_lock.unlock();
 				continue;
 			}
-			if(!_queue.isEmpty()) {
-				job = _queue.dequeue();
-			}
 		}
-		if(job._path.isEmpty())
-			msleep(10);
-		else
-			processNextFile(job._path, job._updateAnyway);
+		_lock.unlock();
+		msleep(10);
 	}
 }
 void ThumbWorker::writeToDb(bool innerCall, const QFileInfo & info, const QImage & image) {
 	if(innerCall || _bNeedExit)
 		return;
 	DirDb::instance(info).setThumbnail(info, image);
+}
+void ThumbWorker::generateRecursive(const QDir & dir) {
+	_lock.lock();
+	if(_dirIterator) {
+		_lock.unlock();
+		msgBox(tr("Other recursive generation is in progress"));
+		return;
+	}
+	_dirIterator = new QDirIterator(dir, QDirIterator::Subdirectories);
+	_lock.unlock();
 }

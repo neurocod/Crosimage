@@ -58,6 +58,11 @@ ReadStatus DirDb::readAllToCache() {
 bool DirDb::compareByRating(const Item * i1, const Item * i2) {
 	return i1->_rating > i1->_rating;
 }
+void DirDb::freeCacheMemory() {
+	qDeleteAll(_items);
+	_items.clear();
+	_byName.clear();
+}
 ReadStatus DirDb::thumbnail(const QFileInfo & file, OUT QImage & img) {
 	QString name = file.fileName();
 	auto it = _byName.find(name);
@@ -125,7 +130,8 @@ WriteStatus DirDb::setThumbnail(const QFileInfo & file, const QImage & img) {
 		if(img.isNull()) {//otherwise - warning in QImageWriter
 			item->_thumb.clear();
 		} else {
-			QImageWriter writer(&buff, "png");
+			QImageWriter writer(&buff, "jpg");
+			auto sz = img.size();
 			writer.write(img);
 		}
 	}

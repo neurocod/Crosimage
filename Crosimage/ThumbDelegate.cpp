@@ -26,8 +26,6 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 		rc.adjust(0, 0,-1,-1);
 		painter->drawRect(rc);
 	}
-	const QRectF clipBoundingRect = painter->clipBoundingRect();
-	painter->setClipRect(option.rect);
 	const auto & img = item->thumbnail();
 	ThumbCache::instance().maybeMakeFirst(item->absoluteFilePath());
 	auto pt = option.rect.topLeft();
@@ -42,7 +40,10 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 				pt.rx() += diffX/2;
 		}
 	}
-	painter->drawImage(pt, img);
+	{
+		QRect rc(0, 0, qMin(img.width(), option.rect.width()), qMin(img.height(), option.rect.height()));
+		painter->drawImage(pt, img, rc);
+	}
 	paintTextWhereMoreSpace(painter, item->fileName(), option, img.size());
 	if(option.state & QStyle::State_Selected) {
 		QPen pen(Qt::red);
@@ -53,7 +54,6 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 		rc.adjust(1, 1,-1,-1);
 		painter->drawRect(rc);
 	}
-	painter->setClipRect(clipBoundingRect);
 }
 void ThumbDelegate::paintTextWhereMoreSpace(QPainter* painter, const QString & str, const QStyleOptionViewItem & option,
 	const QSize & szImg)const

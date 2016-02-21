@@ -11,6 +11,7 @@ class DirDb: public SqliteDb {
 		ReadStatus thumbnail(const QFileInfo & file, OUT QImage & img);
 		WriteStatus setThumbnail(const QFileInfo & file, const QImage & img);
 		WriteStatus setRating(const QFileInfo & file, int n);
+		void freeCacheMemory();
 		static const QString dbFileName;
 		static const QString dbFileName2;
 	protected:
