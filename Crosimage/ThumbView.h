@@ -18,6 +18,7 @@ class ThumbView: public QTableView {
 		void openInExplorer();
 		void onModelReset();
 		void rebuildThumbnail();
+		void clearThumbnail();
 		void deleteFile();
 		void copyPath();
 		void newDir();

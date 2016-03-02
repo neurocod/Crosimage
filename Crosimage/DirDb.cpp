@@ -117,6 +117,9 @@ DirDb::Item* DirDb::getOrCreate(const QString & name) {
 	_items << item;
 	return item;
 }
+WriteStatus DirDb::setThumbnailS(const QFileInfo & file, const QImage & image) {//static
+	return instance(file).setThumbnail(file, image);
+}
 WriteStatus DirDb::setThumbnail(const QFileInfo & file, const QImage & img) {
 	auto ret = initSqlOnce();
 	if(!ret.ok())

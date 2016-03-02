@@ -52,6 +52,11 @@ ThumbView::ThumbView(ThumbModel*m) {
 		addAction(a);
 	}
 	{
+		Action a(tr("Clear thumbnail"));
+		a.connectClicks(this, SLOT(clearThumbnail()));
+		addAction(a);
+	}
+	{
 		Action a(tr("Copy path"), QKeySequence("Ctrl+C"));
 		a.connectClicks(this, SLOT(copyPath()));
 		addAction(a);
@@ -124,7 +129,14 @@ void ThumbView::editExternally() {
 }
 void ThumbView::rebuildThumbnail() {
 	for(auto item: selectedItems()) {
-		ThumbCache::instance().rebuild(item->absoluteFilePath());
+		ThumbCache::instance().rebuild(item->fileInfo());
+	}
+}
+void ThumbView::clearThumbnail() {
+	QImage img(1, 1, QImage::Format_RGB32);
+	img.fill(Qt::black);
+	for(auto item: selectedItems()) {
+		ThumbCache::instance().set(item->fileInfo(), img);
 	}
 }
 void ThumbView::prioritizeThumbs() {

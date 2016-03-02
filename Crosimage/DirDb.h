@@ -10,6 +10,7 @@ class DirDb: public SqliteDb {
 		virtual ~DirDb();
 		ReadStatus thumbnail(const QFileInfo & file, OUT QImage & img);
 		WriteStatus setThumbnail(const QFileInfo & file, const QImage & img);
+		static WriteStatus setThumbnailS(const QFileInfo & file, const QImage & img);
 		WriteStatus setRating(const QFileInfo & file, int n);
 		void freeCacheMemory();
 		static const QString dbFileName;

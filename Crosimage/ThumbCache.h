@@ -8,8 +8,9 @@ class ThumbCache: public QObject {
 		virtual ~ThumbCache() {}
 		static ThumbCache& instance();
 		QImage get(const QFileInfo & info, const QString & absoluteFilePath);
+		void set(const QFileInfo & path, const QImage & img);
 		void maybeMakeFirst(const QString & path);
-		void rebuild(const QString & path);
+		void rebuild(const QFileInfo & path);
 	public slots:
 		void loadedByDb(QString path, QImage thumb);
 	signals:

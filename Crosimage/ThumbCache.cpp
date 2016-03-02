@@ -38,9 +38,20 @@ void ThumbCache::maybeMakeFirst(const QString & path) {
 		ThumbWorker::instance().makeFirst(path);
 	}
 }
-void ThumbCache::rebuild(const QString & path) {
+void ThumbCache::rebuild(const QFileInfo & file) {
+	auto path = file.absoluteFilePath();
 	_map.remove(path);
 	ThumbWorker::instance().takeFile(path, true);
+}
+void ThumbCache::set(const QFileInfo & file, const QImage & img) {
+	if(img.isNull()) {
+		ASSERT(0);//warning: image will rebuild
+		return;
+	}
+	auto path = file.absoluteFilePath();
+	_map.remove(path);
+	ThumbWorker::instance().setThumb(path, img);
+	emit loadedByCache(path, img);
 }
 void ThumbCache::loadedByDb(QString path, QImage thumb) {
 	_pathQueued.remove(path);
