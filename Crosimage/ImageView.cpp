@@ -139,6 +139,21 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		a.connectClicks(this, SLOT(openInExplorer()));
 		addAction(a);
 	}
+	{
+		Action a(tr("Lock window size"), QKeySequence("L"));//to fight with MS Windows automatic resize at screen borders
+		QObject::connect(a, &QAction::triggered, this, [=]() {
+			auto sz = this->minimumSize();
+			if(sz==QSize(0, 0)) { //not locked, lock
+				sz = this->size();
+				this->setMinimumSize(sz);
+				this->setMaximumSize(sz);
+			} else {//unlock
+				this->setMinimumSize(QSize(0, 0));
+				this->setMaximumSize(QSize(0xffffff, 0xffffff));
+			}
+		});
+		addAction(a);
+	}
 	addActions(CApplication::s_inst->globalActions());
 }
 ImageView::~ImageView() {
