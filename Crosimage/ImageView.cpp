@@ -77,27 +77,27 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 			});
 		addAction(a);
 	}
-	{
-		Action a(tr("Scale +"), QKeySequence("+"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-			//this->navigate(1);
-		});
-		addAction(a);
-	}
-	{
-		Action a(tr("Scale -"), QKeySequence("-"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-			//this->navigate(1);
-		});
-		addAction(a);
-	}
-	{
-		Action a(tr("Scale 1:1"), QKeySequence("="));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-			//this->navigate(1);
-		});
-		addAction(a);
-	}
+	//{
+	//	Action a(tr("Scale +"), QKeySequence("+"));
+	//	QObject::connect(a, &QAction::triggered, this, [=]() {
+	//		//this->navigate(1);
+	//	});
+	//	addAction(a);
+	//}
+	//{
+	//	Action a(tr("Scale -"), QKeySequence("-"));
+	//	QObject::connect(a, &QAction::triggered, this, [=]() {
+	//		//this->navigate(1);
+	//	});
+	//	addAction(a);
+	//}
+	//{
+	//	Action a(tr("Scale 1:1"), QKeySequence("="));
+	//	QObject::connect(a, &QAction::triggered, this, [=]() {
+	//		//this->navigate(1);
+	//	});
+	//	addAction(a);
+	//}
 	{
 		Action a(tr("Fullscreen/Normal"), QKeySequence("F"));
 		QObject::connect(a, &QAction::triggered, this, [=]() {
