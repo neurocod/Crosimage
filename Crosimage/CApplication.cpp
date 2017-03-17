@@ -25,8 +25,9 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	if(!args.isEmpty()) {
 		QString str = args[0];
 		if(str.toLower().endsWith(TxtLnkProcessor::extensionWithDot)) {
+			_saveSettingsOnExist = false;
 			TxtLnkProcessor::shellExecute(str);
-			QTimer::singleShot(1, this, SLOT(quit()));
+			QTimer::singleShot(1, this, &CApplication::quit);
 			return;
 		} else {
 			msgBox(tr("Unknown command line parameter: %1").arg(str));
@@ -80,15 +81,18 @@ CApplication::~CApplication() {
 	Settings sett;
 	QString strCmd;
 	sett.load("shutdownCommand", strCmd);
-	if(!strCmd.isEmpty())
+	if(!strCmd.isEmpty()) {
 		QProcess::startDetached(strCmd);
+	}
 }
 void CApplication::quit() {
-	Settings sett;
-	sett.save("mainWindowsCount", CMainWindow::instancesCount());
-	CMainWindow::beforeQuit();
-	for(auto w: topLevelWidgets()) {
-		w->close();
+	if(_saveSettingsOnExist) {
+		Settings sett;
+		sett.save("mainWindowsCount", CMainWindow::instancesCount());
+		CMainWindow::beforeQuit();
+		for(auto w: topLevelWidgets()) {
+			w->close();
+		}
 	}
 	__super::quit();
 }

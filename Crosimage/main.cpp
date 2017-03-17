@@ -5,7 +5,8 @@
 
 QtMessageHandler g_oldQtMessageHandler;
 void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QString &msg) {
-	bool prevent = msg.contains("Corrupt JPEG data");
+	bool prevent = msg.contains("Corrupt JPEG data")
+		|| msg.contains("ShGetFileInfoBackground() timed out for ");
 	g_oldQtMessageHandler(type, context, msg);
 	QString str;
 	switch (type) {
