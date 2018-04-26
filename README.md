@@ -1,5 +1,5 @@
 # Crosimage
-C++/Qt image viewer like XnView, focused on speed
+Cross-platform C++/Qt image viewer with some GUI improvements, which I missed in other programs like XnView. For example, intellectual folder thumbnails, three-picture slideshows etc. Also aimed to big speed when working with big folders.
 
 Main window with thumbnails view. You can see how thumbnails are placed close to each other to fit maximum visual information on the screen, up to 6 thumbnails per folder.
 ![09](https://user-images.githubusercontent.com/2953741/39309260-3e57fb2a-4970-11e8-857e-afed6d4b3e77.png)
