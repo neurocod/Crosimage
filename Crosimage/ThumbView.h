@@ -12,7 +12,7 @@ class ThumbView: public QTableView {
 		void prioritizeThumbs();
 	public slots:
 		void onDoubleClicked(const QModelIndex & index);
-		void onDoubleClicked();
+		void onDoubleClicked0();
 		void editExternally();
 		void viewExternally();
 		void openInExplorer();

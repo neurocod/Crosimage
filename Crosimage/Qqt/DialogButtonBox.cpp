@@ -1,10 +1,9 @@
-//DialogButtonBox.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//DialogButtonBox.cpp by Kostya Kozachuck as neurocod - 13.12.2012 9:09:01
 #include "pch.h"
-#include "DialogButtonBox.h"
+//#include "DialogButtonBox.h"
 
-DialogButtonBox::DialogButtonBox(QDialog*parent, bool addOkCancel): QDialogButtonBox(parent) {
-	if(addOkCancel) {
+DialogButtonBox::DialogButtonBox(QDialog*parent, bool addOkCancelAcceptReject): QDialogButtonBox(parent) {
+	if(addOkCancelAcceptReject) {
 		addOk();
 		addCancel();
 		acceptRejectTo(parent);
@@ -12,7 +11,7 @@ DialogButtonBox::DialogButtonBox(QDialog*parent, bool addOkCancel): QDialogButto
 }
 QPushButton* DialogButtonBox::addOk() {
 	auto ret = addButton(QDialogButtonBox::Ok);
-	ret->setIcon(QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-apply-32.png"));
+	ret->setIcon(okIcon());
 	return ret;
 }
 QPushButton* DialogButtonBox::addCancel() {
@@ -21,10 +20,14 @@ QPushButton* DialogButtonBox::addCancel() {
 	return ret;
 }
 void DialogButtonBox::acceptRejectTo(QDialog*dlg) {
-	connect(this, SIGNAL(accepted()), dlg, SLOT(accept()));
-	connect(this, SIGNAL(rejected()), dlg, SLOT(reject()));
+	connect(this, &QDialogButtonBox::accepted, dlg, &QDialog::accept);
+	connect(this, &QDialogButtonBox::rejected, dlg, &QDialog::reject);
 }
-QIcon DialogButtonBox::cancelIcon() {
-	static QIcon ret(QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-cancel-32.png"));
+const QPixmap& DialogButtonBox::cancelIcon() {
+	static const QPixmap ret(":/qt-project.org/styles/commonstyle/images/standardbutton-cancel-32.png");
+	return ret;
+}
+const QPixmap& DialogButtonBox::okIcon() {
+	static const QPixmap ret(":/qt-project.org/styles/commonstyle/images/standardbutton-apply-32.png");
 	return ret;
 }

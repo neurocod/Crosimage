@@ -1,30 +1,23 @@
-//Label.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//Label.h by Kostya Kozachuck as neurocod - 29.02.2012 1:30:10
 #pragma once
 
 class Label: public WidgetPropertyRedirects {
 	public:
-		Label();
-		template<class T1>
-		Label(T1 t1) {
-			init();
-			CtorProcessor p;
-			p.process(*this, t1);
-		}
-		template<class T1, class T2>
-		Label(T1 t1, T2 t2) {
-			init();
-			CtorProcessor p;
-			p.process(*this, t1);
-			p.process(*this, t2);
-		}
-		template<class T1, class T2, class T3>
-		Label(T1 t1, T2 t2, T3 t3) {
-			init();
-			CtorProcessor p;
-			p.process(*this, t1);
-			p.process(*this, t2);
-			p.process(*this, t3);
+		template<typename ... Args>
+		Label(Args ... args): WidgetPropertyRedirects(new QLabel) {
+			d = staticCast<QLabel*>();
+			alignment.init(d);
+			indent.init(d);
+			margin.init(d);
+			openExternalLinks.init(d);
+			scaledContents.init(d);
+			text.init(d);
+			textFormat.init(d);
+			textInteractionFlags.init(d);
+			wordWrap.init(d);
+
+			CtorProcessorT<Label> p(*this);
+			p.process_(args...);
 		}
 		void set(const QImage & img);
 		void set(const QPixmap& img);
@@ -46,7 +39,4 @@ class Label: public WidgetPropertyRedirects {
 		PROPERTY_REDIRECTV(QLabel, bool, wordWrap, wordWrap, setWordWrap);
 
 		EMBED_QPOINTER_AND_CAST(QLabel)
-	protected:
-		void init();//C++11 ctor
-		typedef CtorProcessorT<Label> CtorProcessor;
 };

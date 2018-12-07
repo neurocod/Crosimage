@@ -82,7 +82,8 @@ void ThumbDirPainter::concatAndWriteAllImages(QString path, const QList<QImage> 
 			int xx = x*CrSettings::inst()._thumbW;
 			int yy = y*CrSettings::inst()._thumbH;
 			painter.drawImage(xx, yy, rets[nImage]);
-			painter.drawText(xx, yy+CrSettings::inst()._thumbH/4, toString(goodPixels(rets[nImage])));
+			QString str = QString::number(goodPixels(rets[nImage]));
+			painter.drawText(xx, yy+CrSettings::inst()._thumbH/4, str);
 			if(keyImage==nImage)
 				painter.drawRect(QRect(xx, yy, CrSettings::inst()._thumbW, CrSettings::inst()._thumbH));
 			nImage++;

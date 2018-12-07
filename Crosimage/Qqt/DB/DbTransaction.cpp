@@ -18,15 +18,17 @@ DbTransaction::~DbTransaction() {
 	}
 }
 const StringStatus & DbTransaction::status()const {
-	return _db->_transaction.status;
+	return _db->_transaction;
 }
-bool DbTransaction::maybeCommit() {
-	_db->maybeCommit();
-	return status().ok();
+StringStatus DbTransaction::maybeCommit() {
+	auto s = _db->maybeCommit();
+	if(!s.ok())
+		return s;
+	return status();
 }
-bool DbTransaction::rollback() {
+StringStatus DbTransaction::rollback() {
 	_db->rollback();
-	return status().ok();
+	return status();
 }
 bool DbTransaction::startedAndOk()const {
 	return _db->_transaction.startedAndOk();

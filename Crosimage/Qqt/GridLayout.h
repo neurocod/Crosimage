@@ -1,14 +1,11 @@
-//GridLayout.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//GridLayout.h by Kostya Kozachuck as neurocod - 11.03.2012 21:00:45
 #pragma once
 
-//TODO: QLayout
 class GridLayout: public Layout {
+	MAYBE_SUPER(Layout)
 	public:
-		GridLayout();
-		virtual ~GridLayout() {}
-
+		GridLayout(): Layout(new QGridLayout) {
+			d = staticCast<QGridLayout*>();
+		}
 		EMBED_QPOINTER_AND_CAST(QGridLayout)
-	protected:
-		void init();
 };

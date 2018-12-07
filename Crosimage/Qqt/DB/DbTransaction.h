@@ -9,8 +9,8 @@ class DbTransaction {
 		DbTransaction(DbWorker & db);//starts transaction on db
 		virtual ~DbTransaction();
 		const StringStatus & status()const;
-		bool maybeCommit();
-		bool rollback();
+		StringStatus maybeCommit();
+		StringStatus rollback();
 		bool startedAndOk()const;
 	protected:
 		DbWorker*_db;

@@ -11,9 +11,11 @@ void TxtLnkProcessor::shellExecute(const QString & path) {
 	QDesktopServices::openUrl(QUrl::fromLocalFile(path2));
 }
 QString TxtLnkProcessor::pathFromFile(const QString & path) {
-	QString pathRelative;
-	if(!FileReader::readUnicode(path, pathRelative))
+	auto read = FileReader::readUnicode(path);
+	if(!read.ok())
 		return path;
+	const QString & pathRelative = read._v;
+	
 	QFileInfo fileInfo(path);
 	QDir dir = fileInfo.dir();
 	if(!pathRelative.isEmpty()) {

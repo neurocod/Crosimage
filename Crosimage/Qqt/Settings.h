@@ -6,7 +6,7 @@
 class Settings: public QSettings {
 	public:
 		Settings();
-		virtual ~Settings() {}
+		Settings(const QString& path);
 
 		template<typename T>
 		void save(const QString & key, const T & t) {
@@ -43,6 +43,8 @@ class Settings: public QSettings {
 		void endGroup(QObject*p);
 		void beginGroups(const QStringList & li);
 		void endGroups(const QStringList & li);
+		void removeKeysCurrentGroup();
+#ifdef QT_WIDGETS_LIB
 		void updateValue(bool bSave, const QString & key, IN OUT QLineEdit*edit);
 		void updateValue(bool bSave, const QString & key, IN OUT QSpinBox*box);
 		void updateValue(bool bSave, const QString & key, IN OUT QSplitter*split);
@@ -50,6 +52,7 @@ class Settings: public QSettings {
 		void updateCheckState(bool bSave, const QString & key, IN OUT QAction*act);
 		void updateCheckState(bool bSave, const QString & key, IN OUT QCheckBox*box);
 		void updateCheckState(bool bSave, const QString & key, IN OUT QGroupBox*box);
+#endif
 		template<class T>
 		void updateCurrentIndex(bool bSave, const QString & key, IN OUT T*edit, const QVariant defaultValue = -1) {
 			ASSERT(edit);
@@ -60,6 +63,10 @@ class Settings: public QSettings {
 			}
 		}
 		void copyFrom(const QString & organization, const QString & application);
+};
+class IniSettings: public Settings {
+	public:
+		IniSettings();
 };
 class FileDialogLastDir {
 	public:

@@ -1,5 +1,4 @@
-﻿//preprocessor.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//preprocessor.h by Kostya Kozachuck as neurocod - 27.11.2007 21:31:17
 #pragma once
 
 #define EMBED_QPOINTER_AND_CAST(ClassName) public:\
@@ -7,7 +6,10 @@
 	inline const ClassName* operator->()const { return d; };\
 	inline operator ClassName*() { return d; }\
 	inline operator const ClassName*()const { return d; }\
-	protected: QPointer<ClassName> d;
+	protected: \
+	QPointer<ClassName> d;\
+	void operator=(const ClassName*) = delete;\
+	void operator=(const ClassName&) = delete;
 
 #ifndef FromUnicode
 #define FromUnicode(x) (QString::fromUtf16(reinterpret_cast<const ushort *>(x)))
@@ -52,6 +54,10 @@
 
 #ifndef LPVOID
 typedef void* LPVOID;
+#endif
+
+#ifndef _countof
+#define _countof(arr) (sizeof(arr) / sizeof((arr)[0]))
 #endif
 
 #ifndef offsetofclass
@@ -107,17 +113,6 @@ typedef long							LONG;
 typedef const char *LPCSTR, *PCSTR;
 typedef const wchar_t *LPCWSTR, *PCWSTR;
 
-#ifndef UINT64
-typedef quint64 UINT64;
-typedef quint32 UINT32;
-typedef quint16 UINT16;
-typedef unsigned char UCHAR;
-#endif
-
-#ifndef interface
-#define interface struct
-#endif
-
 /*#ifndef ASSERT
 #define ASSERT(x) Q_ASSERT(x)
 #endif*/
@@ -128,6 +123,14 @@ void assertWithFunc(const char *assertion, const char *file, const char *func, i
 #  else
 #    define ASSERT(cond) qt_noop()
 #  endif
+#endif
+
+#ifndef WTF
+#define WTF ASSERT(0)
+#endif
+
+#ifndef WIP//Work In Progress
+#define WIP ASSERT(0)
 #endif
 
 /*INDEX_OF_EXPR usage example:

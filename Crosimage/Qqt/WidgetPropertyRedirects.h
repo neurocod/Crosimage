@@ -1,12 +1,53 @@
-//WidgetPropertyRedirects.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//WidgetPropertyRedirects.h by Kostya Kozachuck as neurocod - 16.09.2011 2:05:57
 #pragma once
 
 class WidgetPropertyRedirects: public ObjectPropertyRedirects {
+	MAYBE_SUPER(ObjectPropertyRedirects)
 	public:
-		WidgetPropertyRedirects();
-		virtual ~WidgetPropertyRedirects() {}
-		void init(QWidget*w);
+		inline QWidget* operator->() { return acceptDrops.destination(); };
+		inline const QWidget* operator->()const { return acceptDrops.destination(); };
+		WidgetPropertyRedirects(QWidget*d): ObjectPropertyRedirects(d) {
+			maximumWidth.init(d);
+			acceptDrops.init(d);
+			accessibleDescription.init(d);
+			accessibleName.init(d);
+			autoFillBackground.init(d);
+			baseSize.init(d);
+			contextMenuPolicy.init(d);
+			cursor.init(d);
+			enabled.init(d);
+			focusPolicy.init(d);
+			font.init(d);
+			geometry.init(d);
+			inputMethodHints.init(d);
+			layoutDirection.init(d);
+			locale.init(d);
+			maximumHeight.init(d);
+			maximumSize.init(d);
+			minimumHeight.init(d);
+			minimumSize.init(d);
+			minimumWidth.init(d);
+			mouseTracking.init(d);
+			palette.init(d);
+			pos.init(d);
+			size.init(d);
+			sizeIncrement.init(d);
+			sizePolicy.init(d);
+			statusTip.init(d);
+			styleSheet.init(d);
+			toolTip.init(d);
+			updatesEnabled.init(d);
+			visible.init(d);
+			whatsThis.init(d);
+			windowFilePath.init(d);
+			windowFlags.init(d);
+			windowIcon.init(d);
+			windowIconText.init(d);
+			windowModality.init(d);
+			windowModified.init(d);
+			windowOpacity.init(d);
+			windowTitle.init(d);
+		}
 
 		PROPERTY_REDIRECTV(QWidget, int, maximumWidth, maximumWidth, setMaximumWidth);
 		PROPERTY_REDIRECTV(QWidget, bool, acceptDrops, acceptDrops, setAcceptDrops);

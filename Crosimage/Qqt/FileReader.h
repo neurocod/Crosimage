@@ -1,13 +1,14 @@
-//FileReader.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//FileReader.h by Kostya Kozachuck as neurocod - 21.10.2011 12:26:28
 #pragma once
+#include "StringStatus.h"
 
 class FileReader {
 	public:
-		static bool read(IN const QString & fileName, OUT QByteArray & arrFileData);
-		static bool readAscii(IN const QString & fileName, OUT QString & strFileData);
-		static bool readUnicode(IN const QString & fileName, OUT QString & strFileData);
-		static bool readResourceFile(IN const QString & fileName, OUT QByteArray & arrFileData);
-		static void reportError(QFile & file);
-		static void reportError(QString file, QString error);
+		static ReadStatusT<QByteArray> read(IN const QString & fileName);
+		static ReadStatusV<QString> readAscii(const QString & fileName);
+		static ReadStatusV<QString> readUnicode(const QString & fileName);
+		static ReadStatusT<QByteArray> readResourceFile(const QString & fileName);
+		static ReadStatusV<QString> readResourceToString(const QString & fileName);
+		static ReadStatus formatError(const QFile & file);
+		static ReadStatus formatError(const QString & file, const QString & error);
 };

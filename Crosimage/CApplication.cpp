@@ -36,15 +36,15 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	ThumbWorker::instance();
 	ThumbCache::instance();
 	{
-		Action a("Quit", QKeySequence("Alt+E"));
+		Action a(tr("Quit"), QKeySequence("Alt+E"));
 		a.shortcutContext = Qt::ApplicationShortcut;
-		a.connectClicks(qApp, SLOT(quit()));
+		a.connectClicks(qApp, &QApplication::quit);
 		_quitAction = a;
 	}
 	{
 		Action a(tr("Windows manager"), QKeySequence("Ctrl+Tab"));
 		_actShowAltTab = a;
-		a.connectClicks(this, SLOT(showAltTab()));
+		a.connectClicks(this, &CApplication::showAltTab);
 	}
 	qRegisterMetaType<QDir>("QDir");
 	{
@@ -66,7 +66,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 			li << new CMainWindow();
 		}
 		CMainWindow::s_loadingComplete = true;
-		li = reversed(li);
+		std::reverse(li);
 		for(auto w: li) {
 			setActiveWindow(w);
 			processEvents();

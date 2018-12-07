@@ -1,11 +1,8 @@
-//AbstractButtonPropertyRedirects.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//AbstractButtonPropertyRedirects.cpp by Kostya Kozachuck as neurocod - 16.09.2011 1:16:38
 #include "pch.h"
 #include "AbstractButtonPropertyRedirects.h"
 
-void AbstractButtonPropertyRedirects::init(QAbstractButton*d) {
-	WidgetPropertyRedirects::init(d);
-
+AbstractButtonPropertyRedirects::AbstractButtonPropertyRedirects(QAbstractButton*d): WidgetPropertyRedirects(d) {
 	autoExclusive.init(d);
 	autoRepeat.init(d);
 	autoRepeatDelay.init(d);
@@ -18,15 +15,12 @@ void AbstractButtonPropertyRedirects::init(QAbstractButton*d) {
 	shortcut.init(d);
 	text.init(d);
 }
-void AbstractButtonPropertyRedirects::connectClicks(QObject*obj, const char* slot, Qt::ConnectionType type) {
+void AbstractButtonPropertyRedirects::connectClicksS(QObject*obj, const char* slot, Qt::ConnectionType type) {
 	QObject::connect(icon.destination(), SIGNAL(clicked(bool)), obj, slot, type);
 }
 void AbstractButtonPropertyRedirects::set(const QIcon & i) {
 	icon = i;
 }
-/*void AbstractButtonPropertyRedirects::setTooltipByShortcut() {
-	tooltip = QObject::tr("Shortcut: %1").arg();
-}*/
 void AbstractButtonPropertyRedirects::addShortcutToTooltip() {
 	QKeySequence keySeq = shortcut;
 	QString key = keySeq.toString();

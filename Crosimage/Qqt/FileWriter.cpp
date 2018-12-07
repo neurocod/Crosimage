@@ -1,46 +1,42 @@
-//FileWriter.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//FileWriter.cpp by Kostya Kozachuck as neurocod - 22.10.2011 18:07:19
 #include "pch.h"
 #include "FileWriter.h"
 
-bool FileWriter::write(IN const QString & strFileName, IN const QByteArray& arr) {
-	QFile file(strFileName);
-	if(file.open(QIODevice::WriteOnly)) {
-		file.write(arr);
-		file.close();
-		return true;
-	}
-	QString msg(
-		QString("Error writing file '%1': %2\n")
-		.arg(strFileName)
-		.arg(file.errorString())
-		);
-	qWarning() << msg;
-	return false;
+WriteStatus FileWriter::write(IN const QString & fileName, IN const QByteArray& arr) {
+	QFile file(fileName);
+	if(!file.open(QIODevice::WriteOnly))
+		return formatError(fileName, file.errorString());
+	file.write(arr);
+	file.close();
+	return true;
 }
-bool FileWriter::writeAscii(IN const QString & strFileName,
+WriteStatus FileWriter::write8bit(IN const QString & fileName,
 						IN const QString & strFileData) {
-	return write(strFileName,
-		strFileData.toLocal8Bit()
-		//file.write(strFileData.toAscii());
-		);
+	return write(fileName, strFileData.toLocal8Bit());
 }
-bool FileWriter::writeUnicode(IN  const QString & strFileName,
-											IN const QString & strFileData) {
-	QFile file(strFileName);
-	if(file.open(QIODevice::WriteOnly)) {
-		QTextStream stream(&file);
-		stream.setCodec("UTF-16");
-		stream.setGenerateByteOrderMark(true);
-		stream << strFileData;
-		file.close();
-		return true;
+WriteStatus FileWriter::writeUnicode(IN const QString & fileName, IN const QString & contents, const char*codec) {
+	QFile file(fileName);
+	if(!file.open(QIODevice::WriteOnly))
+		return formatError(fileName, file.errorString());
+	QTextStream stream(&file);
+	stream.setCodec(codec);
+	stream.setGenerateByteOrderMark(true);
+	stream << contents;
+	file.close();
+	return true;
+}
+WriteStatus FileWriter::removeFile(const QString & path) {
+	QFileInfo info(path);
+	if(info.exists() && info.isFile()) {
+		return info.dir().remove(info.fileName());
 	}
-	QString msg(
-		QString("Error writing file '%1': %2\n")
-		.arg(strFileName)
-		.arg(file.errorString())
-		);
-	qWarning() << msg;
-	return false;
+	return WriteStatus(QObject::tr("Can't remove file %1").arg(path));
+}
+WriteStatus FileWriter::formatError(const QString & file, const QString & error) {
+	return WriteStatus(QObject::tr("Error writing file '%1': %2").arg(file).arg(error));
+}
+WriteStatus FileWriter::formatError(const QFile & file) {
+	if(file.error()==QFile::NoError)
+		return true;
+	return formatError(file.fileName(), file.errorString());
 }

@@ -1,19 +1,12 @@
-//AbstractButtonPropertyRedirects.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//AbstractButtonPropertyRedirects.h by Kostya Kozachuck as neurocod - 16.09.2011 1:16:37
 #pragma once
 
 class AbstractButtonPropertyRedirects: public WidgetPropertyRedirects {
 	public:
-		void set(const QIcon & i);
-		void connectClicks(QObject*obj, const char* slot, Qt::ConnectionType type = Qt::AutoConnection);
-		template<class T1, class T2>
-		void connectClicksT(T1*receiver, const T2 slot, Qt::ConnectionType type = Qt::AutoConnection) {
-			QAbstractButton* btn = icon.destination();
-			QObject::connect(btn, &QAbstractButton::clicked, receiver, slot, type);
-		}
-		void addShortcutToTooltip();
+		AbstractButtonPropertyRedirects(QAbstractButton*d);
+
 		PROPERTY_REDIRECTV(QAbstractButton, bool, autoExclusive, autoExclusive, setAutoExclusive);
-		PROPERTY_REDIRECTV(QAbstractButton, bool, autoRepeat, autoRepeat, setAutoRepeat)
+		PROPERTY_REDIRECTV(QAbstractButton, bool, autoRepeat, autoRepeat, setAutoRepeat);
 		PROPERTY_REDIRECTV(QAbstractButton, int, autoRepeatDelay, autoRepeatDelay, setAutoRepeatDelay);
 		PROPERTY_REDIRECTV(QAbstractButton, int, autoRepeatInterval, autoRepeatInterval, setAutoRepeatInterval);
 		PROPERTY_REDIRECTV(QAbstractButton, bool, checkable, isCheckable, setCheckable);
@@ -23,5 +16,23 @@ class AbstractButtonPropertyRedirects: public WidgetPropertyRedirects {
 		PROPERTY_REDIRECT (QAbstractButton, QSize, iconSize, iconSize, setIconSize);
 		PROPERTY_REDIRECT (QAbstractButton, QKeySequence, shortcut, shortcut, setShortcut);
 		PROPERTY_REDIRECT (QAbstractButton, QString, text, text, setText);
-		void init(QAbstractButton*d);
+
+		void set(const QIcon & i);
+		void connectClicksS(QObject*obj, const char* slot, Qt::ConnectionType type = Qt::AutoConnection);
+		template<class T1, class T2>
+		void connectClicks(T1*receiver, const T2 slot, Qt::ConnectionType type = Qt::AutoConnection) {
+			QAbstractButton* btn = icon.destination();
+			QObject::connect(btn, &QAbstractButton::clicked, receiver, slot, type);
+		}
+		template<class T1>
+		void connectClicksF(T1 functor) {
+			QAbstractButton* btn = icon.destination();
+			QObject::connect(btn, &QAbstractButton::clicked, functor);
+		}
+		template<class T1, class T2>
+		void connectClicksF(T1 obj, T2 functor) {
+			QAbstractButton* btn = icon.destination();
+			QObject::connect(btn, &QAbstractButton::clicked, obj, functor);
+		}
+		void addShortcutToTooltip();
 };

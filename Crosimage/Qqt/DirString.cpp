@@ -1,21 +1,20 @@
-//DirString.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//DirString.cpp by Kostya Kozachuck as neurocod - 12.08.2011 18:28:31
 #include "pch.h"
 #include "DirString.h"
 
 DirString::DirString() {
 }
-DirString::DirString(const QString & path): m_str(path) {
+DirString::DirString(const QString & path): _str(path) {
 	correctSlash();
 }
 void DirString::correctSlash() {
-	if(!m_str.isEmpty() && !m_str.endsWith('/'))
-		m_str += '/';
+	if(!_str.isEmpty() && !_str.endsWith('/'))
+		_str += '/';
 }
 //static
 int DirString::length(const QStringList & li) {
 	int len = 0;
-	foreach(QString str, li) {
+	for(auto str: li) {
 		len += str.length();
 		if(!str.endsWith('/'))
 			len++;
@@ -23,15 +22,21 @@ int DirString::length(const QStringList & li) {
 	return len;
 }
 bool DirString::isEmpty()const {
-	return m_str.isEmpty();
+	return _str.isEmpty();
 }
-DirString& DirString::operator+=(QString str) {
+DirString& DirString::operator+=(const QString & str) {
 	if(!isEmpty() &&
 		(str.startsWith('/') || str.startsWith('\\'))
 	) {
-		m_str.remove(0, 1);
+		_str.remove(0, 1);
 	}
-	m_str += str;
+	_str += str;
 	correctSlash();
 	return *this;
+}
+QString DirString::visualStudioSolutionDir() {//static
+	QDir dir = QCoreApplication::applicationDirPath();//Debug/Release
+	dir.cdUp();//x64/Win32
+	dir.cdUp();//solution
+	return dir.absolutePath();
 }

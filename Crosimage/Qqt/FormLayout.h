@@ -1,14 +1,27 @@
-//FormLayout.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//FormLayout.h by Kostya Kozachuck as neurocod - 28.06.2012 21:59:10
 #pragma once
 #include "Layout.h"
 
 class FormLayout: public Layout {
 	public:
-		FormLayout(QWidget * parent = 0);
-		FormLayout(QBoxLayout*parent);
-		virtual ~FormLayout() {}
+		FormLayout(): Layout(new QFormLayout()) {
+			d = staticCast<QFormLayout*>();
 
+			fieldGrowthPolicy.init(d);
+			formAlignment.init(d);
+			horizontalSpacing.init(d);
+			labelAlignment.init(d);
+			rowWrapPolicy.init(d);
+			verticalSpacing.init(d);
+		}
+		FormLayout(QWidget*parent): FormLayout() {
+			parent->setLayout(d);
+		}
+		FormLayout(QBoxLayout*parent): FormLayout() {
+			parent->addLayout(d);
+		}
+
+		QLabel* addHtmlRow(const QString & strHtml, QWidget *field=0);
 		FormLayout& operator << (QWidget*w);
 		FormLayout& operator << (const QString & str);
 

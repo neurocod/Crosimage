@@ -1,5 +1,4 @@
-//Widget.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//Widget.h by Kostya Kozachuck as neurocod - 16.09.2011 18:53:44
 #pragma once
 
 template<class T>
@@ -16,9 +15,13 @@ T* parentT(const QObject*_p) {
 }
 class Widget: public WidgetPropertyRedirects {
 	public:
-		Widget(QWidget*parent=0);
-		virtual ~Widget() {}
-
+		Widget(QWidget*parent = 0) : WidgetPropertyRedirects(new QWidget(parent)) {
+			d = staticCast<QWidget*>();
+		}
+		static qreal dpiScale();//hi dpi on current monitor to standart low dpi
+		static int mapDpi(int pixelsLowDpi);
+		static qreal mapDpi(qreal pixelsLowDpi);
+		static QRect mapToGlobal(QWidget*w, const QRect & r);
 		template<class T>
 		static T* findParentWidgetByClass(QWidget*w) {
 			for(; w; w = w->parentWidget()) {
@@ -31,3 +34,5 @@ class Widget: public WidgetPropertyRedirects {
 
 		EMBED_QPOINTER_AND_CAST(QWidget)
 };
+void setWindowTitleDebug(QWidget*w, const QString & str);
+void setWindowTitleDebug(QWidget*w, const QString & str, const char*function);

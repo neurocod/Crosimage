@@ -1,28 +1,43 @@
-//Action.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//Action.h by Kostya Kozachuck as neurocod - 11.11.2011 22:08:22
 #pragma once
 
-//TODO: C++11 use enum NoType { NoTypeValue }; and only one ctor with default arguments = NoTypeValue,
-//and move CtorProcessor to that ctor
 class Action {
 	public:
 		static void insertToBegin(QWidget*w, QAction*act);
 		static void insertToBegin(QWidget*w, const QList<QAction*> & lact);
-		void operator=(QAction*a);
-		Action() {}//this ctor is to use operator= later
-		Action(QObject * parent);
-		Action(QAction*act);
-		//all template ctors parameters need either QIcon, QString for text and QString fot tooltip in any order
-		template<class T1>
-		Action(T1 p1);
-		template<class T1, class T2>
-		Action(T1 p1, const T2 & p2);
-		template<class T1, class T2, class T3>
-		Action(T1 p1, const T2 & p2, const T3 & p3);
-		template<class T1, class T2, class T3, class T4>
-		Action(T1 p1, const T2 & p2, const T3 & p3, const T4 & p4);
+		template<typename... Args>
+		Action(Args...args) {
+			d = new QAction(0);
+			toolTip.init(d);
+			autoRepeat.init(d);
+			checkable.init(d);
+			checked.init(d);
+			enabled.init(d);
+			iconVisibleInMenu.init(d);
+			visible.init(d);
+			menuRole.init(d);
+			priority.init(d);
+			shortcutContext.init(d);
+			shortcut.init(d);
+			shortcuts.init(d);
+			font.init(d);
+			icon.init(d);
+			iconText.init(d);
+			statusTip.init(d);
+			text.init(d);
+			whatsThis.init(d);
+			separator.init(d);
+
+			CtorProcessor p(*this);
+			p.process_(args...);
+		}
 		virtual ~Action() {}
-		void connectClicks(QObject*obj, const char* slot, Qt::ConnectionType conn=Qt::AutoConnection);
+		void connectClicksS(QObject*obj, const char* slot, Qt::ConnectionType conn=Qt::AutoConnection);
+		template<class T1, class T2>
+		void connectClicks(T1*receiver, const T2 slot, Qt::ConnectionType type = Qt::AutoConnection) {
+			QAction* btn = icon.destination();
+			QObject::connect(btn, &QAction::triggered, receiver, slot, type);
+		}
 
 		PROPERTY_REDIRECTV(QAction, bool, autoRepeat, autoRepeat, setAutoRepeat);
 		PROPERTY_REDIRECTV(QAction, bool, checkable, isCheckable, setCheckable);
@@ -44,41 +59,39 @@ class Action {
 		PROPERTY_REDIRECT (QAction, QString, toolTip, toolTip, setToolTip);
 		PROPERTY_REDIRECT (QAction, QString, whatsThis, whatsThis, setWhatsThis);
 
+		enum ActionFlags {
+			SetShortcutToTooltip = 1<<0,//This parameter must be somewhere after shorctuct parameter
+			SetCheckable = 1<<1,
+		};
+
 		void set(const QIcon & i) { d->setIcon(i); }
-		void operator=(const QKeySequence& _shortcut) { d->setShortcut(_shortcut); }
+		template<typename... Args>
+		void set(Args...args) {
+			CtorProcessor p(*this);
+			p.process_(args...);
+		}
+
+		struct CtorProcessor: public CtorProcessorT<Action> {
+			CtorProcessor(Action&d): CtorProcessorT(d) { }
+			using CtorProcessorT::process;
+			void process(ActionFlags t) {
+				if(t & SetShortcutToTooltip) {
+					QKeySequence seq = _d->shortcut();
+					if(seq.isEmpty())
+						return;
+					QString str = QObject::tr("Shortcut: %1").arg(seq.toString());
+					_d->setToolTip(str);
+				}
+				if(t & SetCheckable) {
+					_d->setCheckable(true);
+				}
+			}
+			void process_() { }
+			template<class Arg, typename ... Args>
+			void process_(Arg arg, Args...args) {
+				process(arg);
+				process_(args...);
+			}
+		};
 		EMBED_QPOINTER_AND_CAST(QAction);
-	protected:
-		void init(QAction*_d=0);//C++11 ctor
-	private:
-		typedef CtorProcessorT<Action> CtorProcessor;
 };
-template<class T1>
-Action::Action(T1 p1) {
-	init();
-	CtorProcessor p;
-	p.process(*this, p1);
-}
-template<class T1, class T2>
-Action::Action(T1 p1, const T2 & p2) {
-	init();
-	CtorProcessor p;
-	p.process(*this, p1);
-	p.process(*this, p2);
-}
-template<class T1, class T2, class T3>
-Action::Action(T1 p1, const T2 & p2, const T3 & p3) {
-	init();
-	CtorProcessor p;
-	p.process(*this, p1);
-	p.process(*this, p2);
-	p.process(*this, p3);
-}
-template<class T1, class T2, class T3, class T4>
-Action::Action(T1 p1, const T2 & p2, const T3 & p3, const T4 & p4) {
-	init();
-	CtorProcessor p;
-	p.process(*this, p1);
-	p.process(*this, p2);
-	p.process(*this, p3);
-	p.process(*this, p4);
-}

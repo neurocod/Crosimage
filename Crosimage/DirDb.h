@@ -25,7 +25,7 @@ class DirDb: public SqliteDb {
 		PreparedSqlQuery _qThumbSetRating;
 
 		virtual ReadStatus connectToDbOnce()override;
-		bool maybeInstallDb();
+		StringStatus maybeInstallDb();
 		ReadStatus readAllToCache();
 		struct Item {
 			Item(const QString & name): _name(name) { }

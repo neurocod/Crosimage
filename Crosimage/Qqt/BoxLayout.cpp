@@ -1,12 +1,13 @@
-//BoxLayout.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//BoxLayout.cpp by Kostya Kozachuck as neurocod - 19.07.2011 9:47:17
 #include "pch.h"
 #include "BoxLayout.h"
 
-BoxLayout::BoxLayout() {
-}
 BoxLayout& BoxLayout::operator<<(QWidget*w) {
 	d->addWidget(w);
+	return *this;
+}
+BoxLayout& BoxLayout::operator<<(QWidget&w) {
+	d->addWidget(&w);
 	return *this;
 }
 BoxLayout& BoxLayout::operator<<(QLayout*l) {
@@ -17,8 +18,13 @@ BoxLayout& BoxLayout::operator<<(QLayoutItem * item) {
 	d->addItem(item);
 	return *this;
 }
+QLabel* BoxLayout::addLabel(const QString & str) {
+	auto ret = new QLabel(str);
+	*this << ret;
+	return ret;
+}
 BoxLayout& BoxLayout::operator<<(const QString & str) {
-	*this << new QLabel(str);
+	addLabel(str);
 	return *this;
 }
 void BoxLayout::setCompact() {
@@ -30,8 +36,4 @@ void BoxLayout::insertStretch(int index, int stretch) {
 }
 void BoxLayout::addStretch(int stretch) {
 	d->addStretch(stretch);
-}
-void BoxLayout::init(QBoxLayout*_d) {
-	d = _d;
-	__super::init(d);
 }

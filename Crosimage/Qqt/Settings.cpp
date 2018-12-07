@@ -2,17 +2,18 @@
 #include "pch.h"
 #include "Settings.h"
 
+Settings::Settings(const QString& path): QSettings(path, QSettings::IniFormat)
+{
+}
 Settings::Settings() {
 	if(QCoreApplication::applicationName().isEmpty()
-		|| QCoreApplication::organizationName().isEmpty()
-		//QCoreApplication::organizationDomain().isEmpty()
-		//QCoreApplication::applicationVersion
-		)
+	   || QCoreApplication::organizationName().isEmpty())
 	{
-		msgBox(tr("Forget to set application strings"));
+		qDebug() << tr("Forgot to set application strings");
 		ASSERT(0);
 	}
 }
+#ifdef QT_WIDGETS_LIB
 void Settings::updateValue(bool bSave, const QString & key, IN OUT QLineEdit*edit) {
 	ASSERT(edit);
 	if(bSave) {
@@ -75,6 +76,7 @@ void Settings::updateCheckState(bool bSave, const QString & key, IN OUT QGroupBo
 			box->setChecked(value(key).toBool());
 	}
 }
+#endif
 void Settings::beginGroup(QObject*p) {
 	ASSERT(p);
 	if(!p)
@@ -92,17 +94,17 @@ void Settings::endGroup(QObject*p) {
 	endGroup();
 }
 void Settings::beginGroups(const QStringList & li) {
-	for(auto str: li)
+	for(auto & str: li)
 		beginGroup(str);
 }
 void Settings::endGroups(const QStringList & li) {
-	for(auto str: li)
+	for(auto & str: li)
 		endGroup();
 }
 void Settings::copyFrom(const QString & organization, const QString & application) {
 	QSettings sett(organization, application);
 	auto li = sett.allKeys();
-	for(auto strKey: li) {
+	for(auto & strKey: li) {
 		auto v = sett.value(strKey);
 		save(strKey, v);
 	}
@@ -112,11 +114,14 @@ QVariant Settings::singleValue(const QString & name, const QVariant & defaultVal
 	Settings sett;
 	return sett.value(name, defaultValue);
 }
+void Settings::removeKeysCurrentGroup() {
+	remove(QString());
+}
 QString FileDialogLastDir::dir;
 QString FileDialogLastDir::get(const QString & key) {
 	if(dir.isEmpty()) {
 		Settings sett;
-		sett.load("FileDialogLastDir"+key, dir);
+		sett.load(QStringLiteral("FileDialogLastDir")+key, dir);
 	}
 	return dir;
 }
@@ -128,4 +133,9 @@ void FileDialogLastDir::set(const QString & key, const QString & _file) {
 	dir = file;
 	Settings sett;
 	sett.save("FileDialogLastDir"+key, dir);
+}
+IniSettings::IniSettings(): Settings(
+		QDir(QCoreApplication::applicationDirPath())
+		.filePath(QFileInfo(QCoreApplication::applicationFilePath()).baseName() + ".ini"))
+{
 }

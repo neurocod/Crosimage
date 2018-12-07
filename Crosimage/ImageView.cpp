@@ -16,7 +16,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 	ASSERT(info.dir().absolutePath()==parent->dir().absolutePath());
 	setAttribute(Qt::WA_DeleteOnClose);
 	showFullScreen();
-	connect(parent, SIGNAL(modelReset()), SLOT(onModelReset()) );
+	connect(parent, &ThumbModel::modelReset, this, &ImageView::onModelReset);
 	_files = _parent->files();
 	removeUnsupportedFiles();
 	_indexInParent = _files.indexOf(info.absoluteFilePath());
@@ -28,23 +28,23 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		setMouseTracking(true);
 		_timeMouseMoved = QTime::currentTime();
 		New<QTimer> timer(this);
-		connect(timer, SIGNAL(timeout()), SLOT(onTimer()) );
+		connect(timer, &QTimer::timeout, this, &ImageView::onTimer);
 		timer->start(500);
 	}
 	{
 		Action a(tr("Copy path"), QKeySequence("Ctrl+C"));
-		a.connectClicks(this, SLOT(copyPath()));
+		a.connectClicks(this, &ImageView::copyPath);
 		addAction(a);
 	}
 	{
 		Action a(tr("Open linked file"));
-		a.connectClicks(this, SLOT(openLinkedFile()));
+		a.connectClicks(this, &ImageView::openLinkedFile);
 		_actOpenLinkedFile = a;
 		addAction(a);
 	}
 	{
 		Action a(tr("Close this window"), QList<QKeySequence>() << QKeySequence("Esc") << QKeySequence("Alt+Up"));
-		a.connectClicks(this, SLOT(close()));
+		a.connectClicks(this, &ImageView::close);
 		addAction(a);
 	}
 	{
@@ -126,17 +126,17 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 	}
 	{
 		Action a(tr("View externally"), QList<QKeySequence>() << QKeySequence("F3") << QKeySequence("Alt+1"));
-		a.connectClicks(this, SLOT(viewExternally()));
+		a.connectClicks(this, &ImageView::viewExternally);
 		addAction(a);
 	}
 	{
 		Action a(tr("Edit externally"), QKeySequence("Alt+2"));
-		a.connectClicks(this, SLOT(editExternally()));
+		a.connectClicks(this, &ImageView::editExternally);
 		addAction(a);
 	}
 	{
 		Action a(tr("Open in explorer"), QKeySequence("Alt+3"), QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-open-32.png"));
-		a.connectClicks(this, SLOT(openInExplorer()));
+		a.connectClicks(this, &ImageView::openInExplorer);
 		addAction(a);
 	}
 	{

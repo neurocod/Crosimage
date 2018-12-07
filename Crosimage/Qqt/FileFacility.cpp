@@ -1,5 +1,4 @@
-//FileFacility.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//FileFacility.cpp by Kostya Kozachuck as neurocod - 03.07.2010 13:34:47
 #include "pch.h"
 #include "FileFacility.h"
 #include "DirString.h"
@@ -13,7 +12,7 @@ bool FileFacility::createDirForFile(const QString & strFile) {
 	QString strPath = strFile.left(pos);
 	return QDir().mkpath(strPath);
 }
-bool serializationCheck(bool bSave, QDataStream & stream, QString strCheck) {
+bool FileFacility::serializationCheck(bool bSave, QDataStream & stream, QString strCheck) {
 	if(stream.status()!=QDataStream::Ok)
 		return false;
 	const QChar nMagicCheck = 0xf00d;//food
@@ -36,17 +35,16 @@ bool serializationCheck(bool bSave, QDataStream & stream, QString strCheck) {
 			if(!ret) {
 				QString strError = QObject::tr("Loading check failed: not found string '%1'\n")
 					.arg(strCheck);
-				msgBox(strError);
+				qCritical() << strError;
 			}
 		} else {
 			QString strError = QObject::tr("Loading check failed: not found number before string '%1'\n").arg(strCheck);
-			msgBox(strError);
+			qCritical() << strError;
 		}
 
 		return ret;
 	}
 }
-//static
 void FileFacility::showDirWithFile(const QString & dir, const QString & file) {
 	#ifdef Q_OS_WIN32
 		QString path = DirString(dir);
@@ -57,7 +55,6 @@ void FileFacility::showDirWithFile(const QString & dir, const QString & file) {
 		QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
 	#endif
 }
-//static
 void FileFacility::showDirWithFile(const QString & _path) {
 	QString path = _path;
 	path.replace('\\', '/');
@@ -72,53 +69,85 @@ void FileFacility::showDirWithFile(const QString & _path) {
 	}
 	showDirWithFile(dir, file);
 }
-//static
-void FileFacility::openInTextEdditor(const QString & strPath) {
-	//TODO: choose Program files, if no Notepad++ - use notepad
-	QString editorPathName = "C:/Program Files (x86)/Notepad++/notepad++.exe";
+void FileFacility::openInTextEditor(const QString & strPath, bool warnIfNotExists) {
+	if(warnIfNotExists) {
+		if(!QFile::exists(strPath)) {
+			qCritical() << tr("Warning: file %1 does not exist").arg(strPath);
+			return;
+		}
+	}
 	QStringList args;
 	args << strPath;
+#ifdef Q_OS_WIN
+	//TODO: choose Program files, if no Notepad++ - use notepad
+	QString editorPathName = "C:/Program Files (x86)/Notepad++/notepad++.exe";
 	/*if (lineNumber != -1) {
-		args << "-n" + Int32::toString(lineNumber);
+		args << "-n" + toString(lineNumber);
 	}*/
 	QProcess::startDetached("\"" + editorPathName + "\"", args);
+#else
+#ifdef QT_WIDGETS_LIB
+	QDesktopServices::openUrl(QUrl::fromLocalFile(strPath));
+#else
+	QProcess::startDetached("nano", args);
+#endif
+#endif
 }
-//static
 QString FileFacility::imageExtensionsForFileDialog(const QList<QByteArray> & li) {
-	static QHash<QString, QString> haNames;
-	if(haNames.isEmpty()) {
-		haNames["bmp"] = "Windows Bitmap";
-		haNames["gif"] = "Graphic Interchange Format (optional)";
-		haNames["jpg"] = "Joint Photographic Experts Group";
-		haNames["jpeg"] = "Joint Photographic Experts Group";
-		haNames["png"] = "Portable Network Graphics";
-		haNames["pbm"] = "Portable Bitmap";
-		haNames["pgm"] = "Portable Graymap";
-		haNames["ppm"] = "Portable Pixmap";
-		haNames["tiff"] = "Tagged Image File Format";
-		haNames["xbm"] = "X11 Bitmap";
-		haNames["xpm"] = "X11 Pixmap";
-		haNames["ico"] = "Windows icon";
-	}
+	struct Names: public QHash<QString, QString> {
+		Names() {
+			insert(QStringLiteral("bmp"), "Windows Bitmap");
+			insert(QStringLiteral("gif"), "Graphic Interchange Format (optional)");
+			insert(QStringLiteral("jpg"), "Joint Photographic Experts Group");
+			insert(QStringLiteral("jpeg"), "Joint Photographic Experts Group");
+			insert(QStringLiteral("png"), "Portable Network Graphics");
+			insert(QStringLiteral("pbm"), "Portable Bitmap");
+			insert(QStringLiteral("pgm"), "Portable Graymap");
+			insert(QStringLiteral("ppm"), "Portable Pixmap");
+			insert(QStringLiteral("tiff"), "Tagged Image File Format");
+			insert(QStringLiteral("xbm"), "X11 Bitmap");
+			insert(QStringLiteral("xpm"), "X11 Pixmap");
+			insert(QStringLiteral("ico"), "Windows icon");
+			insert(QStringLiteral("pdf"), "Adobe pdf");
+		}
+	};
+	static const Names names;
 	QString ret;
 
 	//Images (*.png *.xpm *.jpg);;
 	ret += tr("Images (");
-	foreach(QByteArray arr, li) {
+	for(QByteArray arr: li) {
 		ret += "*.";
 		ret += arr;
 		ret += " ";
 	}
 	ret.remove(ret.length()-1, 1);
 	ret += ");;";
-	//
-	foreach(QByteArray arr, li) {
+	for(QByteArray arr: li) {
 		QString ext = arr;
-		QString desc = haNames[ext];
+		QString desc = names[ext];
 		if(desc.isEmpty())
 			desc = tr("%1 files").arg(ext.toUpper());
 		ret += desc + QString(" (*.%1);;").arg(ext);
 	}
 	ret += tr("All files (*);;");
+	return ret;
+}
+QString FileFacility::formatDiskBytes(const quint64 bytes) {
+	static const QStringList names = {"B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"};
+	const quint64 divider = 1024;
+	QString ret;
+	quint64 rest = bytes;
+	for(int nPart = 0; nPart<names.size() && rest>0; nPart++) {
+		quint64 part = rest % divider;
+		rest /= divider;
+		ret.prepend(QString(" %1 %2").arg(part).arg(names[nPart]));
+	}
+	ret = ret.trimmed();
+	if(bytes>divider) {
+		ret.prepend(" (");
+		ret += ")";
+	}
+	ret.prepend(QString("%1 bytes").arg(bytes));
 	return ret;
 }

@@ -23,62 +23,62 @@ ThumbView::ThumbView(ThumbModel*m) {
 	verticalHeader()->hide();
 	setItemDelegate(new ThumbDelegate(m));
 	setModel(m);
-	connect(this, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(onDoubleClicked(const QModelIndex &)) );
-	connect(_model, SIGNAL(modelReset()), SLOT(onModelReset()) );
+	connect(this, &ThumbView::doubleClicked, this, &ThumbView::onDoubleClicked);
+	connect(_model, &ThumbModel::modelReset, this, &ThumbView::onModelReset);
 	{
 		Action a(tr("Show fullscreen"),
 			QList<QKeySequence>() << QKeySequence("F3") << QKeySequence("Enter") << QKeySequence("Return"));
-		a.connectClicks(this, SLOT(onDoubleClicked()));
+		a.connectClicks(this, &ThumbView::onDoubleClicked0);
 		addAction(a);
 	}
 	{
 		Action a(tr("View externally"), QKeySequence("Alt+1"));
-		a.connectClicks(this, SLOT(viewExternally()));
+		a.connectClicks(this, &ThumbView::viewExternally);
 		addAction(a);
 	}
 	{
 		Action a(tr("Edit externally"), QKeySequence("Alt+2"));
-		a.connectClicks(this, SLOT(editExternally()));
+		a.connectClicks(this, &ThumbView::editExternally);
 		addAction(a);
 	}
 	{
 		Action a(tr("Open in explorer"), QKeySequence("Alt+3"), QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-open-32.png"));
-		a.connectClicks(this, SLOT(openInExplorer()));
+		a.connectClicks(this, &ThumbView::openInExplorer);
 		addAction(a);
 	}
 	{
 		Action a(tr("Rebuild thumbnail"));
-		a.connectClicks(this, SLOT(rebuildThumbnail()));
+		a.connectClicks(this, &ThumbView::rebuildThumbnail);
 		addAction(a);
 	}
 	{
 		Action a(tr("Clear thumbnail"));
-		a.connectClicks(this, SLOT(clearThumbnail()));
+		a.connectClicks(this, &ThumbView::clearThumbnail);
 		addAction(a);
 	}
 	{
 		Action a(tr("Copy path"), QKeySequence("Ctrl+C"));
-		a.connectClicks(this, SLOT(copyPath()));
+		a.connectClicks(this, &ThumbView::copyPath);
 		addAction(a);
 	}
 	{
 		Action a(tr("New dir"), QList<QKeySequence>() << QKeySequence("F7") << QKeySequence("Ctrl+Shift+N"));
-		a.connectClicks(this, SLOT(newDir()));
+		a.connectClicks(this, &ThumbView::newDir);
 		addAction(a);
 	}
 	{
 		Action a(tr("Delete file"), QKeySequence("Shift+Del"));
-		a.connectClicks(this, SLOT(deleteFile()));
+		a.connectClicks(this, &ThumbView::deleteFile);
 		addAction(a);
 	}
 	{
 		Action a(tr("Move files..."), QKeySequence("F6"));
-		a.connectClicks(this, SLOT(moveFiles()));
+		a.connectClicks(this, &ThumbView::moveFiles);
 		addAction(a);
 	}
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
-void ThumbView::onDoubleClicked() {
+void ThumbView::onDoubleClicked0() {
 	onDoubleClicked(currentIndex());
 }
 void ThumbView::onDoubleClicked(const QModelIndex & index) {

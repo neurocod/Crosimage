@@ -1,5 +1,4 @@
-//CompactVBoxLayout.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//CompactVBoxLayout.cpp by Kostya Kozachuck as neurocod - 19.07.2011 9:47:14
 #include "pch.h"
 #include "CompactVBoxLayout.h"
 
@@ -14,6 +13,9 @@ CompactVBoxLayout::CompactVBoxLayout() {
 	setCompact();
 }
 CompactVBoxLayout::CompactVBoxLayout(QWidget*parent): VBoxLayout(parent) {
+	setCompact();
+}
+CompactVBoxLayout::CompactVBoxLayout(QWidget&parent) : VBoxLayout(parent) {
 	setCompact();
 }
 CompactVBoxLayout::CompactVBoxLayout(QBoxLayout*parent): VBoxLayout(parent) {

@@ -34,17 +34,3 @@ QSize CompactLineEdit::minimumSizeHint()const {
 	QSize sz = __super::minimumSizeHint();
 	return sz;
 }
-//________________________________________________________________
-QPixmap pixmapFromText(QString text, int w, int h, QColor clrText, int nFontSize) {
-	QPixmap pixmap(w, h);
-	pixmap.fill(Qt::transparent);
-	QPainter painter(&pixmap);
-	QFont font("MS Sans Serif", nFontSize, QFont::Normal);
-	painter.setFont(font);
-	painter.setPen(clrText);
-	painter.drawText(0, nFontSize, text);
-	return pixmap;
-}
-QPixmap pixmapFromText(QString text, int w, int h, QColor clrText) {
-	return pixmapFromText(text, w, h, clrText, h);
-}

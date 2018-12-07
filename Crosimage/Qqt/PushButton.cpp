@@ -1,15 +1,9 @@
-//PushButton.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//PushButton.cpp by Kostya Kozachuck as neurocod - 27.08.2011 21:20:17
 #include "pch.h"
 #include "PushButton.h"
 
-void PushButton::init() {
-	d = new QPushButton();
-	AbstractButtonPropertyRedirects::init(d);
-	defaultAction.init(this);
-}
 void PushButton::setDefaultAction(QAction *action) {
-	m_defaultAction = action;
+	_defaultAction = action;
     if (!action)
         return;
     d->setText(action->iconText());
@@ -26,5 +20,5 @@ void PushButton::setDefaultAction(QAction *action) {
     d->setCheckable(action->isCheckable());
     d->setChecked(action->isChecked());
     d->setEnabled(action->isEnabled());
-	QObject::connect(d, SIGNAL(clicked(bool)), action, SLOT(trigger()) );
+	QObject::connect(d, &QPushButton::clicked, action, &QAction::trigger);
 }

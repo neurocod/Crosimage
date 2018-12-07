@@ -1,20 +1,24 @@
-//Object.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//Object.h by Kostya Kozachuck as neurocod - 11.03.2012 21:18:52
 #pragma once
 
 class ObjectPropertyRedirects {
 	public:
-		ObjectPropertyRedirects() {}
+		ObjectPropertyRedirects(QObject*d) {
+			objectName.init(d);
+		}
 		virtual ~ObjectPropertyRedirects() {}
 
 		PROPERTY_REDIRECT(QObject, QString, objectName, objectName, setObjectName);
-	protected:
-		void init(QObject*d);
+		template<class T>
+		T staticCast() {
+			QObject*obj = objectName.destination();
+			return static_cast<T>(obj);
+		}
 };
 
 class Object: public ObjectPropertyRedirects {
+	MAYBE_SUPER(ObjectPropertyRedirects)
 	public:
 		Object(QObject*parent = 0);
-		virtual ~Object() {}
 		EMBED_QPOINTER_AND_CAST(QObject)
 };

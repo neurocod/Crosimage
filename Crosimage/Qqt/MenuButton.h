@@ -1,19 +1,14 @@
-﻿//MenuButton.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//MenuButton.h by Kostya Kozachuck as neurocod - 2014.04.25 18:09:35
 #pragma once
 
 class MenuButton {
-	protected:
-		ToolButton m_btn;
-		Menu _menu;//watch creation order!
-		bool m_bFirst;
+		ToolButton _btn;
+		Menu _menu;//keep created after _btn
 	public:
-		MenuButton(QWidget*parent=0): m_btn(parent), _menu(m_btn), m_bFirst(true)  {
-			m_btn->setMenu(_menu);
-			m_btn->setPopupMode(QToolButton::MenuButtonPopup);
-		}
-		operator QToolButton*() { return m_btn; }
-		QToolButton* operator->() { return m_btn; }
+		bool _setIconByFirstAction = true;
+		MenuButton(QWidget*parent = 0);
+		operator QToolButton*() { return _btn; }
+		QToolButton* operator->() { return _btn; }
 		MenuButton& operator << (QAction*act);
 		MenuButton& operator << (const QList<QAction *> & li);
 };

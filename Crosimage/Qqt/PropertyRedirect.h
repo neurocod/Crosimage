@@ -1,5 +1,4 @@
-//PropertyRedirect.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//PropertyRedirect.h by Kostya Kozachuck as neurocod - 28.08.2011 0:04:12
 #pragma once
 
 template<
@@ -7,8 +6,9 @@ template<
 	typename TValue,
 	TValue (TDestination::*GetMethod)()const,
 	void (TDestination::*SetMethod)(const TValue &)>
-class PropertyRedirect: public SerizlizableToQDataStream<TValue> {
+class PropertyRedirect: public SerializableToQDataStream<TValue> {
 	public:
+		typedef PropertyRedirect<TDestination, TValue, GetMethod, SetMethod> ThisClass;
 		virtual inline operator TValue()const {
 			const TDestination* d2 = d;
 			return (d2->*GetMethod)();
@@ -17,6 +17,9 @@ class PropertyRedirect: public SerizlizableToQDataStream<TValue> {
 			TDestination* d2 = d;
 			(d2->*SetMethod)(val);
 			return (TValue)*this;
+		}
+		inline TValue operator=(const ThisClass & other) {
+			return (*this) = (TValue)other;
 		}
 		void init(TDestination *_d) {
 			ASSERT(_d && !d);
@@ -33,8 +36,9 @@ template<
 	typename TValue,
 	TValue (TDestination::*GetMethod)()const,
 	void (TDestination::*SetMethod)(TValue val)>
-class PropertyRedirectV: public SerizlizableToQDataStream<TValue> {
+class PropertyRedirectV: public SerializableToQDataStream<TValue> {
 	public:
+		typedef PropertyRedirectV<TDestination, TValue, GetMethod, SetMethod> ThisClass;
 		inline operator TValue()const {
 			const TDestination* d2 = d;
 			return (d2->*GetMethod)();
@@ -43,6 +47,9 @@ class PropertyRedirectV: public SerizlizableToQDataStream<TValue> {
 			TDestination* d2 = d;
 			(d2->*SetMethod)(val);
 			return (TValue)*this;
+		}
+		inline TValue operator=(const ThisClass & other) {
+			return (*this) = (TValue)other;
 		}
 		void init(TDestination *_d) {
 			ASSERT(_d && !d);

@@ -1,11 +1,20 @@
-//AbstractSpinBoxPropertyRedirects.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//AbstractSpinBoxPropertyRedirects.h by Kostya Kozachuck as neurocod - 11.03.2012 20:19:10
 #pragma once
 
 class AbstractSpinBoxPropertyRedirects: public WidgetPropertyRedirects {
+	MAYBE_SUPER(WidgetPropertyRedirects)
 	public:
-		AbstractSpinBoxPropertyRedirects();
-		virtual ~AbstractSpinBoxPropertyRedirects() {}
+		AbstractSpinBoxPropertyRedirects(QAbstractSpinBox*d) : WidgetPropertyRedirects(d) {
+			accelerated.init(d);
+			alignment.init(d);
+			buttonSymbols.init(d);
+			correctionMode.init(d);
+			frame.init(d);
+			keyboardTracking.init(d);
+			readOnly.init(d);
+			specialValueText.init(d);
+			wrapping.init(d);
+		}
 
 		PROPERTY_REDIRECTV(QAbstractSpinBox, bool, accelerated, isAccelerated, setAccelerated);
 		//PROPERTY_REDIRECTV(QAbstractSpinBox, const bool, acceptableInput, acceptableInput);
@@ -18,6 +27,4 @@ class AbstractSpinBoxPropertyRedirects: public WidgetPropertyRedirects {
 		PROPERTY_REDIRECT (QAbstractSpinBox, QString, specialValueText, specialValueText, setSpecialValueText);
 		//PROPERTY_REDIRECTV(QAbstractSpinBox, const QString, text);
 		PROPERTY_REDIRECTV(QAbstractSpinBox, bool, wrapping, wrapping, setWrapping);
-	protected:
-		void init(QAbstractSpinBox*d);//C++11 ctor
 };

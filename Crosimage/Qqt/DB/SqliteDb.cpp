@@ -3,7 +3,7 @@
 #include "pch.h"
 #include "SqliteDb.h"
 
-SqliteDb::SqliteDb(QObject*parent): DbWorker(parent), _queryLastInsertedId(this, "SELECT last_insert_rowid()") {
+SqliteDb::SqliteDb(QObject*parent): DbWorker(parent), _queryLastInsertedId(*this, "SELECT last_insert_rowid()") {
 }
 QVariant SqliteDb::toVariantByteArray(const QDateTime & dt) { //static
 	QByteArray arr;
@@ -23,7 +23,7 @@ QDateTime SqliteDb::dateTimeFromVariant(const QVariant & v) { //static
 	return dt;
 }
 QVariant SqliteDb::lastInsertedId() {
-	if(!execOrTrace(_queryLastInsertedId)) {
+	if(!_queryLastInsertedId.execOrTrace().ok()) {
 		return QVariant();
 	}
 	if(!_queryLastInsertedId.next()) {

@@ -17,20 +17,20 @@ QString MicrosoftLnkReader::targetOrSame(const QString & path) {
 StringStatus MicrosoftLnkReader::loadAndParse(const QString & path) {
 	QFile file(path);
 	if(!file.open(QIODevice::ReadOnly))
-		return ReadStatus(false, file.errorString());
+		return ReadStatus(file.errorString());
 
 	QDataStream stream(&file);
 	stream.setByteOrder(QDataStream::LittleEndian);
 	stream >> _headerSize;
 	if(_headerSize!=CorrectHeaderSize)
-		return ReadStatus(false, QString("Unknown link signature: %1, correct is %2").arg(_headerSize).arg(CorrectHeaderSize));
+		return QString("Unknown link signature: %1, correct is %2").arg(_headerSize).arg(CorrectHeaderSize);
 
 	for(int i = 0; i<16; i++) {
 		quint8 ch;
 		stream >> ch;
 		_guid[i] = ch;
 		if(_guid[i]!=CorrectGuid[i])
-			return ReadStatus(false, "Incorrect guid");
+			return ReadStatus("Incorrect guid");
 	};
 
 	stream >> _shortcutFlags;

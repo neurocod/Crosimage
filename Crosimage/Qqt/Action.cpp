@@ -1,44 +1,8 @@
-//Action.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//Action.cpp by Kostya Kozachuck as neurocod - 11.11.2011 22:08:23
 #include "pch.h"
 #include "Action.h"
 
-void Action::operator=(QAction*a) {
-	ASSERT(!d);
-	init(a);
-}
-Action::Action(QAction* act) {
-	init(act);
-}
-Action::Action(QObject* parent) {
-	init();
-	d->setParent(parent);
-}
-void Action::init(QAction*_d) {
-	if(_d)
-		d = _d;
-	else
-		d = new QAction(0);
-	toolTip.init(d);
-	autoRepeat.init(d);
-	checkable.init(d);
-	checked.init(d);
-	enabled.init(d);
-	iconVisibleInMenu.init(d);
-	visible.init(d);
-	menuRole.init(d);
-	priority.init(d);
-	shortcutContext.init(d);
-	shortcut.init(d);
-	font.init(d);
-	icon.init(d);
-	iconText.init(d);
-	statusTip.init(d);
-	text.init(d);
-	whatsThis.init(d);
-	separator.init(d);
-}
-void Action::connectClicks(QObject*obj, const char* slot, Qt::ConnectionType conn) {
+void Action::connectClicksS(QObject*obj, const char* slot, Qt::ConnectionType conn) {
 	QObject::connect(d, SIGNAL(triggered(bool)), obj, slot, conn);
 }
 //static

@@ -46,53 +46,55 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 			label.font = f;
 			label.text = tr("wnd %1").arg(_nInst+1);
 			lay2 << label;
-			QTimer::singleShot(1000, label, SLOT(deleteLater()));
+			QTimer::singleShot(1000, label, &QLabel::deleteLater);
 		}
 		QSize szBtn(24, 24);
 
+		_menu._setIconByFirstAction = false;
+		_menu->setIcon(QIcon(":/qt-project.org/styles/commonstyle/images/viewdetailed-32.png"));
 		lay2 << _menu;
 
 		ToolButton btnGoUp("", tr("Parent dir"), QIcon(":/qt-project.org/styles/commonstyle/images/up-32.png"), QKeySequence("Alt+Up"));
 		btnGoUp.addShortcutToTooltip();
 		btnGoUp.iconSize = szBtn;
-		btnGoUp.connectClicks(this, SLOT(goUp()));
+		btnGoUp.connectClicks(this, &CMainWindow::goUp);
 		lay2 << btnGoUp;
 
 		ToolButton btnGoBack("", tr("Go back"), QKeySequence::Back, QIcon(":/qt-project.org/styles/commonstyle/images/left-32.png"));
 		btnGoBack.addShortcutToTooltip();
 		btnGoBack.iconSize = szBtn;
-		btnGoBack.connectClicks(this, SLOT(goBack()));
+		btnGoBack.connectClicks(this, &CMainWindow::goBack);
 		lay2 << btnGoBack;
 
 		ToolButton btnGoFwd("", tr("Go forward"), QKeySequence::Forward, QIcon(":/qt-project.org/styles/commonstyle/images/right-32.png"));
 		btnGoFwd.addShortcutToTooltip();
 		btnGoFwd.iconSize = szBtn;
-		btnGoFwd.connectClicks(this, SLOT(goFwd()));
+		btnGoFwd.connectClicks(this, &CMainWindow::goFwd);
 		lay2 << btnGoFwd;
 
 		ToolButton btnRefresh("", tr("Refresh"), QKeySequence("F5"), QIcon(":/qt-project.org/styles/commonstyle/images/refresh-32.png"));
 		btnRefresh.addShortcutToTooltip();
 		btnRefresh.iconSize = szBtn;
-		btnRefresh.connectClicks(_model, SLOT(refresh()));
+		btnRefresh.connectClicks(_model, &ThumbModel::refresh);
 		lay2 << btnRefresh;
 		{
 			ToolButton b("", tr("Show prev sibling directory"), QKeySequence("Ctrl+Up"), QIcon(":/images/folder-up-24.png"));
 			b.addShortcutToTooltip();
 			b.iconSize = szBtn;
-			b.connectClicks(this, SLOT(goUpSibling()));
+			b.connectClicks(this, &CMainWindow::goUpSibling);
 			lay2 << b;
 		}
 		{
 			ToolButton b("", tr("Show next sibling directory"), QKeySequence("Ctrl+Down"), QIcon(":/images/folder-down-24.png"));
 			b.addShortcutToTooltip();
 			b.iconSize = szBtn;
-			b.connectClicks(this, SLOT(goDownSibling()));
+			b.connectClicks(this, &CMainWindow::goDownSibling);
 			lay2 << b;
 		}
 		{
 			ToolButton b("", tr("Show in Explorer"), QIcon(":/qt-project.org/styles/commonstyle/images/standardbutton-open-32.png"));
 			b.iconSize = szBtn;
-			b.connectClicks(_view, SLOT(openInExplorer()));
+			b.connectClicks(_view, &ThumbView::openInExplorer);
 			lay2 << b;
 		}
 		_boxSortBy.toolTip = tr("Sort by ...");
@@ -107,7 +109,7 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 
 		_checkSortReversed.text = tr("Reversed");
 		_checkSortReversed.sizePolicy = QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-		_checkSortReversed.connectClicks(this, SLOT(sortingUpdated()));
+		_checkSortReversed.connectClicks(this, &CMainWindow::sortingUpdated);
 		lay2 << _checkSortReversed;
 
 		_editPath = new CComboBox();
@@ -173,7 +175,7 @@ void CMainWindow::updateSettings(bool save) {
 		_rootDir = li[0];
 	Settings sett;
 	sett.beginGroup("MainWindow");
-	sett.beginGroup(toString(_nInst));
+	sett.beginGroup(QString::number(_nInst));
 	if(save) {
 		QString path = _model->dir().absolutePath();
 		sett.save("dir", path);
@@ -338,7 +340,7 @@ void CMainWindow::setWindowTitle() {
 		//toString(_nInst) +
 		_model->dir().absolutePath();
 	setWindowTitle(str);
-	str = toString(_nInst);
+	str = QString::number(_nInst);
 	setWindowIconText(str);
 }
 void CMainWindow::sortingUpdated() {

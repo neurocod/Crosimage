@@ -63,7 +63,7 @@ int ThumbModel::rowHeight(int row)const {
 QVariant ThumbModel::headerData(int section, Qt::Orientation orientation, int role)const {
 	if(Qt::Vertical==orientation) {
 		if(Qt::DisplayRole==role) {
-			QString str = toString(section*_nColCount);
+			QString str = Qqt::toString(section*_nColCount);
 			return str;
 		}
 		if(Qt::DisplayRole==role) {

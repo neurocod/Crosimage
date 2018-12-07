@@ -1,11 +1,30 @@
-//LineEdit.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//LineEdit.h by Kostya Kozachuck as neurocod - 11.03.2012 10:53:18
 #pragma once
 
 class LineEdit: public WidgetPropertyRedirects {
+	MAYBE_SUPER(WidgetPropertyRedirects)
 	public:
-		LineEdit(QWidget * parent = 0);
-		virtual ~LineEdit() {}
+		template<typename ... Args>
+		LineEdit(Args...args): WidgetPropertyRedirects(new QLineEdit) {
+			d = staticCast<QLineEdit*>();
+			alignment.init(d);
+			cursorMoveStyle.init(d);
+			cursorPosition.init(d);
+			clearButtonEnabled.init(d);
+			dragEnabled.init(d);
+			echoMode.init(d);
+			frame.init(d);
+			inputMask.init(d);
+			maxLength.init(d);
+			modified.init(d);
+			placeholderText.init(d);
+			readOnly.init(d);
+			text.init(d);
+			completer.init(d);
+
+			CtorProcessorT<LineEdit> p(*this);
+			p.process_(args...);
+		}
 
 		//PROPERTY_REDIRECTV(QLineEdit, acceptableInput : const bool
 		PROPERTY_REDIRECTV(QLineEdit, Qt::Alignment, alignment, alignment, setAlignment);
@@ -22,12 +41,11 @@ class LineEdit: public WidgetPropertyRedirects {
 		PROPERTY_REDIRECTV(QLineEdit, bool, modified, isModified, setModified);
 		PROPERTY_REDIRECT (QLineEdit, QString, placeholderText, placeholderText, setPlaceholderText);
 		PROPERTY_REDIRECTV(QLineEdit, bool, readOnly, isReadOnly, setReadOnly);
+		PROPERTY_REDIRECTV(QLineEdit, bool, clearButtonEnabled, isClearButtonEnabled, setClearButtonEnabled);
 		//PROPERTY_REDIRECTV(QLineEdit, redoAvailable : const bool
 		//PROPERTY_REDIRECTV(QLineEdit, selectedText : const QString
 		PROPERTY_REDIRECT (QLineEdit, QString, text, text, setText);
 		//PROPERTY_REDIRECTV(QLineEdit, undoAvailable : const bool
 
 		EMBED_QPOINTER_AND_CAST(QLineEdit)
-	protected:
-		void init();//C++11 ctor
 };

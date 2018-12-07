@@ -23,10 +23,10 @@ DirDb& DirDb::instance(const QFileInfo & file) {
 	return instance(file.dir());
 }
 DirDb::DirDb(const QDir & dir):
-	_qThumbGet(this, "SELECT thumb, modified FROM files WHERE name=:name;"),
-	_qThumbGetAll(this, "SELECT name, thumb, modified, rating, show_settings FROM files;"),
-	_qThumbSet(this, "INSERT OR REPLACE INTO files (name, thumb, modified) VALUES (:name, :thumb, :modified);"),
-	_qThumbSetRating(this, "UPDATE files SET rating=:rating WHERE name=:name;")
+	_qThumbGet(*this, "SELECT thumb, modified FROM files WHERE name=:name;"),
+	_qThumbGetAll(*this, "SELECT name, thumb, modified, rating, show_settings FROM files;"),
+	_qThumbSet(*this, "INSERT OR REPLACE INTO files (name, thumb, modified) VALUES (:name, :thumb, :modified);"),
+	_qThumbSetRating(*this, "UPDATE files SET rating=:rating WHERE name=:name;")
 {
 	_dbPath = dir.absoluteFilePath(dbFileName);
 	QElapsedTimer timer;
@@ -41,8 +41,9 @@ ReadStatus DirDb::readAllToCache() {
 	if(!initSqlOnce().ok())
 		return false;
 	auto & q = _qThumbGetAll;
-	if(!execOrTrace(q))
-		return false;
+	auto status = q.execOrTrace();
+	if(!status.ok())
+		return status;
 	while(q.next()) {
 		int col = 0;
 		QString name = q.value(col++).value<QString>();
@@ -138,10 +139,10 @@ WriteStatus DirDb::setThumbnail(const QFileInfo & file, const QImage & img) {
 			writer.write(img);
 		}
 	}
-	_qThumbSet.bindValue(":name", name);
-	_qThumbSet.bindValue(":thumb", item->_thumb);
-	_qThumbSet.bindValue(":modified", toVariantByteArray(item->_modified));
-	return execOrTrace(_qThumbSet);
+	_qThumbSet.bindValue(QStringLiteral(":name"), name);
+	_qThumbSet.bindValue(QStringLiteral(":thumb"), item->_thumb);
+	_qThumbSet.bindValue(QStringLiteral(":modified"), toVariantByteArray(item->_modified));
+	return _qThumbSet.execOrTrace();
 }
 ReadStatus DirDb::connectToDbOnce() {
 	if(_db.isOpen())
@@ -149,26 +150,30 @@ ReadStatus DirDb::connectToDbOnce() {
 	_db = QSqlDatabase::addDatabase("QSQLITE", _dbPath);
 	_db.setDatabaseName(_dbPath);
 	if(!_db.open())
-		return ReadStatus(false, _db.lastError().text());
+		return _db.lastError().text();
 	return maybeInstallDb();
 }
-bool DirDb::maybeInstallDb() {
+StringStatus DirDb::maybeInstallDb() {
 	QStringList names = _db.tables();
-	QSqlQuery q(_db);
+	
 	if(!names.contains("settings")) {
-		if(!execOrTrace(q, "CREATE TABLE [settings] ( "
+		PreparedSqlQuery q(*this, "CREATE TABLE [settings] ( "
 			"k TEXT UNIQUE NOT NULL PRIMARY KEY, "
-			"v BLOB NULL )"))
-			return false;
+			"v BLOB NULL )");
+		auto s = q.execOrTrace();
+		if(!s.ok())
+			return s;
 	}
 	if(!names.contains("files")) {
-		if(!execOrTrace(q, "CREATE TABLE [files] ( "
+		PreparedSqlQuery q(*this, "CREATE TABLE [files] ( "
 			"name TEXT UNIQUE NOT NULL PRIMARY KEY, "
 			"thumb BLOB NULL, "//null -> can't generate cause unknown format etc
 			"modified BLOB NULL, "
 			"rating INTEGER NULL, "//INTEGER DEFAULT '0' NOT NULL
-			"show_settings BLOB NULL )"))
-			return false;
+			"show_settings BLOB NULL )");
+		auto s = q.execOrTrace();
+		if(!s.ok())
+			return s;
 	}
 	return true;
 }
@@ -177,8 +182,8 @@ WriteStatus DirDb::setRating(const QFileInfo & file, int n) {
 	if(!ret.ok())
 		return ret;
 	auto & q = _qThumbSetRating;
-	q.bindValue(":name", file.fileName());
-	q.bindValue(":rating", n);
+	q.bindValue(QStringLiteral(":name"), file.fileName());
+	q.bindValue(QStringLiteral(":rating"), n);
 	getOrCreate(file.fileName())->_rating = n;
-	return execOrTrace(q);
+	return q.execOrTrace();
 }

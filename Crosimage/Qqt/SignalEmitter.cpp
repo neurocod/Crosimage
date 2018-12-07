@@ -1,5 +1,4 @@
-//SignalEmitter.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//SignalEmitter.cpp by Kostya Kozachuck as neurocod - 18.03.2009 1:15:20
 #include "pch.h"
 #include "SignalEmitter.h"
 
@@ -19,4 +18,7 @@ void SignalEmitter::emitv(QString str, QString data) {
 }
 void SignalEmitter::emitv(int n) {
 	emit v(n);
+}
+void SignalEmitter::emitv(QVariant var) {
+	emit v(var);
 }

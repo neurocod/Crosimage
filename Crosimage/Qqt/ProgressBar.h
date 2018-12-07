@@ -1,11 +1,26 @@
-//ProgressBar.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//ProgressBar.h by Kostya Kozachuck as neurocod - 08.05.2012 14:21:12
 #pragma once
 
 class ProgressBar: public WidgetPropertyRedirects {
+	MAYBE_SUPER(WidgetPropertyRedirects)
 	public:
-		ProgressBar(QWidget * parent = 0);
-		virtual ~ProgressBar() {}
+		template<typename ... Args>
+		ProgressBar(Args...args): WidgetPropertyRedirects(new QProgressBar){
+			d = staticCast<QProgressBar*>();
+			alignment.init(d);
+			format.init(d);
+			invertedAppearance.init(d);
+			maximum.init(d);
+			minimum.init(d);
+			orientation.init(d);
+			//text.init(d);
+			textDirection.init(d);
+			textVisible.init(d);
+			value.init(d);
+
+			CtorProcessorT<ProgressBar> p(*this);
+			p.process_(args...);
+		}
 
 		PROPERTY_REDIRECTV(QProgressBar, Qt::Alignment, alignment, alignment, setAlignment);
 		PROPERTY_REDIRECT (QProgressBar, QString, format, format, setFormat);
@@ -19,6 +34,4 @@ class ProgressBar: public WidgetPropertyRedirects {
 		PROPERTY_REDIRECTV(QProgressBar, int, value, value, setValue);
 
 		EMBED_QPOINTER_AND_CAST(QProgressBar)
-	protected:
-		void init();//C++11 ctor
 };

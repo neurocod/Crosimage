@@ -1,5 +1,4 @@
-//RotatableToolBar.cpp by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//RotatableToolBar.cpp by Kostya Kozachuck as neurocod - 21.11.2011 10:31:45
 #include "pch.h"
 #include "RotatableToolBar.h"
 #ifdef USE_QXT
@@ -7,16 +6,12 @@
 #endif
 
 RotatableToolBar::RotatableToolBar(const QString & title, QWidget * parent): QToolBar(title, parent) {
-	init();
+	connect(this, &QToolBar::orientationChanged, this, &RotatableToolBar::onOrientationChanged);
 }
-RotatableToolBar::RotatableToolBar(QWidget * parent): QToolBar(parent) {
-	init();
-}
-void RotatableToolBar::init() {
-	connect(this, SIGNAL(orientationChanged(Qt::Orientation)), SLOT(onOrientationChanged(Qt::Orientation)));
+RotatableToolBar::RotatableToolBar(QWidget * parent): RotatableToolBar(QString(), parent) {
 }
 void RotatableToolBar::onOrientationChanged(Qt::Orientation orientation) {
-	foreach(QAction*act, actions()) {
+	for(QAction*act: actions()) {
 		QWidgetAction*wa = qobject_cast<QWidgetAction*>(act);
 		if(wa) {
 			QWidget*w = wa->defaultWidget();

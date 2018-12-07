@@ -16,7 +16,7 @@ AltTabView::AltTabView() {
 	{
 		New<QTimer> timer(this);
 		timer->start(500);
-		connect(timer, SIGNAL(timeout()), SLOT(updateUI()) );
+		connect(timer, &QTimer::timeout, this, &AltTabView::updateUI);
 	}
 	int count = topLevelWidgets().count();
 	for(int i=2; ; ++i) {
@@ -28,7 +28,7 @@ AltTabView::AltTabView() {
 	}
 	{
 		Action a(QKeySequence("Esc"));
-		a.connectClicks(this, SLOT(close()));
+		a.connectClicks(this, &AltTabView::close);
 		addAction(a);
 	}
 	updateUI();

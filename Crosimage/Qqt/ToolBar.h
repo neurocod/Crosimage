@@ -1,17 +1,28 @@
-//ToolBar.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//ToolBar.h by Kostya Kozachuck as neurocod - 08.11.2011 1:25:55
 #pragma once
-#include "RotatableToolBar.h"
 
 class ToolBar: public WidgetPropertyRedirects {
 	public:
 		void operator=(QToolBar*b);
-		ToolBar(QWidget*parent = 0);
-		ToolBar(QString title, QWidget*parent);
-		virtual ~ToolBar() {}
+		template<typename ...Args>
+		ToolBar(Args...args) : WidgetPropertyRedirects(newRotatableToolBar()) {
+			d = staticCast<QToolBar*>();
+			allowedAreas.init(d);
+			floatable.init(d);
+			//floating.init(d);
+			iconSize.init(d);
+			movable.init(d);
+			orientation.init(d);
+			toolButtonStyle.init(d);
+
+			d->setAutoFillBackground(true);//for color management using palettes
+			CtorProcessorT<ToolBar> p(*this);
+			p.process_(args...);
+		}
 
 		ToolBar & operator<<(QWidget*w);
 		ToolBar & operator<<(QAction*a);
+		ToolBar & operator<<(const QString & label);
 		ToolBar & operator<<(const QList<QAction*>& li);
 		PROPERTY_REDIRECTV(QToolBar, Qt::ToolBarAreas, allowedAreas, allowedAreas, setAllowedAreas);
 		PROPERTY_REDIRECTV(QToolBar, bool, floatable, isFloatable, setFloatable);
@@ -21,7 +32,8 @@ class ToolBar: public WidgetPropertyRedirects {
 		PROPERTY_REDIRECTV(QToolBar, Qt::Orientation, orientation, orientation, setOrientation);
 		PROPERTY_REDIRECTV(QToolBar, Qt::ToolButtonStyle, toolButtonStyle, toolButtonStyle, setToolButtonStyle);
 
-		EMBED_QPOINTER_AND_CAST(RotatableToolBar)
+		EMBED_QPOINTER_AND_CAST(QToolBar)
 	protected:
-		void init(QWidget*parent);
+		static QToolBar* newRotatableToolBar();
 };
+#include "RotatableToolBar.h"

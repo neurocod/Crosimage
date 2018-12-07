@@ -1,34 +1,28 @@
-//MsgBox.h by Kostya Kozachuck as neurocod
-//BSD license https://github.com/neurocod/Qqt
+﻿//MsgBox.h by Kostya Kozachuck as neurocod - 23.12.2011 6:34:32
 #pragma once
+#include "Widget.h"
 
 class MsgBox: public QMessageBox {
 	public:
-		typedef CtorProcessorT<MsgBox> CtorProcessor;
-		virtual ~MsgBox() {}
-		MsgBox() {
-			init();
-		}
-		template<class T1>
-		MsgBox(T1 t1) {
-			init();
-			CtorProcessor p;
-			p.process(*this, t1);
-		}
-		template<class T1, class T2>
-		MsgBox(T1 t1, T2 t2) {
-			init();
-			CtorProcessor p;
-			p.process(*this, t1);
-			p.process(*this, t2);
-		}
-		template<class T1, class T2, class T3>
-		MsgBox(T1 t1, T2 t2, T3 t3) {
-			init();
-			CtorProcessor p;
-			p.process(*this, t1);
-			p.process(*this, t2);
-			p.process(*this, t3);
+		using CtorProcessor = CtorProcessorT<MsgBox>;
+		template<typename... Args>
+		MsgBox(Args...args)//: QMessageBox(Widget_widgetFromArgs(args...)) {
+		//in windows this is ok ^ but in gcc - not
+		{
+			detailedText.init(this);
+			icon.init(this);
+			iconPixmap.init(this);
+			informativeText.init(this);
+			standardButtons.init(this);
+			text.init(this);
+			textFormat.init(this);
+
+			icon = MsgBox::Information;
+			standardButtons = QMessageBox::Ok;
+			setCustomStyle();
+
+			CtorProcessor p(*this);
+			p.process_(args...);
 		}
 
 		typedef QMessageBox::StandardButton StandardButton;
@@ -44,20 +38,17 @@ class MsgBox: public QMessageBox {
 		PROPERTY_REDIRECTV(QMessageBox, Qt::TextFormat, textFormat, textFormat, setTextFormat);
 
 		//StandardButtons buttons;
-		int m_nStringParam;
+		int _nStringParam = 0;
 
-		void set(QWidget * _parent) {
-			setParent(_parent);
-		}
-		void set(QString str) {
-			if(m_nStringParam==0) {
+		void set(const QString & str) {
+			if(_nStringParam==0) {
 				text = str;
 			} else {
 				setWindowTitle(text);
 				text = str;
 			}
-			m_nStringParam++;
-			if(m_nStringParam>2) {
+			_nStringParam++;
+			if(_nStringParam>2) {
 				ASSERT(0);
 				return;
 			}
@@ -76,17 +67,16 @@ class MsgBox: public QMessageBox {
 				return Cancel;
 			return standardButton(clickedButton());
 		}
-
 		QMessageBox* operator->() { return this; }
-	private:
-		void init();//C++11
+		void setCustomStyle();
+		static int display(QtMsgType type, const QMessageLogContext & context, const QString &msg);
 };
 //________________________________________________________________
-MsgBox::Btn msgBox(QString t1);
+MsgBox::Btn msgBox(const QString & t1);
 
 //S means toString() first param
 template<class T1>
-MsgBox::Btn msgBoxS(T1 t1) {
+MsgBox::Btn msgBoxT(T1 t1) {
 	return msgBox(toString(t1));
 }
 
