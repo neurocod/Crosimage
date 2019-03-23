@@ -1,4 +1,4 @@
-﻿//CApplication.h by Kostya Kozachuck as neurocod
+//CApplication.h by Kostya Kozachuck as neurocod
 #pragma once
 
 class CApplication: public QApplication {
@@ -18,4 +18,5 @@ class CApplication: public QApplication {
 		bool _saveSettingsOnExist = true;
 		QAction* _quitAction;
 		QAction* _actShowAltTab;
+		bool _atExit = false;
 };

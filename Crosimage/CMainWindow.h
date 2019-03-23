@@ -38,7 +38,7 @@ class CMainWindow: public QMainWindow {
 		QString _rootDir;
 		void createFileTreePanel();
 		void goSibling(bool next);
-		ThumbModel* _model;//используется как переменная "текущая папка", чтобы не создавать дополнительную переменную
+		ThumbModel* _model;//stores current folder
 		ThumbView* _view;
 		QComboBox* _editPath;
 		QStringList _navigateBack;

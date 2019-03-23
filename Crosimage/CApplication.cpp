@@ -1,4 +1,4 @@
-﻿//CApplication.cpp by Kostya Kozachuck as neurocod
+//CApplication.cpp by Kostya Kozachuck as neurocod
 #include "pch.h"
 #include "CApplication.h"
 #include "CMainWindow.h"
@@ -24,7 +24,8 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	auto args = parser.positionalArguments();
 	if(!args.isEmpty()) {
 		QString str = args[0];
-		if(str.toLower().endsWith(TxtLnkProcessor::extensionWithDot)) {
+		
+		if(TxtLnkProcessor::seemsMyFile(str)) {
 			_saveSettingsOnExist = false;
 			TxtLnkProcessor::shellExecute(str);
 			QTimer::singleShot(1, this, &CApplication::quit);
@@ -38,7 +39,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	{
 		Action a(tr("Quit"), QKeySequence("Alt+E"));
 		a.shortcutContext = Qt::ApplicationShortcut;
-		a.connectClicks(qApp, &QApplication::quit);
+		a.connectClicks(this, &CApplication::quit);
 		_quitAction = a;
 	}
 	{
@@ -70,6 +71,8 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 		for(auto w: li) {
 			setActiveWindow(w);
 			processEvents();
+			if(_atExit)
+				return;
 		}
 	}
 	New<QTimer> timer(this);
@@ -86,6 +89,7 @@ CApplication::~CApplication() {
 	}
 }
 void CApplication::quit() {
+	_atExit = true;
 	if(_saveSettingsOnExist) {
 		Settings sett;
 		sett.save("mainWindowsCount", CMainWindow::instancesCount());

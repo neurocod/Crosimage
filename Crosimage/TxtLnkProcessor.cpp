@@ -50,3 +50,6 @@ QString TxtLnkProcessor::existingLinkedFileFromParentDir(const QString & str_) {
 		return dir.absoluteFilePath(str);
 	return QString();
 }
+bool TxtLnkProcessor::seemsMyFile(const QString & path) {
+	return path.toLower().endsWith(extensionWithDot);
+}

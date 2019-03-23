@@ -9,4 +9,5 @@ class TxtLnkProcessor {
 		static QString pathFromFile(const QString & path);
 		static QString pathFromFileOrSame(const QString & path);
 		static QString existingLinkedFileFromParentDir(const QString & path);
+		static bool seemsMyFile(const QString & path);
 };

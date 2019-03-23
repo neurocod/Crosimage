@@ -7,6 +7,7 @@
 #include "ImageView.h"
 #include "CApplication.h"
 #include "SettingsDialog.h"
+#include "TxtLnkProcessor.h"
 
 QList<CMainWindow*> CMainWindow::s_inst;
 bool CMainWindow::s_loadingComplete = false;
@@ -252,9 +253,20 @@ void CMainWindow::go(const QString & path) {
 	go(path, -1);
 }
 void CMainWindow::display(const QString & file) {
+	if(TxtLnkProcessor::seemsMyFile(file)) {
+		QString path = TxtLnkProcessor::pathFromFile(file);
+		if(path.isEmpty()) {
+			msgBox("Empty file from " + path);
+		} else {
+			display(path);
+		}
+		return;
+	}
 	QImage im;
 	if(QImageReader(file).read(&im)) {
-		new ImageView(_model, _view, file);
+		auto v = new ImageView(_model, _view, file);
+		//QTimer::singleShot(100, v, &QWidget::setFocus);
+		QTimer::singleShot(100, v, &QWidget::raise);
 	} else {
 		QDesktopServices::openUrl(QUrl::fromLocalFile(file));
 	}
