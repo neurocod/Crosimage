@@ -53,27 +53,15 @@
     <ClCompile Include="main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_crosimage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ThumbModel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ThumbModel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_CMainWindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_CMainWindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_CMainWindow.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="ThumbView.cpp">
       <Filter>Thumb</Filter>
     </ClCompile>
@@ -89,60 +77,30 @@
     <ClCompile Include="ThumbWorker.cpp">
       <Filter>Thumb</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ThumbWorker.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ThumbWorker.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_ThumbWorker.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ThumbCache.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ThumbCache.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_ThumbCache.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ThumbView.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ThumbView.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_ThumbView.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <ClCompile Include="ThumbDirPainter.cpp">
       <Filter>Thumb</Filter>
     </ClCompile>
     <ClCompile Include="FileSystemThread.cpp">
       <Filter>Thumb</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_FileSystemThread.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_FileSystemThread.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_FileSystemThread.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="ImageView.cpp">
       <Filter>ImageView</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ImageView.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ImageView.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_ImageView.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="CApplication.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -155,27 +113,15 @@
     <ClCompile Include="DirCacheItem.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_CApplication.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_CApplication.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_CApplication.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="AltTabView.cpp">
       <Filter>AltTab</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_AltTabView.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_AltTabView.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_AltTabView.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="AltTabLabel.cpp">
       <Filter>AltTab</Filter>
     </ClCompile>
@@ -266,30 +212,18 @@
     <ClCompile Include="Qqt\RotatableToolBar.cpp">
       <Filter>Qqt</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_RotatableToolBar.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_RotatableToolBar.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_RotatableToolBar.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="Qqt\Settings.cpp">
       <Filter>Qqt</Filter>
     </ClCompile>
     <ClCompile Include="Qqt\SignalEmitter.cpp">
       <Filter>Qqt</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_SignalEmitter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_SignalEmitter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_SignalEmitter.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="Qqt\Splitter.cpp">
       <Filter>Qqt</Filter>
     </ClCompile>
@@ -352,45 +286,45 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="crosimage.qrc">
+    <QtRcc Include="crosimage.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ThumbModel.h">
+    </QtRcc>
+    <QtMoc Include="ThumbModel.h">
       <Filter>Thumb</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ThumbView.h">
+    </QtMoc>
+    <QtMoc Include="ThumbView.h">
       <Filter>Thumb</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ThumbWorker.h">
+    </QtMoc>
+    <QtMoc Include="ThumbWorker.h">
       <Filter>Thumb</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ThumbCache.h">
+    </QtMoc>
+    <QtMoc Include="ThumbCache.h">
       <Filter>Thumb</Filter>
-    </CustomBuild>
-    <CustomBuild Include="FileSystemThread.h">
+    </QtMoc>
+    <QtMoc Include="FileSystemThread.h">
       <Filter>Thumb</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ImageView.h">
+    </QtMoc>
+    <QtMoc Include="ImageView.h">
       <Filter>ImageView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="CMainWindow.h">
+    </QtMoc>
+    <QtMoc Include="CMainWindow.h">
       <Filter>src</Filter>
-    </CustomBuild>
-    <CustomBuild Include="CApplication.h">
+    </QtMoc>
+    <QtMoc Include="CApplication.h">
       <Filter>src</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AltTabView.h">
+    </QtMoc>
+    <QtMoc Include="AltTabView.h">
       <Filter>AltTab</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="pch.h">
       <Filter>src</Filter>
     </CustomBuild>
-    <CustomBuild Include="Qqt\RotatableToolBar.h">
+    <QtMoc Include="Qqt\RotatableToolBar.h">
       <Filter>Qqt</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Qqt\SignalEmitter.h">
+    </QtMoc>
+    <QtMoc Include="Qqt\SignalEmitter.h">
       <Filter>Qqt</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ThumbDelegate.h">
