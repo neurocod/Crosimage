@@ -30,5 +30,6 @@ class ThumbView: public QTableView {
 		QString selectedItemFilePath();
 
 		virtual void resizeEvent(QResizeEvent *event)override;
+		virtual void keyPressEvent(QKeyEvent*event)override;
 		virtual int sizeHintForRow(int row)const override;
 };

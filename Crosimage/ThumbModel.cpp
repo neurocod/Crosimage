@@ -7,7 +7,7 @@ ThumbModel::ThumbModel(QObject*parent):
 	QAbstractTableModel(parent),
 	_dirThread(FileSystemThread::instance())
 {
-	_nColCount = 1;
+	_colCount = 1;
 	_invalidateFiles = false;
 	connect(&ThumbCache::instance(), SIGNAL(loadedByCache(const QString &, const QImage&)),
 		SLOT(updateThumb(const QString&, const QImage&)) );
@@ -17,13 +17,13 @@ ThumbModel::~ThumbModel() {
 	clear();
 }
 int ThumbModel::rowCount(const QModelIndex & parent)const {
-	int rows = _items.count()/_nColCount;
-	if(rows*_nColCount<_items.size())
+	int rows = _items.count()/_colCount;
+	if(rows*_colCount<_items.size())
 		rows++;
 	return rows;
 }
 int ThumbModel::columnCount(const QModelIndex & parent)const {
-	return _nColCount;
+	return _colCount;
 }
 QVariant ThumbModel::data(const QModelIndex & index, int role)const {
 	auto item = itemBy(index);
@@ -50,7 +50,7 @@ QVariant ThumbModel::data(const QModelIndex & index, int role)const {
 }
 int ThumbModel::rowHeight(int row)const {
 	TopResult<int, int> ret;
-	for(int col = 0; col<_nColCount; ++col) {
+	for(int col = 0; col<_colCount; ++col) {
 		if(auto item = itemBy(index(row, col))) {
 			if(!item->thumbnail().isNull())
 				ret.addMaxKey(item->thumbnail().height(), 0);
@@ -63,7 +63,7 @@ int ThumbModel::rowHeight(int row)const {
 QVariant ThumbModel::headerData(int section, Qt::Orientation orientation, int role)const {
 	if(Qt::Vertical==orientation) {
 		if(Qt::DisplayRole==role) {
-			QString str = Qqt::toString(section*_nColCount);
+			QString str = Qqt::toString(section*_colCount);
 			return str;
 		}
 		if(Qt::DisplayRole==role) {
@@ -86,7 +86,7 @@ ThumbModel::Item* ThumbModel::itemBy(int index)const {
 ThumbModel::Item* ThumbModel::itemBy(const QModelIndex & index)const {
 	if(!index.isValid())
 		return 0;
-	int n = index.row()*_nColCount + index.column();
+	int n = index.row()*_colCount + index.column();
 	return itemBy(n);
 }
 void ThumbModel::setDir(const QString & str, bool check) {
@@ -146,8 +146,8 @@ QStringList ThumbModel::files()const {
 	return _files;
 }
 QModelIndex ThumbModel::indexByIntIndex(int i)const {
-	int row	= i / _nColCount;
-	int col = i % _nColCount;
+	int row	= i / _colCount;
+	int col = i % _colCount;
 	return createIndex(row, col);
 }
 void ThumbModel::setSortFlags(QDir::SortFlags f) {
@@ -156,10 +156,10 @@ void ThumbModel::setSortFlags(QDir::SortFlags f) {
 	setDir(dir);
 }
 void ThumbModel::setColumnCount(int cols) {
-	if(cols<1 || cols==_nColCount)
+	if(cols<1 || cols==_colCount)
 		return;
 	beginResetModel();
-	_nColCount = cols;
+	_colCount = cols;
 	endResetModel();
 }
 Qt::ItemFlags ThumbModel::flags(const QModelIndex & index)const {

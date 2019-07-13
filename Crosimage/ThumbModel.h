@@ -36,7 +36,7 @@ class ThumbModel: public QAbstractTableModel {
 		void updateThumb(const QString & path, const QImage & thumb);
 		void directoryLoaded(QDir path, QStringList items);
 	protected:
-		int _nColCount;
+		int _colCount;
 
 		QDir _dir;
 		FileSystemThread & _dirThread;

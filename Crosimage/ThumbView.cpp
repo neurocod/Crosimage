@@ -159,6 +159,38 @@ void ThumbView::prioritizeThumbs() {
 		emit _model->dataChanged(i0, i1);
 	}
 }
+void ThumbView::keyPressEvent(QKeyEvent*e) {
+	const int colCount = _model->columnCount();
+	const int rowCount = _model->rowCount();
+	if(e->modifiers() == Qt::NoModifier && (rowCount * colCount > 0)) {
+		//circular selection on the edges
+		const QModelIndex index = currentIndex();
+		int row = 0;
+		int col = 0;
+		if(index.isValid()) {
+			row = index.row();
+			col = index.column();
+		}
+		int itemIndex = row * colCount + col;
+		if(e->key() == Qt::Key_Left && index.column() == 0) {
+			itemIndex--;
+			if(itemIndex<0)
+				itemIndex = _model->items().count() - 1;
+		}
+		if(e->key() == Qt::Key_Right) {
+			itemIndex++;
+			if(itemIndex>=_model->items().count())
+				itemIndex = 0;
+		}
+		if(itemIndex != row * colCount + col) {
+			QModelIndex newIndex = _model->indexByIntIndex(itemIndex);
+			setCurrentIndex(newIndex);
+			e->accept();
+			return;
+		}
+	}
+	__super::keyPressEvent(e);
+}
 void ThumbView::resizeEvent(QResizeEvent *event) {
 	__super::resizeEvent(event);
 	int w = event->size().width();
