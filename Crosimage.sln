@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Crosimage", "Crosimage\Crosimage.vcxproj", "{D0D945E3-ACFB-4BEF-8BA1-A996BF80BAC9}"
 EndProject
@@ -31,7 +31,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = $(DefaultQtVersion)
 		SolutionGuid = {7CC92603-1DCD-4A3B-9953-560C108BF732}
+		Qt5Version = $(DefaultQtVersion)
 	EndGlobalSection
 EndGlobal
