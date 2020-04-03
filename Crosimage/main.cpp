@@ -7,6 +7,7 @@ QtMessageHandler g_oldQtMessageHandler;
 void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QString &msg) {
 	bool prevent = msg.contains("Corrupt JPEG data")
 		|| msg.contains("known incorrect sRGB profile")
+		|| msg.contains("failed minimal tag size sanity")
 		|| msg.contains("ShGetFileInfoBackground() timed out for ");
 	g_oldQtMessageHandler(type, context, msg);
 	QString str;
@@ -27,10 +28,16 @@ void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QStr
 		}
 	}
 	//if(QtFatalMsg==type)
-    //     abort();
+	//     abort();
 }
 int main(int argc, char *argv[]) {
 	g_oldQtMessageHandler = qInstallMessageHandler(myMsgHandler);
+	// This attribute must be set before QGuiApplication is constructed:
+	QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
+	QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
+#ifdef Q_OS_WIN
+	QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton );
+#endif
 	CApplication a(argc, argv);
 	return a.exec();
 }

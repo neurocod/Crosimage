@@ -60,15 +60,19 @@ void AltTabView::updateUI() {
 			delete my;
 			continue;
 		}
-		auto pix = grab(w);
+		QPixmap pix = grab(w);
 		if(h<=1) {
 			h = w->height() / divider;
 		}
 		auto la = _mains[w];
 		if(h<1 || !la)
 			continue;
-		la->setPixmap(pix.scaled(la->size(), Qt::KeepAspectRatio));
-	}	
+		qreal dpiK = qApp->devicePixelRatio();
+		QSize szScale = la->size();
+		szScale.rwidth() *= dpiK;
+		szScale.rheight() *= dpiK;
+		la->setPixmap(pix.scaled(szScale, Qt::KeepAspectRatio));
+	}
 }
 QWidgetList AltTabView::topLevelWidgets() {
 	QWidgetList ret;

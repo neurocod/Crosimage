@@ -34,15 +34,7 @@ QRect Widget::mapToGlobal(QWidget*w, const QRect & r) {
 	return QRect(p1, p2);
 }
 qreal Widget::dpiScale() {
-	static qreal ret = []()->qreal {
-		if(QScreen* screen = qApp->screenAt(QPoint(0, 0))) {//TODO: proper coordinates on screen
-			const qreal constStandardPerInch = 96;
-			const qreal dpi = screen->physicalDotsPerInch();
-			return dpi / constStandardPerInch;
-		}
-		return 1;
-	} ();
-	return ret;
+	return qApp->devicePixelRatio();
 }
 int Widget::mapDpi(int pixelsLowDpi) {
 	return pixelsLowDpi * dpiScale();
