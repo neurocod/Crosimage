@@ -3,21 +3,25 @@
 #include "CMainWindow.h"
 #include "CApplication.h"
 
-QtMessageHandler g_oldQtMessageHandler;
+QtMessageHandler g_oldQtMessageHandler = {};
 void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QString &msg) {
-	bool prevent = msg.contains("Corrupt JPEG data")
-		|| msg.contains("known incorrect sRGB profile")
-		|| msg.contains("failed minimal tag size sanity")
-		|| msg.contains("ShGetFileInfoBackground() timed out for ");
+	bool prevent = msg.contains(QStringLiteral("Corrupt JPEG data"))
+		|| msg.contains(QStringLiteral("known incorrect sRGB profile"))
+		|| msg.contains(QStringLiteral("Unsupported ICC profile"))
+		|| msg.contains(QStringLiteral("fromIccProfile: failed general sanity check"))
+		|| msg.contains(QStringLiteral("failed minimal tag size sanity"))
+		|| msg.contains(QStringLiteral("ShGetFileInfoBackground() timed out for "));
 	g_oldQtMessageHandler(type, context, msg);
-	QString str;
-	switch (type) {
-		case QtDebugMsg: str = "Qt Debug"; break;
-		case QtWarningMsg: str = "Qt Warning"; break;
-		case QtCriticalMsg: str = "Qt Critical"; break;
-		case QtFatalMsg: str = "Qt Fatal"; break;
-	}
-	str += QString(" function %1 file %2 line %3: %4").arg(context.function).arg(context.file).arg(context.line).arg(msg);
+	QString str = [type]()->QString {
+		switch (type) {
+		case QtDebugMsg: return "Qt Debug";
+		case QtWarningMsg: return "Qt Warning";
+		case QtCriticalMsg: return "Qt Critical";
+		case QtFatalMsg: return "Qt Fatal";
+		}
+		return "unknown";
+	} ();
+	str += QStringLiteral(" function %1 file %2 line %3: %4").arg(context.function).arg(context.file).arg(context.line).arg(msg);
 	//LogFile::debug() << QDateTime::currentDateTime() << str << endl;
 	if(!prevent) {
 		if(QCoreApplication::instance()->thread() == QThread::currentThread()) {
