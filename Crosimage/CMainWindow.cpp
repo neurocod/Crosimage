@@ -133,8 +133,9 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 	updateSettings(false);
 	{
 		Action a(tr("New window"), QKeySequence("Ctrl+N"), QIcon(":/qt-project.org/styles/commonstyle/images/file-16.png"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-				new CMainWindow;
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+				auto mw = new CMainWindow;
+				mw->go(_model->dir().absolutePath());
 			});
 		addAction(a);
 	}
