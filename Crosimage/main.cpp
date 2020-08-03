@@ -5,7 +5,7 @@
 
 QtMessageHandler g_oldQtMessageHandler = {};
 void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QString &msg) {
-	bool prevent = msg.contains(QStringLiteral("Corrupt JPEG data"))
+	const bool prevent = msg.contains(QStringLiteral("Corrupt JPEG data"))
 		|| msg.contains(QStringLiteral("known incorrect sRGB profile"))
 		|| msg.contains(QStringLiteral("Unsupported ICC profile"))
 		|| msg.contains(QStringLiteral("fromIccProfile: failed general sanity check"))
@@ -27,7 +27,7 @@ void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QStr
 		if(QCoreApplication::instance()->thread() == QThread::currentThread()) {
 			msgBox("Qt message", str);
 		} else {
-			//TODO: send to main thread
+			//TODO send to main thread
 			//trace(str);
 		}
 	}

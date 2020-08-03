@@ -27,9 +27,15 @@ QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path
 		bool b = file.remove();
 		ASSERT(b);
 	}
-	//there is other adwices (like mencoder) in http://habrahabr.ru/post/171213/
+	//there are other choices (like mencoder) described in http://habrahabr.ru/post/171213/
 	//run: "C:\Program Files\ffmpeg\bin\ffmpeg.exe" -ss 00:00:01 -i "video/path.avi" -f image2 -vframes 1 "image/file.jpg"
-	QString program = "C:\\Program Files\\ffmpeg\\bin\\ffmpeg.exe";
+	static QString program;
+	if (program.isEmpty()) {
+		program = R"(C:\Program Files\ffmpeg\bin\ffmpeg.exe)";
+		if (!QFile::exists(program)) {
+			qWarning() << QObject::tr("Program %1 does not exist").arg(program);
+		}
+	}
 	QTime time(secsOffset/3600, secsOffset/60, secsOffset);
 	QString strTime = time.toString("HH:mm:ss");
 	params << "-ss" << strTime << "-i" << path << "-f" << "image2" << "-vframes" << "1" << tempFile;
