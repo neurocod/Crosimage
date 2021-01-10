@@ -14,6 +14,8 @@ void CrSettings::setInst(const CrSettings & cr) {
 	_inst.update(true);
 }
 CrSettings::CrSettings(): _thumbW(325), _thumbH(325) {
+	_clrBase = Qt::black;
+	_clrText = Qt::white;
 }
 void CrSettings::update(bool save) {
 	Settings sett;

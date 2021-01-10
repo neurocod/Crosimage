@@ -13,6 +13,10 @@ class CrSettings {
 		RestrictedValueTT<int, 20, 1000> _thumbW;
 		RestrictedValueTT<int, 20, 1000> _thumbH;
 		QString _shutdownCommand;
+
+		// colors for thumbnail view and AltTab widget
+		QColor _clrBase;
+		QColor _clrText;
 	protected:
 		static CrSettings _inst;
 

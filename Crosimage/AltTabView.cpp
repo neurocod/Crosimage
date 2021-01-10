@@ -8,6 +8,10 @@
 
 AltTabView::AltTabView() {
 	setAttribute(Qt::WA_DeleteOnClose);
+	auto pal = palette();
+	pal.setColor(QPalette::Window, CrSettings::inst()._clrBase);
+	pal.setColor(QPalette::Text, CrSettings::inst()._clrText);
+	setPalette(pal);
 	_lay = new QGridLayout(this);
 	_lay->setVerticalSpacing(0);
 	_lay->setHorizontalSpacing(0);

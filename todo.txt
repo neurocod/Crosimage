@@ -1,3 +1,5 @@
+sessions to store open images
+look for folder changes and rescan them
 release
 	Win64 portable, list of files
 		Crosimage.exe

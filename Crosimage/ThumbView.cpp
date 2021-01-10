@@ -8,9 +8,10 @@
 
 ThumbView::ThumbView(ThumbModel*m) {
 	_model = m;
+
 	auto pal = palette();
-	pal.setColor(QPalette::Base, Qt::black);
-	pal.setColor(QPalette::Text, Qt::white);
+	pal.setColor(QPalette::Base, CrSettings::inst()._clrBase);
+	pal.setColor(QPalette::Text, CrSettings::inst()._clrText);
 	setPalette(pal);
 	setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 	setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
