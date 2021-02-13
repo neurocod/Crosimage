@@ -36,15 +36,16 @@ QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path
 			qWarning() << QObject::tr("Program %1 does not exist").arg(program);
 		}
 	}
-	QTime time(secsOffset/3600, secsOffset/60, secsOffset);
+	const QTime time(secsOffset/3600, secsOffset/60, secsOffset);
 	QString strTime = time.toString("HH:mm:ss");
 	params << "-ss" << strTime << "-i" << path << "-f" << "image2" << "-vframes" << "1" << tempFile;
-	int code = QProcess::execute(program, params);
+	const int code = QProcess::execute(program, params);
 	if(QFile::exists(tempFile))
 		return worker.thumb(tempFile);
 	return QImage();
 }
 QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path) {
+	// seconds where video thumbnails are get from:
 	QList<int> secs = { 1, 5 };
 	int step = 3;
 	for(int iter = 0; iter<6; ++iter) {
@@ -53,11 +54,11 @@ QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path
 	}
 
 	TopResult<qreal, QImage> ret;
-	for(int sec: secs) {
+	for(const int sec: secs) {
 		QImage img = thumbFromVideo(worker, path, sec);
 		if(img.isNull())
 			break;
-		qreal factor = colorMonopolization(img);
+		const qreal factor = colorMonopolization(img);
 		if(ret.addMinKey(factor, img)) {
 			emit worker.maybeUpdate(false, path, img);
 		}
@@ -67,11 +68,11 @@ QImage ThumbVideoWorker::thumbFromVideo(ThumbWorker&worker, const QString & path
 	return ret.value();
 }
 qreal ThumbVideoWorker::colorMonopolization(const QImage & img) {
-	int cx = img.size().width();
-	int cy = img.size().height();
-	int pixels = cx*cy;
+	const int cx = img.size().width();
+	const int cy = img.size().height();
+	const int pixels = cx*cy;
 	if(pixels<=0)
-		return false;
+		return 0;
 	const int quantizationBits = 5;
 	const int sz = 512;//2**(3 rgb*3 bits per pixel)
 	int colors[sz];
