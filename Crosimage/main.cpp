@@ -10,6 +10,7 @@ void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QStr
 		|| msg.contains(QStringLiteral("Unsupported ICC profile"))
 		|| msg.contains(QStringLiteral("fromIccProfile: failed general sanity check"))
 		|| msg.contains(QStringLiteral("failed minimal tag size sanity"))
+		|| msg.contains(QStringLiteral("invalid tag offset alignment"))
 		|| msg.contains(QStringLiteral("ShGetFileInfoBackground() timed out for "));
 	g_oldQtMessageHandler(type, context, msg);
 	QString str = [type]()->QString {
