@@ -9,7 +9,6 @@ class ImageView: public QWidget {
 		ImageView(ThumbModel*parent, ThumbView*view, QString file);
 		virtual ~ImageView();
 	public slots:
-		void onModelReset();
 		void onTimer();
 		void editExternally();
 		void viewExternally();
@@ -20,6 +19,7 @@ class ImageView: public QWidget {
 		virtual void paintEvent(QPaintEvent * event)override;
 		virtual void wheelEvent(QWheelEvent * event)override;
 		virtual void mouseMoveEvent(QMouseEvent *event)override;
+		virtual void mouseDoubleClickEvent(QMouseEvent *event)override;
 		virtual void contextMenuEvent(QContextMenuEvent * event)override;
 
 		QStringList _files;
@@ -45,4 +45,5 @@ class ImageView: public QWidget {
 		static QString findLinkedFile(QString str);
 		void removeUnsupportedFiles();
 		bool isSupportedFile(const QString & path)const;
+		void resetAndSelect(const QString& file);
 };

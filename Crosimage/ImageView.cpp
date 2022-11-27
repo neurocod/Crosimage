@@ -8,21 +8,25 @@
 #include "CMainWindow.h"
 #include "TxtLnkProcessor.h"
 
+template<class T>
+T* findInParent(QWidget*w) {
+	if (!w)
+		return 0;
+	for (QWidget* p = w->parentWidget(); p; p = p->parentWidget()) {
+		if (T* t = dynamic_cast<T*>(p))
+			return t;
+	}
+	return 0;
+}
 ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(parent) {
 	_parentView = view;
 	_bShowOther = true;
 	_bFitScreen = true;
-	QFileInfo info(file);
-	ASSERT(info.dir().absolutePath()==parent->dir().absolutePath());
 	setAttribute(Qt::WA_DeleteOnClose);
 	showFullScreen();
-	connect(parent, &ThumbModel::modelReset, this, &ImageView::onModelReset);
-	_files = _parent->files();
-	removeUnsupportedFiles();
-	_indexInParent = _files.indexOf(info.absoluteFilePath());
-	if(-1==_indexInParent)
-		_indexInParent = 0;
-	navigate();
+	resetAndSelect(file);
+	connect(_parent, &ThumbModel::modelReset, this, [this](){ resetAndSelect({}); });
+	
 	//setContextMenuPolicy(Qt::ActionsContextMenu);
 	{
 		setMouseTracking(true);
@@ -37,91 +41,99 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 		addAction(a);
 	}
 	{
+		Action a(tr("Go up"), QKeySequence("Alt+Up"));
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			if (auto w = findInParent<CMainWindow>(_parentView))
+				w->goUp();
+		});
+		addAction(a);
+	}
+	{
 		Action a(tr("Open linked file"));
 		a.connectClicks(this, &ImageView::openLinkedFile);
 		_actOpenLinkedFile = a;
 		addAction(a);
 	}
 	{
-		Action a(tr("Close this window"), QList<QKeySequence>() << QKeySequence("Esc") << QKeySequence("Alt+Up"));
+		Action a(tr("Close this window"), QList<QKeySequence>() << QKeySequence("Esc") << QKeySequence("Enter"));
 		a.connectClicks(this, &ImageView::close);
 		addAction(a);
 	}
 	{
 		Action a(tr("First image"), QKeySequence("Home"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->_indexInParent = 0;
-				this->navigate();
-			});
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			_indexInParent = 0;
+			navigate();
+		});
 		addAction(a);
 	}
 	{
 		Action a(tr("Last image"), QKeySequence("End"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->_indexInParent = this->_parent->items().count()-1;
-				this->navigate();
-			});
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			_indexInParent = _parent->items().count()-1;
+			navigate();
+		});
 		addAction(a);
 	}
 	{
-		Action a(tr("Prev image"), QKeySequence("PgUp"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->navigate(-1);
-			});
+		Action a(tr("Prev image"), QList<QKeySequence>() << QKeySequence("PgUp") << QKeySequence("Left"));
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			navigate(-1);
+		});
 		addAction(a);
 	}
 	{
-		Action a(tr("Next image"), QList<QKeySequence>() << QKeySequence("PgDown") << QKeySequence("Space"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->navigate(1);
-			});
+		Action a(tr("Next image"), QList<QKeySequence>() << QKeySequence("PgDown") << QKeySequence("Right") << QKeySequence("Space"));
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			navigate(1);
+		});
 		addAction(a);
 	}
 	//{
 	//	Action a(tr("Scale +"), QKeySequence("+"));
-	//	QObject::connect(a, &QAction::triggered, this, [=]() {
-	//		//this->navigate(1);
+	//	QObject::connect(a, &QAction::triggered, this, [this]() {
+	//		//navigate(1);
 	//	});
 	//	addAction(a);
 	//}
 	//{
 	//	Action a(tr("Scale -"), QKeySequence("-"));
-	//	QObject::connect(a, &QAction::triggered, this, [=]() {
-	//		//this->navigate(1);
+	//	QObject::connect(a, &QAction::triggered, this, [this]() {
+	//		//navigate(1);
 	//	});
 	//	addAction(a);
 	//}
 	//{
 	//	Action a(tr("Scale 1:1"), QKeySequence("="));
-	//	QObject::connect(a, &QAction::triggered, this, [=]() {
-	//		//this->navigate(1);
+	//	QObject::connect(a, &QAction::triggered, this, [this]() {
+	//		//navigate(1);
 	//	});
 	//	addAction(a);
 	//}
 	{
 		Action a(tr("Fullscreen/Normal"), QKeySequence("F"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-				if(this->isFullScreen())
-					this->showNormal();
-				else
-					this->showFullScreen();
-			});
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			if(isFullScreen())
+				showNormal();
+			else
+				showFullScreen();
+		});
 		addAction(a);
 	}
 	{
 		Action a(tr("Single/multiple images"), QList<QKeySequence>() << QKeySequence("1") << QKeySequence("Ctrl+Down"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->_bShowOther = !this->_bShowOther;
-				this->navigate();
-			});
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			_bShowOther = !_bShowOther;
+			navigate();
+		});
 		addAction(a);
 	}
 	{
 		Action a(tr("Fit screen/Normal size"), QList<QKeySequence>() << QKeySequence("*") << QKeySequence("Ctrl+Up"));
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-				this->_bFitScreen = !this->_bFitScreen;
-				this->navigate();
-			});
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			_bFitScreen = !_bFitScreen;
+			navigate();
+		});
 		addAction(a);
 	}
 	{
@@ -141,15 +153,15 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 	}
 	{
 		Action a(tr("Lock window size"), QKeySequence("L"));//to fight with MS Windows automatic resize at screen borders
-		QObject::connect(a, &QAction::triggered, this, [=]() {
-			auto sz = this->minimumSize();
+		QObject::connect(a, &QAction::triggered, this, [this]() {
+			auto sz = minimumSize();
 			if(sz==QSize(0, 0)) { //not locked, lock
-				sz = this->size();
-				this->setMinimumSize(sz);
-				this->setMaximumSize(sz);
+				sz = size();
+				setMinimumSize(sz);
+				setMaximumSize(sz);
 			} else {//unlock
-				this->setMinimumSize(QSize(0, 0));
-				this->setMaximumSize(QSize(0xffffff, 0xffffff));
+				setMinimumSize(QSize(0, 0));
+				setMaximumSize(QSize(0xffffff, 0xffffff));
 			}
 		});
 		addAction(a);
@@ -161,13 +173,25 @@ ImageView::~ImageView() {
 		_parentView->select(_images[0].file);
 	}
 }
-void ImageView::onModelReset() {
-	//зачем это надо? отображаемая папка изменится, фигня
-	///_indexInParent = 0;
-	///navigate(0);
+void ImageView::resetAndSelect(const QString& file) {
+	_files = _parent->files();
+	if (_files.isEmpty() && !_parent->items().isEmpty()) { // dirs only
+		close();
+		return;
+	}
+	removeUnsupportedFiles();
+	if (file.isEmpty()) {
+		_indexInParent = _files.isEmpty() ? -1 : 0;
+	} else {
+		QFileInfo info(file);
+		_indexInParent = _files.indexOf(info.absoluteFilePath());
+	}
+	if(-1==_indexInParent)
+		_indexInParent = 0;
+	navigate();
 }
 void ImageView::paintEvent(QPaintEvent * event) {
-	auto rc = rect();
+	const QRect rc = rect();
 	QPainter painter(this);
 	painter.setClipRect(rc);
 	painter.fillRect(rc, Qt::black);
@@ -270,6 +294,9 @@ void ImageView::editExternally() {
 void ImageView::openInExplorer() {
 	if(!_images.isEmpty())
 		FileFacility::showDirWithFile(_images[0].file);
+}
+void ImageView::mouseDoubleClickEvent(QMouseEvent* event) {
+	__super::close();
 }
 void ImageView::contextMenuEvent(QContextMenuEvent * event) {
 	QMenu m;

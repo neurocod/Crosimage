@@ -101,8 +101,8 @@ void ThumbModel::setDir(const QDir & dir) {
 	clear();
 	_dir = dir;
 	_dir.setSorting(_dir.sorting()|QDir::DirsFirst);
-	endResetModel();
 	QMetaObject::invokeMethod(&_dirThread, "readDir", Qt::QueuedConnection, Q_ARG(QDir, _dir));
+	endResetModel();
 }
 void ThumbModel::clear() {
 	qDeleteAll(_items);

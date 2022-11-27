@@ -21,6 +21,7 @@ Makefile
 *-build-*
 
 # Visual Studio
+.vs
 *.VC.DB*
 *.VC.opendb
 *.[Oo]bj
