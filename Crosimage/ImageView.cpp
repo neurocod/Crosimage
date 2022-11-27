@@ -347,7 +347,13 @@ bool ImageView::isSupportedFile(const QString & path)const {
 		return false;
 	if(str.endsWith("sld"))
 		return false;
-	//path = path.toLower();
-	//
-	return true;
+	static const QSet<QString> formats = []() {
+		QSet<QString> ret;
+		for(auto arr: QImageReader::supportedImageFormats()) {
+			ret << QString::fromUtf8(arr);
+		}
+		return ret;
+	}();
+	str = str.toLower();
+	return formats.contains(str);
 }
