@@ -23,7 +23,6 @@ ReadStatusV<QString> FileReader::readUnicode(IN const QString & fileName) {
 	if(!ret.ok())
 		return ret;
 	QTextStream readStream(ret._v);
-	readStream.setCodec("UTF-8");
 	readStream.setAutoDetectUnicode(true);
 	return {true, readStream.readAll()};
 }
@@ -34,17 +33,13 @@ ReadStatusT<QByteArray> FileReader::readResourceFile(const QString & fileName) {
 		ASSERT(0);
 		return ReadStatus(QObject::tr("invalid resource %1").arg(fileName));
 	}
-	if(resource.isCompressed()) {
- 		return qUncompress(resource.data(), resource.size());
-	}
-	return QByteArray((LPCSTR)resource.data(), resource.size());
+	return resource.uncompressedData();
 }
 ReadStatusV<QString> FileReader::readResourceToString(const QString & fileName) {
 	auto s = readResourceFile(fileName);
 	if(!s.ok())
 		return s;
 	QTextStream readStream(s._v);
-	readStream.setCodec("UTF-8");
 	readStream.setAutoDetectUnicode(true);
 	ReadStatusV<QString> ret = ReadStatus(readStream);
 	ret._v = readStream.readAll();

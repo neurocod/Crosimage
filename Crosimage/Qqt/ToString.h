@@ -4,7 +4,7 @@
 
 namespace Qqt {
 	QString toString(double n);
-	QString toString(decltype(endl));
+	QString toString(decltype(Qt::endl));
 	QString toString(bool n);
 	QString toString(char n);
 	QString toString(qint32 n);

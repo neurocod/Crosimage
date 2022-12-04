@@ -6,7 +6,7 @@ class ThumbView;
 class CMainWindow: public QMainWindow {
 	Q_OBJECT
 	public:
-		CMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+		CMainWindow(QWidget* parent = 0, Qt::WindowFlags flags = {});
 		virtual ~CMainWindow();
 		static CMainWindow* instance(QWidget*child);
 		void go(const QString & dir, int addCurrentToHistory);//-1=history, 0=not add, 1==add to fwd
@@ -27,7 +27,7 @@ class CMainWindow: public QMainWindow {
 		void sortingUpdated();
 	protected:
 		virtual void focusInEvent(QFocusEvent * event)override;
-		virtual void enterEvent(QEvent *e)override;
+		virtual void enterEvent(QEnterEvent*e)override;
 		void onFocus();
 		void updateSettings(bool save);
 	private:

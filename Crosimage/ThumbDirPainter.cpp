@@ -36,7 +36,7 @@ QImage ThumbDirPainter::compose2(const QList<QImage> & _images) {
 	QSize sz2(CrSettings::inst()._thumbW/2, CrSettings::inst()._thumbH/2);
 	for(auto & img: images)
 		img = img.scaled(sz2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-	qSort(images.begin(), images.end(),
+	std::sort(images.begin(), images.end(),
 		[](const QImage & i1, const QImage & i2)->bool {
 			//return i1.width()*i1.height()>i2.width()*i2.height();
 			return i1.height()>i2.height();

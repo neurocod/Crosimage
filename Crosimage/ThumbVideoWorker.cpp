@@ -91,7 +91,7 @@ qreal ThumbVideoWorker::colorMonopolization(const QImage & img) {
 			colors[rgb2]++;
 		}
 	}
-	qSort(colors, colors+sz);
+	std::sort(colors, colors+sz);
 	int sum = 0;
 	for(int i = 0; i<3; ++i) {
 		int pixelCount = colors[sz-1-i];

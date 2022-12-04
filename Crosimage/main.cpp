@@ -23,7 +23,7 @@ void myMsgHandler(QtMsgType type, const QMessageLogContext & context, const QStr
 		return "unknown";
 	} ();
 	str += QStringLiteral(" function %1 file %2 line %3: %4").arg(context.function).arg(context.file).arg(context.line).arg(msg);
-	//LogFile::debug() << QDateTime::currentDateTime() << str << endl;
+	//LogFile::debug() << QDateTime::currentDateTime() << str << Qt::endl;
 	if(!prevent) {
 		if(QCoreApplication::instance()->thread() == QThread::currentThread()) {
 			msgBox("Qt message", str);
@@ -40,9 +40,6 @@ int main(int argc, char *argv[]) {
 	// This attribute must be set before QGuiApplication is constructed:
 	QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
 	QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
-#ifdef Q_OS_WIN
-	QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton );
-#endif
 	CApplication a(argc, argv);
 	return a.exec();
 }

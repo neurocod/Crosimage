@@ -15,7 +15,7 @@ bool FileFacility::createDirForFile(const QString & strFile) {
 bool FileFacility::serializationCheck(bool bSave, QDataStream & stream, QString strCheck) {
 	if(stream.status()!=QDataStream::Ok)
 		return false;
-	const QChar nMagicCheck = 0xf00d;//food
+	const QChar nMagicCheck(0xf00d);//food
 	if(bSave) {
 		stream << nMagicCheck;
 		stream << strCheck;

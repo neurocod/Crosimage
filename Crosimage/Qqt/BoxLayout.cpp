@@ -28,7 +28,7 @@ BoxLayout& BoxLayout::operator<<(const QString & str) {
 	return *this;
 }
 void BoxLayout::setCompact() {
-	d->setMargin(0);
+	d->setContentsMargins(0, 0, 0, 0);
 	d->setSpacing(0);
 }
 void BoxLayout::insertStretch(int index, int stretch) {

@@ -4,7 +4,7 @@
 
 QHBoxLayout* compactHBoxLayout(QWidget*parent) {
 	QHBoxLayout* layout = new QHBoxLayout(parent);
-	layout->setMargin(0);
+	layout->setContentsMargins(0, 0, 0, 0);
 	layout->setSpacing(0);
 	return layout;
 }

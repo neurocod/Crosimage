@@ -17,7 +17,7 @@ LogFile::LogFile(const QString & additionalName, bool appendTextStart): _file(fi
 		str.prepend("[Debug] ");
 #endif
 		str.prepend("\n____________ ");
-		debug_() << str << endl;
+		debug_() << str << Qt::endl;
 	}
 }
 LogFile::~LogFile() {

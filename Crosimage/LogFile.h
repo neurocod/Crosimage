@@ -1,7 +1,7 @@
 ﻿//LogFile.h by neurocod
 #pragma once
 
-#define LOG_LINE LogFile::debug() << __FILE__ <<  __LINE__ << endl;
+#define LOG_LINE LogFile::debug() << __FILE__ <<  __LINE__ << Qt::endl;
 
 class LogFile {
 	public:

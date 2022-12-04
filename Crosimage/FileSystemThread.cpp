@@ -46,7 +46,7 @@ void FileSystemThread::readDir(QDir dir) {
 			if(!goDirs)
 				other << s;
 		}
-		qSort(other.begin(), other.end(), compareByNameAndNumber);
+		std::sort(other.begin(), other.end(), compareByNameAndNumber);
 		entryList = dirs + other;
 	}
 	emit items(dir, entryList);

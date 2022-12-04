@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "FileWriter.h"
 
-WriteStatus FileWriter::write(IN const QString & fileName, IN const QByteArray& arr) {
+WriteStatus FileWriter::write(const QString & fileName, const QByteArray& arr) {
 	QFile file(fileName);
 	if(!file.open(QIODevice::WriteOnly))
 		return formatError(fileName, file.errorString());
@@ -10,16 +10,15 @@ WriteStatus FileWriter::write(IN const QString & fileName, IN const QByteArray& 
 	file.close();
 	return true;
 }
-WriteStatus FileWriter::write8bit(IN const QString & fileName,
-						IN const QString & strFileData) {
+WriteStatus FileWriter::write8bit(const QString & fileName, const QString & strFileData) {
 	return write(fileName, strFileData.toLocal8Bit());
 }
-WriteStatus FileWriter::writeUnicode(IN const QString & fileName, IN const QString & contents, const char*codec) {
+WriteStatus FileWriter::writeUnicode(const QString & fileName, const QString & contents, const QStringConverter::Encoding encoding) {
 	QFile file(fileName);
 	if(!file.open(QIODevice::WriteOnly))
 		return formatError(fileName, file.errorString());
 	QTextStream stream(&file);
-	stream.setCodec(codec);
+	stream.setEncoding(encoding);
 	stream.setGenerateByteOrderMark(true);
 	stream << contents;
 	file.close();

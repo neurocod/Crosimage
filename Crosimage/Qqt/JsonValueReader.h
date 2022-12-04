@@ -36,6 +36,7 @@ QJsonArray toJson(const QSet<T> & list) {
 	}
 	return arr;
 }
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 template<class T>
 QJsonArray toJson(const QVector<T> & list) {
 	QJsonArray arr;
@@ -44,6 +45,7 @@ QJsonArray toJson(const QVector<T> & list) {
 	}
 	return arr;
 }
+#endif
 template<class T>
 void insert(QJsonObject & js, const QString & name, const T & v) {
 	js.insert(name, toJson(v));

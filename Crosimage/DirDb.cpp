@@ -53,7 +53,7 @@ ReadStatus DirDb::readAllToCache() {
 		item->_rating = q.value(col++).value<int>();
 		item->_showSettings = q.value(col++).value<QByteArray>();
 	}
-	qStableSort(_items.begin(), _items.end(), &DirDb::compareByRating);
+	std::stable_sort(_items.begin(), _items.end(), &DirDb::compareByRating);
 	return true;
 }
 bool DirDb::compareByRating(const Item * i1, const Item * i2) {

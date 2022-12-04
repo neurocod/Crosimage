@@ -24,7 +24,7 @@ int MsgBox::display(QtMsgType type, const QMessageLogContext & context, const QS
 	};
 	struct TextBrowser: public QTextBrowser {
 		TextBrowser() {
-			setTabStopDistance(QFontMetrics(font()).width(QLatin1Char('x')) * 4);
+			setTabStopDistance(QFontMetrics(font()).boundingRect(QStringLiteral("xxxx")).width());
 		}
 		void onWrapLines(bool b) {
 			setLineWrapMode(b ? QTextEdit::WidgetWidth : QTextEdit::NoWrap);
@@ -76,7 +76,7 @@ int MsgBox::display(QtMsgType type, const QMessageLogContext & context, const QS
 		Box(QtMsgType type, const QMessageLogContext & context, const QString &msg):
 			QDialog(0, Qt::Dialog| Qt::WindowMaximizeButtonHint| Qt::WindowCloseButtonHint)
 		{
-			auto sz = QApplication::desktop()->size();
+			QSize sz = screen()->size();
 			const QSize want(1024, 768);
 			if(sz.width()>want.width() && sz.height()>want.height())
 				resize(want);

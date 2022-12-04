@@ -13,7 +13,7 @@ QList<CMainWindow*> CMainWindow::s_inst;
 bool CMainWindow::s_loadingComplete = false;
 class CComboBox: public QComboBox {
 	public:
-		virtual void enterEvent(QEvent * event)override {
+		virtual void enterEvent(QEnterEvent* event)override {
 			if(hasFocus())
 				return;
 			setFocus(Qt::MouseFocusReason);
@@ -118,7 +118,7 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 		_editPath->setMaxVisibleItems(30);
 		{
 			QCompleter *completer = new QCompleter(this);
-			auto dirModel = new QDirModel(completer);
+			auto dirModel = new QFileSystemModel(completer);
 			dirModel->setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
 			completer->setModel(dirModel);
 			_editPath->setCompleter(completer);
@@ -297,7 +297,7 @@ void CMainWindow::goSibling(bool next) {
 		ASSERT(0);
 		return;
 	}
-	qSort(siblings.begin(), siblings.end(), compareByNameAndNumber);
+	std::sort(siblings.begin(), siblings.end(), compareByNameAndNumber);
 	Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #ifdef Q_OS_WIN
 	cs = Qt::CaseInsensitive;
@@ -333,7 +333,7 @@ void CMainWindow::focusInEvent(QFocusEvent * event) {
 	onFocus();
 	__super::focusInEvent(event);
 }
-void CMainWindow::enterEvent(QEvent *e) {
+void CMainWindow::enterEvent(QEnterEvent*e) {
 	__super::enterEvent(e);
 	onFocus();
 }

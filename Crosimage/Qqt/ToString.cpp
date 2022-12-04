@@ -16,7 +16,7 @@ namespace Qqt {
 	QString toStringT(T t) {
 		return QString("%1").arg(t);
 	}
-	QString toString(decltype(endl)) { return QChar('\n'); }
+	QString toString(decltype(Qt::endl)) { return QChar('\n'); }
 	QString toString(bool b) { return b ? QStringLiteral("true") : QStringLiteral("false"); }
 	QString toString(char n) { return toStringT(n); }
 	QString toString(double n) { return toStringT(n); }
@@ -67,9 +67,7 @@ namespace Qqt {
 		return str;
 	}
 	QByteArray toByteArray(const QString & str) {
-		QByteArray ret;
-		ret.append(str);
-		return ret;
+		return str.toUtf8();
 	}
 	QString toString(const QColor & clr) {
 		if(!clr.isValid())

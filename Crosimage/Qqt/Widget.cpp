@@ -42,13 +42,6 @@ int Widget::mapDpi(int pixelsLowDpi) {
 qreal Widget::mapDpi(qreal pixelsLowDpi) {
 	return pixelsLowDpi* dpiScale();
 }
-int getSystemDpiX() {//from internet:
-    int dpi = QApplication::desktop()->logicalDpiX();
-#if defined (__APPLE__)
-    dpi = (int)(dpi * 1.5);
-#endif
-    return dpi;
-}
 //can't make it work in header files in gcc because pch not working etc
 template<class Arg>
 QWidget* Widget_widgetFromArg(Arg arg) {

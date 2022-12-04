@@ -54,8 +54,7 @@ StringStatus MicrosoftLnkReader::loadAndParse(const QString & path) {
 QString MicrosoftLnkReader::read0Terminated(QDataStream & stream, bool unicode) {
 	QString ret;
 	if(unicode) {
-		while(1) {
-			quint16 ch;
+		for (quint16 ch; ;) {
 			stream >> ch;
 			if(!ch || stream.atEnd())
 				break;
@@ -63,12 +62,11 @@ QString MicrosoftLnkReader::read0Terminated(QDataStream & stream, bool unicode) 
 		}
 		return ret;
 	}
-	while(1) {
-		quint8 ch;
+	for (quint8 ch; ;) {
 		stream >> ch;
 		if(!ch || stream.atEnd())
 			break;
-		ret += ch;
+		ret += QChar(ch);
 	}
 	return ret;
 }

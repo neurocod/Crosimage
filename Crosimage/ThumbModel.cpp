@@ -165,6 +165,6 @@ void ThumbModel::setColumnCount(int cols) {
 Qt::ItemFlags ThumbModel::flags(const QModelIndex & index)const {
 	auto item = itemBy(index);
 	if(!item)
-		return 0;
+		return Qt::NoItemFlags;
 	return __super::flags(index);
 }

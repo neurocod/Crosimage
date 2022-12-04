@@ -50,7 +50,7 @@ void ThumbCache::set(const QFileInfo & file, const QImage & img) {
 	}
 	auto path = file.absoluteFilePath();
 	_map.remove(path);
-	ThumbWorker::instance().setThumb(path, img);
+	ThumbWorker::instance().setThumb(file, img);
 	emit loadedByCache(path, img);
 }
 void ThumbCache::loadedByDb(QString path, QImage thumb) {

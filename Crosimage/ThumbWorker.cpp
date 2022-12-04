@@ -33,7 +33,7 @@ void ThumbWorker::makeFirst(const QString & path) {
 	for(int i = 0; i<_queue.count(); ++i) {
 		auto j = _queue.at(i);
 		if(job->equal(*j)) {
-			_queue.QList::swap(0, i);
+			_queue.swapItemsAt(0, i);
 			return;
 		}
 	}
