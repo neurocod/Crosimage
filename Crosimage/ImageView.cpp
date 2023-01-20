@@ -326,7 +326,7 @@ void ImageView::copyPath() {
 void ImageView::removeUnsupportedFiles() {
 	for(auto it = _files.begin(); it!=_files.end(); ) {
 		QString str = *it;
-		if(isSupportedFile(*it))
+		if(isSupportedFile(str))
 			++it;
 		else
 			it = _files.erase(it);
