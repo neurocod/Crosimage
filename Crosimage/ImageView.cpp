@@ -272,7 +272,8 @@ void ImageView::navigate(int step) {
 	show(li);
 }
 void ImageView::wheelEvent(QWheelEvent * event) {
-	navigate(event->pixelDelta().y()>0 ? -1 : 1);
+	auto y = event->angleDelta().y();
+	navigate(y >0 ? -1 : 1);
 }
 void ImageView::onTimer() {
 	if(_timeMouseMoved.secsTo(QTime::currentTime())>=1)
