@@ -15,9 +15,8 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 		__super::paint(painter, option, index);
 		return;
 	}
-	if(item->fileInfo().isDir()) {
+	if(item->fileInfo().isDir())
 		painter->fillRect(option.rect, ThumbDirPainter::dirColor());
-	}
 	{
 		QPen pen(Qt::gray);
 		pen.setStyle(Qt::DashLine);
@@ -31,13 +30,13 @@ void ThumbDelegate::paint(QPainter* painter, const QStyleOptionViewItem & option
 	auto pt = option.rect.topLeft();
 	if(const bool center = 1) {
 		int diffX = CrSettings::inst()._thumbW - img.width();
-		if(diffX>0) {
+		if(diffX>0) { // if actual thumb width is less than table thumb cell,
 			if(index.column()==0 && index.model()->columnCount()>1)
-				pt.rx() += diffX;
+				pt.rx() += diffX; // first column images have offset to the right so eye stiicks closer to the window center
 			else if(index.model()->columnCount()>1 && index.column()==index.model()->columnCount()-1)
-				;
+				; // last column has 0 offset so it is close to the columns on the left
 			else
-				pt.rx() += diffX/2;
+				pt.rx() += diffX/2; // center horizontally
 		}
 	}
 	{
