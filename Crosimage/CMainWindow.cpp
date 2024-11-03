@@ -179,8 +179,12 @@ void CMainWindow::updateSettings(bool save) {
 	sett.beginGroup("MainWindow");
 	sett.beginGroup(QString::number(_nInst));
 	if(save) {
-		QString path = _model->dir().absolutePath();
-		sett.save("dir", path);
+		auto dir = _model->dir();
+		bool badDir = !dir.exists() || (dir == QDir() && _editPath->currentText().isEmpty());
+		if (!badDir) {
+			QString path = dir.absolutePath();
+			sett.save("dir", path);
+		}
 	} else {
 		QString path = _rootDir;
 		sett.load("dir", path);
@@ -224,8 +228,8 @@ void CMainWindow::goFwd() {
 	_navigateFwd.removeFirst();
 	go(str, -1);
 }
-void CMainWindow::go(const QString & _path, int addCurrentToHistory) {
-	QFileInfo file(_path);
+void CMainWindow::go(const QString & path_, int addCurrentToHistory) {
+	QFileInfo file(path_);
 	if(!file.exists())
 		return;
 	QString path = QDir::toNativeSeparators(file.canonicalFilePath());

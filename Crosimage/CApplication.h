@@ -15,7 +15,7 @@ class CApplication: public QApplication {
 		void showAltTab();
 		void prioritizeThumbs();
 	protected:
-		bool _saveSettingsOnExist = true;
+		bool _saveSettingsOnExit = true;
 		QAction* _quitAction;
 		QAction* _actShowAltTab;
 		bool _atExit = false;

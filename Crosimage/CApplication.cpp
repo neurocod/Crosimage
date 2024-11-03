@@ -26,7 +26,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 		QString str = args[0];
 		
 		if(TxtLnkProcessor::seemsMyFile(str)) {
-			_saveSettingsOnExist = false;
+			_saveSettingsOnExit = false;
 			TxtLnkProcessor::shellExecute(str);
 			QTimer::singleShot(1, this, &CApplication::quit);
 			return;
@@ -90,7 +90,7 @@ CApplication::~CApplication() {
 }
 void CApplication::quit() {
 	_atExit = true;
-	if(_saveSettingsOnExist) {
+	if(_saveSettingsOnExit) {
 		Settings sett;
 		sett.save("mainWindowsCount", CMainWindow::instancesCount());
 		CMainWindow::beforeQuit();
