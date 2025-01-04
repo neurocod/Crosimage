@@ -247,6 +247,7 @@ void CMainWindow::go(const QString & path_, int addCurrentToHistory) {
 		}
 		_view->selectLater(oldDir);
 		_model->setDir(path);
+		sortingUpdated();
 		setWindowTitle();
 		if(needSetTextToLineEdit(path))
 			_editPath->setCurrentText(path);

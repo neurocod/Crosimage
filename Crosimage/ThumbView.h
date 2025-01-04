@@ -20,6 +20,7 @@ class ThumbView: public QTableView {
 		void rebuildThumbnail();
 		void clearThumbnail();
 		void deleteFile();
+		void renameCurrentFile();
 		void copyPath();
 		void newDir();
 		void moveFiles();

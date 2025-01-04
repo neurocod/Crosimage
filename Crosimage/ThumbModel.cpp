@@ -93,7 +93,7 @@ void ThumbModel::setDir(const QString & str, bool check) {
 	QDir dir(str);
 	if(check && dir.absolutePath()==_dir.absolutePath())
 		return;
-	dir.setSorting(QDir::Time);
+	//dir.setSorting(QDir::Time);
 	setDir(dir);
 }
 void ThumbModel::setDir(const QDir & dir) {

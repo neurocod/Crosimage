@@ -79,6 +79,11 @@ ThumbView::ThumbView(ThumbModel*m) {
 		a.connectClicks(this, &ThumbView::moveFiles);
 		addAction(a);
 	}
+	{
+		Action a(tr("Rename file..."), QKeySequence("F2"));
+		a.connectClicks(this, &ThumbView::renameCurrentFile);
+		addAction(a);
+	}
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 void ThumbView::onDoubleClicked0() {
@@ -202,6 +207,19 @@ void ThumbView::resizeEvent(QResizeEvent *event) {
 }
 int ThumbView::sizeHintForRow(int row)const {
 	return _model->rowHeight(row);
+}
+void ThumbView::renameCurrentFile() {
+	QString path = selectedItemFilePath();
+	QFileInfo info(path);
+	QString name1 = info.fileName();
+	QString name2 = QInputDialog::getText(this, tr("Rename file"), tr("New file name:"), QLineEdit::Normal, name1);
+	if (name1 == name2 || name2.isEmpty())
+		return;
+	QDir(info.dir()).rename(name1, name2);
+	QFileInfo info2(info.dir().absoluteFilePath(name2));
+	ThumbCache::instance().rebuild(info2);
+	ThumbCache::instance().rebuild(info);
+	_model->refresh();
 }
 void ThumbView::deleteFile() {
 	QList<ThumbModel::Item*> items = selectedItems();

@@ -127,7 +127,7 @@
     <QtModules>core;xml;sql;gui;svg;xmlpatterns;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtInstall>$(DefaultQtVersion)</QtInstall>
+    <QtInstall>6.7.1_msvc2019_64</QtInstall>
     <QtModules>core;xml;sql;gui;svg;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
