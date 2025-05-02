@@ -148,22 +148,25 @@ void ThumbView::clearThumbnail() {
 	}
 }
 void ThumbView::prioritizeThumbs() {
-	auto r = rect();
-	auto p0 = r.topLeft();
-	auto p1 = r.bottomRight();
+	const int rows = _model->rowCount();
+	const int cols = _model->columnCount();
+	if (rows < 1 || cols < 1)
+		return;
+
+	QRect r = rect();
+	QPoint p0 = r.topLeft();
+	QPoint p1 = r.bottomRight();
 	auto vh = verticalHeader();
 	auto hh = horizontalHeader();
 	int row = vh->logicalIndexAt(p0.y());
 	int col = hh->logicalIndexAt(p0.x());
-	int rows = vh->logicalIndexAt(p1.y());
-	int cols = hh->logicalIndexAt(p1.x());
-	if(rows<0)
-		rows = _model->rowCount();
-	if(cols<0)
-		cols = _model->columnCount();
-	if(row>=0 && col>=0 && row<=rows && col<=cols) {
+	int row2 = vh->logicalIndexAt(p1.y());
+	int col2 = hh->logicalIndexAt(p1.x());
+	row2 = qBound(0, row2, rows - 1);
+	col2 = qBound(0, col2, cols - 1);
+	if (row>=0 && col>=0 && row<=row2 && col<=col2) {
 		auto i0 = _model->index(row, col);
-		auto i1 = _model->index(rows, cols);
+		auto i1 = _model->index(row2, col2);
 		emit _model->dataChanged(i0, i1);
 	}
 }
