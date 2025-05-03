@@ -25,7 +25,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 	setAttribute(Qt::WA_DeleteOnClose);
 	showFullScreen();
 	resetAndSelect(file);
-	connect(_parent, &ThumbModel::modelReset, this, [this](){ resetAndSelect({}); });
+	//connect(_parent, &ThumbModel::modelReset, this, [this](){ resetAndSelect({}); });
 	
 	//setContextMenuPolicy(Qt::ActionsContextMenu);
 	{
