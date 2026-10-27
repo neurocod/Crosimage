@@ -17,6 +17,10 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	QCoreApplication::setApplicationName("Crosimage");
 	QCoreApplication::setOrganizationName("neurocod");
 	CrSettings::load();
+#ifdef _DEBUG
+	// Keep the session group fixed until restart, even if Settings changes.
+	_debugSessions = CrSettings::inst()._debugSessions;
+#endif
 	//ThumbVideoWorker::thumbFromVideo(ThumbWorker::instance(), "C:\\v\\TSN_1+1.(2014_08)\\Tsn 1+1 (01.08.2014) IPTVRip.avi");
 	//return;
 	QCommandLineParser parser;
@@ -58,6 +62,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 				" as inner file stays unchanged and info is not lost.").arg(DirDb::dbFileName));
 		}
 		//session
+		beginSessionSettingsGroup(sett);
 		quint32 mainWindowsCount = 0;
 		sett.load("mainWindowsCount", mainWindowsCount);
 		mainWindowsCount = qBound<quint32>(1, mainWindowsCount, 20);
@@ -92,6 +97,7 @@ void CApplication::quit() {
 	_atExit = true;
 	if(_saveSettingsOnExit) {
 		Settings sett;
+		beginSessionSettingsGroup(sett);
 		sett.save("mainWindowsCount", CMainWindow::instancesCount());
 		CMainWindow::beforeQuit();
 		for(auto w: topLevelWidgets()) {
@@ -99,6 +105,10 @@ void CApplication::quit() {
 		}
 	}
 	__super::quit();
+}
+void CApplication::beginSessionSettingsGroup(QSettings & settings)const {
+	if(_debugSessions)
+		settings.beginGroup("debug");
 }
 QList<QAction*> CApplication::globalActions()const {
 	QList<QAction*> ret;

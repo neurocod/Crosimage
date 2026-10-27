@@ -176,6 +176,7 @@ void CMainWindow::updateSettings(bool save) {
 	if(!li.isEmpty())
 		_rootDir = li[0];
 	Settings sett;
+	CApplication::s_inst->beginSessionSettingsGroup(sett);
 	sett.beginGroup("MainWindow");
 	sett.beginGroup(QString::number(_nInst));
 	if(save) {

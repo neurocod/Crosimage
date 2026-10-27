@@ -22,4 +22,7 @@ void CrSettings::update(bool save) {
 	sett.update(save, "shutdownCommand", _shutdownCommand);
 	sett.updateRestricted(save, "thumbW", _thumbW);
 	sett.updateRestricted(save, "thumbH", _thumbH);
+#ifdef _DEBUG
+	sett.update(save, "debugSessions", _debugSessions);
+#endif
 }

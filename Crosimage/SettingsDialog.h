@@ -9,6 +9,9 @@ class SettingsDialog: public QDialog {
 		LineEdit _editShutdownCommand;
 		SpinBox _thumbW;
 		SpinBox _thumbH;
+#ifdef _DEBUG
+		CheckBox _debugSessions;
+#endif
 
 		void updateSettings(bool toGui);
 };
