@@ -20,3 +20,6 @@ See [README.md](README.md) for features, screenshots, and detailed build setup.
 - Edit source files, not generated files in `GeneratedFiles/` or build directories.
 - Before every nontrivial commit, run a subagent to review the changes.
   Wait for the review results and resolve any identified issues before committing.
+- After major commits, consider running a separate subagent to identify refactoring
+  opportunities, both within files (such as extracting duplicated code into a function)
+  and across modules (such as changing data hierarchies or moving functions between modules).
