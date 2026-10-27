@@ -28,7 +28,6 @@ class ThumbModel: public QAbstractTableModel {
 		const QList<Item*> & items()const { return _items; }
 		QStringList files()const;
 		void setSortFlags(QDir::SortFlags f);
-		void setDir(const QDir & dir);
 		virtual Qt::ItemFlags flags(const QModelIndex & index)const override;
 	public slots:
 		void setDir(const QString & str, bool check=true);

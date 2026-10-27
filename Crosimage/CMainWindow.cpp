@@ -181,7 +181,7 @@ void CMainWindow::updateSettings(bool save) {
 	sett.beginGroup(QString::number(_nInst));
 	if(save) {
 		auto dir = _model->dir();
-		bool badDir = !dir.exists() || (dir == QDir() && _editPath->currentText().isEmpty());
+		bool badDir = !dir.exists() || (dir.absolutePath() == QDir().absolutePath() && _editPath->currentText().isEmpty());
 		if (!badDir) {
 			QString path = dir.absolutePath();
 			sett.save("dir", path);
@@ -248,7 +248,6 @@ void CMainWindow::go(const QString & path_, int addCurrentToHistory) {
 		}
 		_view->selectLater(oldDir);
 		_model->setDir(path);
-		sortingUpdated();
 		setWindowTitle();
 		if(needSetTextToLineEdit(path))
 			_editPath->setCurrentText(path);

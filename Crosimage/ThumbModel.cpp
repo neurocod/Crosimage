@@ -9,6 +9,7 @@ ThumbModel::ThumbModel(QObject*parent):
 {
 	_colCount = 1;
 	_invalidateFiles = false;
+	_dir.setSorting(QDir::Time|QDir::DirsFirst);
 	connect(&ThumbCache::instance(), SIGNAL(loadedByCache(const QString &, const QImage&)),
 		SLOT(updateThumb(const QString&, const QImage&)) );
 	connect(&_dirThread, SIGNAL(items(QDir, QStringList)), SLOT(directoryLoaded(QDir, QStringList)) );
@@ -93,16 +94,10 @@ void ThumbModel::setDir(const QString & str, bool check) {
 	QDir dir(str);
 	if(check && dir.absolutePath()==_dir.absolutePath())
 		return;
-	//dir.setSorting(QDir::Time);
-	setDir(dir);
-}
-void ThumbModel::setDir(const QDir & dir) {
-	beginResetModel();
-	clear();
+	// Navigation changes the path, not the model's selected sort order.
+	dir.setSorting(_dir.sorting());
 	_dir = dir;
-	_dir.setSorting(_dir.sorting()|QDir::DirsFirst);
-	QMetaObject::invokeMethod(&_dirThread, "readDir", Qt::QueuedConnection, Q_ARG(QDir, _dir));
-	endResetModel();
+	refresh();
 }
 void ThumbModel::clear() {
 	qDeleteAll(_items);
@@ -119,9 +114,11 @@ void ThumbModel::directoryLoaded(QDir dir, QStringList items) {
 	endResetModel();
 }
 void ThumbModel::refresh() {
-	QDir dir = _dir;
-	dir.refresh();
-	setDir(dir);
+	beginResetModel();
+	clear();
+	_dir.refresh();
+	QMetaObject::invokeMethod(&_dirThread, "readDir", Qt::QueuedConnection, Q_ARG(QDir, _dir));
+	endResetModel();
 }
 void ThumbModel::updateThumb(const QString & path, const QImage & image) {
 	if(_items.isEmpty())
@@ -153,9 +150,11 @@ QModelIndex ThumbModel::indexByIntIndex(int i)const {
 	return createIndex(row, col);
 }
 void ThumbModel::setSortFlags(QDir::SortFlags f) {
-	QDir dir = _dir;
-	dir.setSorting(f|QDir::DirsFirst);
-	setDir(dir);
+	f |= QDir::DirsFirst;
+	if(f==_dir.sorting())
+		return;
+	_dir.setSorting(f);
+	refresh();
 }
 void ThumbModel::setColumnCount(int cols) {
 	if(cols<1 || cols==_colCount)
