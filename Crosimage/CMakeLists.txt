@@ -164,6 +164,8 @@ crosimage_sources("src"
     DirDb.cpp
     DirDb.h
     main.cpp
+    Screenshot.cpp
+    Screenshot.h
     pch.cpp
     pch.h
 )
@@ -176,6 +178,7 @@ crosimage_sources("src\\settings"
 )
 
 target_include_directories(Crosimage PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_definitions(Crosimage PRIVATE CROSIMAGE_PROJECT_ROOT="${PROJECT_SOURCE_DIR}")
 target_link_libraries(Crosimage PRIVATE
     Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Sql Qt6::Svg Qt6::Xml
 )

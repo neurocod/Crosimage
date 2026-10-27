@@ -39,6 +39,14 @@ def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--release", action="store_true", help="build Release (default: Debug)")
     parser.add_argument("--rebuild", action="store_true", help="clean before building")
+    parser.add_argument("--run", action="store_true",
+                        help="after building, capture a screenshot and wait for the app to exit")
+    parser.add_argument("--folder", type=nonblank, metavar="PATH",
+                        help="folder to show with --run (default: Pictures)")
+    parser.add_argument("--screenshot-delay", type=positive_int, metavar="MS",
+                        help="capture delay with --run (default: 2000 ms)")
+    parser.add_argument("--screenshot-dir", type=nonblank, metavar="PATH",
+                        help="output directory with --run (default: <project>/screens)")
     parser.add_argument("--platform", choices=("x64", "Win32"), default="x64",
                         help="Visual Studio architecture (default: x64)")
     parser.add_argument("--project", type=str.strip, choices=("", "ALL_BUILD", "Crosimage"),
@@ -59,7 +67,11 @@ def parse_args(argv=None):
                         help="Qt 6 prefix (default: QT_PREFIX, CMake settings, then C:/Qt MSVC kits)")
     parser.add_argument("--dry-run", action="store_true",
                         help="print configure/build commands without building or writing a log")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if not args.run and any(value is not None for value in
+                            (args.folder, args.screenshot_delay, args.screenshot_dir)):
+        parser.error("--folder, --screenshot-delay and --screenshot-dir require --run")
+    return args
 
 
 def find_cmake(override=None):
@@ -146,7 +158,18 @@ def build_commands(args):
         build += ["--target", "Crosimage"]
     if args.rebuild:
         build.append("--clean-first")
-    return [configure, build]
+    commands = [configure, build]
+    if args.run:
+        executable = build_dir / "bin" / config / ("Crosimage.exe" if os.name == "nt" else "Crosimage")
+        run = [str(executable), "--screenshot"]
+        if args.folder:
+            run += ["--folder", str(Path(args.folder).expanduser().resolve())]
+        if args.screenshot_delay is not None:
+            run += ["--screenshot-delay", str(args.screenshot_delay)]
+        if args.screenshot_dir:
+            run += ["--screenshot-dir", str(Path(args.screenshot_dir).expanduser().resolve())]
+        commands.append(run)
+    return commands
 
 
 def run_command(command, args, log):
@@ -202,7 +225,8 @@ def main(argv=None):
                 pass
         return 1
     if not args.quiet:
-        print(f"Build {'succeeded' if code == 0 else 'FAILED'}. Exit code: {code}; elapsed: {time.monotonic() - started:.1f}s")
+        operation = "Build and screenshot" if args.run else "Build"
+        print(f"{operation} {'succeeded' if code == 0 else 'FAILED'}. Exit code: {code}; elapsed: {time.monotonic() - started:.1f}s")
     return code
 
 

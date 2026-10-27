@@ -75,6 +75,46 @@ On Windows, Ninja needs a Visual Studio developer shell. The migration has
 been verified with MSVC on Windows; other compiler/platform combinations
 may require changes to the existing C++ sources.
 
+## Screenshots for development
+
+Build, capture the viewer, and wait for it to exit:
+
+```powershell
+python build.py --run --folder .\Crosimage\images
+python build.py --run --folder C:\Pictures --screenshot-delay 5000
+```
+
+The capture uses `QWidget::grab()` (the Qt client area, without other desktop
+windows or the system frame). It writes `<project>/screens/latest.png` regardless
+of the launch directory. The preceding capture becomes `previous.png`; older
+captures move to `screens/old/` with timestamps and unique suffixes. Generated
+screenshots are ignored by Git. A failed capture or file operation returns a
+nonzero exit code; `build.py --run` includes application output in `build.log`.
+
+To capture without rebuilding, or keep the window open after capturing:
+
+```powershell
+.\build\x64\bin\Debug\Crosimage.exe --screenshot --folder C:\Pictures
+.\build\x64\bin\Debug\Crosimage.exe --screenshot --folder C:\Pictures --manual-run
+```
+
+`--screenshot-dir PATH` overrides the output directory (also available on
+`build.py --run`). Relative paths resolve from the caller's directory. Capture
+starts after a configurable delay of 2000 ms; this is not a guarantee that all
+asynchronous thumbnails have finished loading. Increase `--screenshot-delay`
+for large folders. PNG dimensions include the display's device pixel ratio.
+
+Screenshot mode uses one window and temporary settings, skips the first-launch
+dialog, and does not restore or overwrite the user's session or run their
+shutdown command. Without `--folder`, it opens the default Pictures directory.
+As during normal viewing, thumbnail databases can be created in viewed folders.
+Ordinary launches remain interactive; screenshot-specific options require
+`--screenshot` (or `--run` for the build helper).
+
+For UI work, open `latest.png`, describe concrete visual issues, make changes,
+then rebuild and capture again. Compare with `previous.png` and `old/` to check
+layout, spacing, typography, contrast, and thumbnail density.
+
 ## Overview
 
 Cross-platform C++/Qt image viewer with some GUI improvements, which I missed in other programs like XnView. For example, intellectual folder thumbnails, three-picture slideshows etc. Also aimed to big speed when working with big folders.

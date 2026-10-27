@@ -11,11 +11,13 @@ class CApplication: public QApplication {
 		static void viewExternally(const QString & s);
 		static void editExternally(const QString & s);
 		void beginSessionSettingsGroup(QSettings & settings)const;
+		bool screenshotMode()const { return !_screenshotSettings.isNull(); }
 	public slots:
 		void quit();
 		void showAltTab();
 		void prioritizeThumbs();
 	protected:
+		QScopedPointer<QTemporaryDir> _screenshotSettings;
 		bool _saveSettingsOnExit = true;
 		bool _debugSessions = false;
 		QAction* _quitAction;

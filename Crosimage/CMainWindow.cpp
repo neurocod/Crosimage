@@ -26,7 +26,7 @@ class CComboBox: public QComboBox {
 			l->setCursorPosition(pos+1);
 		}
 };
-CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(parent, flags) {
+CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags, const QString &initialDirectory): QMainWindow(parent, flags) {
 	setAttribute(Qt::WA_DeleteOnClose);
 	_model = new ThumbModel(this);
 	_view = new ThumbView(_model);
@@ -130,7 +130,10 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(pa
 	setCentralWidget(w);
 	//createFileTreePanel();
 	showFullScreen();
-	updateSettings(false);
+	if(initialDirectory.isEmpty())
+		updateSettings(false);
+	else
+		go(initialDirectory);
 	{
 		Action a(tr("New window"), QKeySequence("Ctrl+N"), QIcon(":/qt-project.org/styles/commonstyle/images/file-16.png"));
 		QObject::connect(a, &QAction::triggered, this, [this]() {
@@ -238,16 +241,18 @@ void CMainWindow::go(const QString & path_, int addCurrentToHistory) {
 		path += '\\';
 	if(file.isDir()) {
 		const QString oldDir = _model->dir().absolutePath();
-		if(oldDir==file.absoluteFilePath())
+		if(_directoryInitialized && oldDir==file.absoluteFilePath())
 			return;
-		if(!oldDir.isEmpty()) {
+		if(_directoryInitialized && !oldDir.isEmpty()) {
 			if(addCurrentToHistory<0)
 				_navigateBack << oldDir;
 			else if(addCurrentToHistory>0)
 				_navigateFwd.prepend(oldDir);
 		}
 		_view->selectLater(oldDir);
-		_model->setDir(path);
+		// A new model's QDir is already cwd, but its contents have not loaded yet.
+		_model->setDir(path, _directoryInitialized);
+		_directoryInitialized = true;
 		setWindowTitle();
 		if(needSetTextToLineEdit(path))
 			_editPath->setCurrentText(path);

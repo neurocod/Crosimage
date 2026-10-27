@@ -18,6 +18,10 @@ See [README.md](README.md) for features, screenshots, and detailed build setup.
   without building. See README for details on overriding paths.
 - After C++ changes, verify the build with `python build.py` and inspect
   `build.log` if errors occur. A successful build does not replace checking GUI behavior.
+- For GUI changes, use `python build.py --run --folder PATH` to capture the viewer.
+  Open `screens/latest.png`, inspect it visually, and compare subsequent captures
+  with `screens/previous.png` and `screens/old/`. Increase `--screenshot-delay MS`
+  if thumbnails are still loading. See README for screenshot options and isolation.
 - Edit source files, not generated files in `GeneratedFiles/` or build directories.
 - Before every nontrivial commit, run a subagent to review the changes.
   Wait for the review results and resolve any identified issues before committing.

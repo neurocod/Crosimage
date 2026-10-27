@@ -10,12 +10,61 @@
 #include "ThumbVideoWorker.h"
 #include "ThumbWorker.h"
 #include "CrSettings.h"
+#include "Screenshot.h"
+#include <cstdio>
+#include <cstdlib>
 
 CApplication* CApplication::s_inst = 0;
 CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	s_inst = this;
 	QCoreApplication::setApplicationName("Crosimage");
 	QCoreApplication::setOrganizationName("neurocod");
+	QCommandLineParser parser;
+	parser.addHelpOption();
+	parser.addOption({"screenshot", "Capture one window and exit (isolated settings)."});
+	parser.addOption({"screenshot-delay", "Delay before capture in milliseconds.", "ms", "2000"});
+	parser.addOption({"screenshot-dir", "Screenshot output directory.", "path",
+		QString::fromUtf8(CROSIMAGE_PROJECT_ROOT) + "/screens"});
+	parser.addOption({"folder", "Folder to show in screenshot mode.", "path"});
+	parser.addOption({"manual-run", "Keep the screenshot window open after capture."});
+	auto commandLineError = [](const QString &message) {
+		fprintf(stderr, "%s\n", qPrintable(message));
+		std::exit(EXIT_FAILURE);
+	};
+	if(!parser.parse(arguments()))
+		commandLineError(parser.errorText());
+	if(parser.isSet("help")) {
+		fprintf(stdout, "%s", qPrintable(parser.helpText()));
+		std::exit(EXIT_SUCCESS);
+	}
+	const bool capture = parser.isSet("screenshot");
+	if(!capture && (parser.isSet("folder") || parser.isSet("screenshot-delay")
+		|| parser.isSet("screenshot-dir") || parser.isSet("manual-run")))
+		commandLineError("Screenshot options require --screenshot");
+	bool validDelay = false;
+	const int screenshotDelay = parser.value("screenshot-delay").toInt(&validDelay);
+	if(!validDelay || screenshotDelay < 0)
+		commandLineError("--screenshot-delay must be a nonnegative integer");
+	QString initialDirectory;
+	if(parser.isSet("folder")) {
+		const QFileInfo folder(parser.value("folder"));
+		if(parser.value("folder").isEmpty() || !folder.isDir())
+			commandLineError("--folder must name an existing directory");
+		initialDirectory = folder.absoluteFilePath();
+	}
+	if(capture) {
+		if(!parser.positionalArguments().isEmpty())
+			commandLineError("Use --folder in screenshot mode, not positional arguments");
+		if(parser.value("screenshot-dir").trimmed().isEmpty())
+			commandLineError("--screenshot-dir must not be empty");
+		_screenshotSettings.reset(new QTemporaryDir());
+		if(!_screenshotSettings->isValid())
+			commandLineError("Cannot create temporary screenshot settings");
+		QSettings::setDefaultFormat(QSettings::IniFormat);
+		QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, _screenshotSettings->path());
+		QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, _screenshotSettings->path());
+		_saveSettingsOnExit = false;
+	}
 	CrSettings::load();
 #ifdef _DEBUG
 	// Keep the session group fixed until restart, even if Settings changes.
@@ -23,8 +72,6 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 #endif
 	//ThumbVideoWorker::thumbFromVideo(ThumbWorker::instance(), "C:\\v\\TSN_1+1.(2014_08)\\Tsn 1+1 (01.08.2014) IPTVRip.avi");
 	//return;
-	QCommandLineParser parser;
-	parser.process(*this);
 	auto args = parser.positionalArguments();
 	if(!args.isEmpty()) {
 		QString str = args[0];
@@ -54,7 +101,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	qRegisterMetaType<QDir>("QDir");
 	{
 		Settings sett;
-		if(sett.value("firstLaunch", true).toBool()) {
+		if(!capture && sett.value("firstLaunch", true).toBool()) {
 			sett.setValue("firstLaunch", false);
 			msgBox(tr("First launch warning: Crosimage creates files named '%1' in each folder it has to show."
 				" These files contains thumbnails, sorting order, slideshow settings etc."
@@ -69,7 +116,7 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 		QList<QWidget*> li;
 		//mainWindowsCount = 1;//to ease debug
 		for(int i=0; i<mainWindowsCount; ++i) {
-			li << new CMainWindow();
+			li << new CMainWindow(nullptr, {}, initialDirectory);
 		}
 		CMainWindow::s_loadingComplete = true;
 		std::reverse(li);
@@ -79,6 +126,21 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 			if(_atExit)
 				return;
 		}
+		if(capture) {
+			QPointer<QWidget> target = li.first();
+			const QString directory = QDir(parser.value("screenshot-dir")).absolutePath();
+			const bool manualRun = parser.isSet("manual-run");
+			QTimer::singleShot(screenshotDelay, this, [target, directory, manualRun]() {
+				QString error;
+				const bool saved = Screenshot::save(target, directory, &error);
+				if(!saved)
+					fprintf(stderr, "Screenshot failed: %s\n", qPrintable(error));
+				else
+					fprintf(stdout, "Screenshot: %s/latest.png\n", qPrintable(directory));
+				if(!saved || !manualRun)
+					QCoreApplication::exit(saved ? EXIT_SUCCESS : EXIT_FAILURE);
+			});
+		}
 	}
 	New<QTimer> timer(this);
 	connect(timer, SIGNAL(timeout()), SLOT(prioritizeThumbs()) );
@@ -86,6 +148,8 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 }
 CApplication::~CApplication() {
 	ThumbWorker::instance().exit();
+	if(screenshotMode())
+		return;
 	Settings sett;
 	QString strCmd;
 	sett.load("shutdownCommand", strCmd);

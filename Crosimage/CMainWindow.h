@@ -6,7 +6,7 @@ class ThumbView;
 class CMainWindow: public QMainWindow {
 	Q_OBJECT
 	public:
-		CMainWindow(QWidget* parent = 0, Qt::WindowFlags flags = {});
+		CMainWindow(QWidget* parent = 0, Qt::WindowFlags flags = {}, const QString &initialDirectory = {});
 		virtual ~CMainWindow();
 		static CMainWindow* instance(QWidget*child);
 		void go(const QString & dir, int addCurrentToHistory);//-1=history, 0=not add, 1==add to fwd
@@ -36,6 +36,7 @@ class CMainWindow: public QMainWindow {
 		MenuButton _menu;
 		int _nInst;
 		QString _rootDir;
+		bool _directoryInitialized = false;
 		void createFileTreePanel();
 		void goSibling(bool next);
 		ThumbModel* _model;//stores current folder
