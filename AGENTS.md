@@ -1,22 +1,22 @@
 # Crosimage
 
-Crosimage — просмотрщик изображений на C++/Qt с миниатюрами папок,
-слайд-шоу и переключением между окнами с предпросмотром.
-Описание возможностей, скриншоты и подробная настройка сборки — в [README.md](README.md).
+Crosimage is a C++/Qt image viewer with folder thumbnails,
+slideshows, and window switching with previews.
+See [README.md](README.md) for features, screenshots, and detailed build setup.
 
-- Исходники и Qt-ресурсы находятся в `Crosimage/`, вспомогательные классы — в `Crosimage/Qqt/`.
-- Windows-сборка использует `Crosimage.sln` и `Crosimage/Crosimage.vcxproj`.
-  Версии toolset и Qt задаются в `.vcxproj`.
-- Для сборки из обычного PowerShell используй `python build.py`: по умолчанию
-  это инкрементальная сборка `Debug|x64`. Скрипт автоматически находит MSBuild
-  и Qt/MSBuild; сторонние Python-пакеты не нужны.
-- `--release` выбирает Release, `--rebuild` выполняет полную пересборку,
-  `--errors` оставляет ошибки и результат, `--quiet` отключает вывод.
-  Полный журнал UTF-8 сохраняется в `build.log`.
-- `python build.py --help` показывает все параметры; `--dry-run` выводит
-  команду без сборки. Подробности переопределения путей — в README.
-- После изменений C++ проверяй сборку через `python build.py` и при ошибках
-  изучай `build.log`. Успешная сборка не заменяет проверку поведения GUI.
-- Изменяй исходники, а не генерируемые файлы в `GeneratedFiles/` и каталогах сборки.
-- Перед каждым нетривиальным коммитом запускай субагента на ревью изменений.
-  Дождись результатов ревью и устрани выявленные проблемы до коммита.
+- Source code and Qt resources are in `Crosimage/`; helper classes are in `Crosimage/Qqt/`.
+- The Windows build uses `Crosimage.sln` and `Crosimage/Crosimage.vcxproj`.
+  The toolset and Qt versions are configured in `.vcxproj`.
+- To build from a regular PowerShell session, use `python build.py`. By default,
+  it performs an incremental `Debug|x64` build. The script automatically locates
+  MSBuild and Qt/MSBuild; no third-party Python packages are required.
+- `--release` selects Release, `--rebuild` performs a full rebuild,
+  `--errors` shows only errors and the build result, and `--quiet` suppresses output.
+  The full UTF-8 log is saved to `build.log`.
+- `python build.py --help` lists all options; `--dry-run` prints the command
+  without building. See README for details on overriding paths.
+- After C++ changes, verify the build with `python build.py` and inspect
+  `build.log` if errors occur. A successful build does not replace checking GUI behavior.
+- Edit source files, not generated files in `GeneratedFiles/` or build directories.
+- Before every nontrivial commit, run a subagent to review the changes.
+  Wait for the review results and resolve any identified issues before committing.
