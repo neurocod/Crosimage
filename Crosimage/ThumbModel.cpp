@@ -119,7 +119,9 @@ void ThumbModel::directoryLoaded(QDir dir, QStringList items) {
 	endResetModel();
 }
 void ThumbModel::refresh() {
-	setDir(_dir.absolutePath(), false);
+	QDir dir = _dir;
+	dir.refresh();
+	setDir(dir);
 }
 void ThumbModel::updateThumb(const QString & path, const QImage & image) {
 	if(_items.isEmpty())
