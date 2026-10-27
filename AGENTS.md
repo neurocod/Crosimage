@@ -5,15 +5,16 @@ slideshows, and window switching with previews.
 See [README.md](README.md) for features, screenshots, and detailed build setup.
 
 - Source code and Qt resources are in `Crosimage/`; helper classes are in `Crosimage/Qqt/`.
-- The Windows build uses `Crosimage.sln` and `Crosimage/Crosimage.vcxproj`.
-  The toolset and Qt versions are configured in `.vcxproj`.
+- The build uses the root `CMakeLists.txt` and `Crosimage/CMakeLists.txt`.
+  Keep explicit source lists and logical IDE groups in `crosimage_sources`.
+  Generated Visual Studio solutions/projects live in the build directory.
 - To build from a regular PowerShell session, use `python build.py`. By default,
   it performs an incremental `Debug|x64` build. The script automatically locates
-  MSBuild and Qt/MSBuild; no third-party Python packages are required.
+  CMake and an installed MSVC Qt 6 kit; no third-party Python packages are required.
 - `--release` selects Release, `--rebuild` performs a full rebuild,
   `--errors` shows only errors and the build result, and `--quiet` suppresses output.
   The full UTF-8 log is saved to `build.log`.
-- `python build.py --help` lists all options; `--dry-run` prints the command
+- `python build.py --help` lists all options; `--dry-run` prints the configure/build commands
   without building. See README for details on overriding paths.
 - After C++ changes, verify the build with `python build.py` and inspect
   `build.log` if errors occur. A successful build does not replace checking GUI behavior.

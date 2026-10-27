@@ -62,3 +62,12 @@ Release
 Debug
 *.pdb
 thumbnails.sqlite
+
+# CMake (out-of-source builds and local IDE settings)
+/build/
+/out/
+CMakeUserPresets.json
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+__pycache__/

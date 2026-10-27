@@ -1,30 +1,79 @@
 # Crosimage
 
-## Building on Windows
+## Building with CMake
 
-Install Python 3, Visual Studio with the C++ desktop workload, and Qt VS Tools.
-The compiler toolset and Qt version come from `Crosimage/Crosimage.vcxproj`.
-Run from a regular terminal:
+The build uses CMake 3.21 or newer, a C++17 compiler, and Qt 6 with the Core,
+Gui, Widgets, Sql, Svg, and Xml modules. On Windows, install Visual Studio with
+Desktop development with C++ and the matching MSVC Qt kit. Visual Studio 2026
+requires CMake 4.2 or newer. Qt VS Tools and Qt/MSBuild are no longer required.
+
+### Windows build helper
+
+With Python 3 installed, run from a regular PowerShell terminal:
 
 ```powershell
-python build.py                         # incremental Debug|x64 build
+python build.py                         # configure and build Debug|x64
 python build.py --release               # Release|x64
 python build.py --rebuild               # clean and rebuild
 python build.py --errors                # only errors and the result
 python build.py --quiet                 # log only; check the exit code
 python build.py --qt C:\Qt\6.11.2\msvc2022_64
-python build.py --dry-run               # show the resolved command
+python build.py --dry-run               # show configure/build commands
 python build.py --help
 ```
 
-MSBuild is discovered through Visual Studio's `vswhere`, with a PATH fallback.
-Qt/MSBuild is resolved from `--qt-msbuild`, the `QtMsBuild` environment variable,
-the project's `QtMsBuild` directory, or `%LOCALAPPDATA%\QtMsBuild`.
-`--qt` (or `QT_PREFIX`) overrides the Qt installation for this build only;
-otherwise the project's Qt VS Tools settings are used.
-The full UTF-8 build output goes to `build.log` beside the script. Use `--log PATH`
-to change it; relative paths are resolved from the caller's current directory.
-The script can be invoked from any directory and returns MSBuild's exit code.
+The helper discovers CMake on PATH or in Visual Studio. Select Qt with `--qt`
+or `QT_PREFIX`; an existing CMake cache or `CMAKE_PREFIX_PATH` is also respected.
+For a new build without these settings, the helper looks for an installed MSVC
+Qt 6 kit under `C:\Qt`. Use a matching 32-bit Qt kit with `--platform Win32`.
+
+Build files go to `build/x64` (or `build/Win32`); use `--build-dir PATH` to
+change this. The executable is `build/x64/bin/Debug/Crosimage.exe` or
+`build/x64/bin/Release/Crosimage.exe`. On Windows, the build runs
+[windeployqt](https://doc.qt.io/qt-6/windows-deployment.html) to copy Qt DLLs
+and plugins beside the executable, including image formats and SQL drivers.
+The compiler runtime must already be installed (as it is on the build machine).
+To manage Qt runtime deployment yourself, configure with
+`-DCROSIMAGE_DEPLOY_QT=OFF`.
+
+The full UTF-8 configure/build output goes to `build.log` beside the script.
+Use `--log PATH` to change it. Relative option paths are resolved from the
+caller's current directory; the script can be invoked from any directory.
+The exit code is the failing CMake command's exit code, or zero on success.
+The old `--msbuild` and `--qt-msbuild` overrides have been replaced by `--cmake`
+and standard CMake generator selection (`--generator`).
+
+### Direct CMake commands and IDEs
+
+```powershell
+cmake -S . -B build/x64 -A x64 -DCMAKE_PREFIX_PATH=C:/Qt/6.11.2/msvc2022_64
+cmake --build build/x64 --config Debug --parallel
+cmake --build build/x64 --config Release --parallel
+```
+
+CMake selects an installed Visual Studio by default on Windows. Add, for
+example, `-G "Visual Studio 17 2022"` to choose a specific generator. Open the
+solution generated in `build/x64`, or open the repository folder directly in
+Visual Studio / Qt Creator and configure the Qt prefix in the IDE. Generated
+solutions and projects are build outputs and are not committed.
+
+The Visual Studio filters are preserved in `Crosimage/CMakeLists.txt` using
+`source_group`: `src`, `src/settings`, `Thumb`, `ImageView`, `AltTab`, `Qqt`,
+`Qqt/DB`, and `Resource Files`. A `Solution Items` target exposes the root
+project documents. Add new files to the relevant `crosimage_sources` group;
+CMake handles moc, resources, and the precompiled header automatically.
+
+For a single-configuration generator such as Ninja, omit `-A` and select the
+configuration at configure time:
+
+```sh
+cmake -S . -B build/ninja -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/path/to/Qt/6.x/compiler_kit
+cmake --build build/ninja --parallel
+```
+
+On Windows, Ninja needs a Visual Studio developer shell. The migration has
+been verified with MSVC on Windows; other compiler/platform combinations
+may require changes to the existing C++ sources.
 
 ## Overview
 
