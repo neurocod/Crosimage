@@ -31,7 +31,8 @@ void FileSystemThread::readDir(QDir dir) {
 	entryList.removeOne(DirDb::dbFileName);
 	entryList.removeOne(DirDb::dbFileName2);
 	entryList.removeOne("Thumbs.db");
-	if((dir.sorting() & QDir::SortByMask)==QDir::Name) {
+	// QDir::Type is not included in QDir::SortByMask.
+	if((dir.sorting() & (QDir::SortByMask|QDir::Type))==QDir::Name) {
 		ASSERT(dir.sorting() & QDir::DirsFirst);
 		QStringList dirs;
 		QStringList other;
@@ -47,6 +48,8 @@ void FileSystemThread::readDir(QDir dir) {
 				other << s;
 		}
 		std::sort(other.begin(), other.end(), compareByNameAndNumber);
+		if(dir.sorting() & QDir::Reversed)
+			std::reverse(other.begin(), other.end());
 		entryList = dirs + other;
 	}
 	emit items(dir, entryList);
