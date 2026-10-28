@@ -33,8 +33,13 @@ class ThumbModel: public QAbstractTableModel {
 		void setDir(const QString & str, bool check=true);
 		void refresh();
 		void updateThumb(const QString & path, const QImage & thumb);
-		void directoryLoaded(QDir path, QStringList items);
+		void directoryLoaded(QDir path, QStringList items, quint64 requestId);
+	signals:
+		void sortingChanged();
 	protected:
+		void readDirectory(bool restoreSorting);
+		quint64 _directoryRequestId = 0;
+		bool _restoreSortingPending = false;
 		int _colCount;
 
 		QDir _dir;

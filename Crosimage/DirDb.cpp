@@ -5,6 +5,66 @@
 const QString DirDb::dbFileName = "thumbnails.sqlite";
 const QString DirDb::dbFileName2 = dbFileName + "-journal";
 
+namespace {
+const QString settingsTableSql = "CREATE TABLE IF NOT EXISTS settings ("
+	"k TEXT UNIQUE NOT NULL PRIMARY KEY, v BLOB NULL)";
+
+// Short-lived connections belong to the filesystem thread; thumbnail connections
+// and their caches remain exclusively owned by ThumbWorker.
+class DirectorySettingsDb: public SqliteDb {
+public:
+	explicit DirectorySettingsDb(const QDir & dir): _path(dir.absoluteFilePath(DirDb::dbFileName)) {}
+protected:
+	ReadStatus connectToDbOnce()override {
+		if(_db.isOpen())
+			return true;
+		_db = QSqlDatabase::addDatabase("QSQLITE", "settings:" + _path);
+		_db.setDatabaseName(_path);
+		if(!_db.open())
+			return _db.lastError().text();
+		PreparedSqlQuery q(*this, settingsTableSql);
+		return q.execOrTrace();
+	}
+private:
+	QString _path;
+};
+}
+
+ReadStatus DirDb::loadSortFlags(const QDir & dir, QDir::SortFlags & flags) {
+	if(!QFileInfo::exists(dir.absoluteFilePath(dbFileName)))
+		return false;
+	DirectorySettingsDb db(dir);
+	auto status = db.initSqlOnce();
+	if(!status.ok())
+		return status;
+	PreparedSqlQuery q(db, "SELECT v FROM settings WHERE k='sortFlags'");
+	status = q.execOrTrace();
+	if(!status.ok())
+		return status;
+	if(!q.next())
+		return false;
+	bool ok = false;
+	const int value = q.value(0).toInt(&ok);
+	const int sortBy = value & (QDir::SortByMask | QDir::Type);
+	if(!ok || (value & ~(QDir::SortByMask | QDir::Type | QDir::Reversed | QDir::DirsFirst))
+		|| (sortBy!=QDir::Name && sortBy!=QDir::Time && sortBy!=QDir::Size && sortBy!=QDir::Type))
+		return false;
+	flags = QDir::SortFlags(value) | QDir::DirsFirst;
+	return true;
+}
+
+WriteStatus DirDb::saveSortFlags(const QDir & dir) {
+	DirectorySettingsDb db(dir);
+	auto status = db.initSqlOnce();
+	if(!status.ok())
+		return status;
+	PreparedSqlQuery q(db, "INSERT OR REPLACE INTO settings (k, v) VALUES ('sortFlags', :value)");
+	if(!q.prepareOnceOrTrace().ok())
+		return false;
+	q.bindValue(":value", int(dir.sorting()));
+	return q.execOrTrace();
+}
+
 DirDb& DirDb::instance(const QDir & dir) {
 	QString str = dir.absolutePath();
 #ifdef _DEBUG //всегда вызывается из одного и того же потока, не нужна синхронизация и защита
@@ -157,9 +217,7 @@ StringStatus DirDb::maybeInstallDb() {
 	QStringList names = _db.tables();
 	
 	if(!names.contains("settings")) {
-		PreparedSqlQuery q(*this, "CREATE TABLE [settings] ( "
-			"k TEXT UNIQUE NOT NULL PRIMARY KEY, "
-			"v BLOB NULL )");
+		PreparedSqlQuery q(*this, settingsTableSql);
 		auto s = q.execOrTrace();
 		if(!s.ok())
 			return s;

@@ -15,6 +15,9 @@ class DirDb: public SqliteDb {
 		void freeCacheMemory();
 		static const QString dbFileName;
 		static const QString dbFileName2;
+		// Use a separate connection on FileSystemThread, without loading thumbnail blobs.
+		static ReadStatus loadSortFlags(const QDir & dir, QDir::SortFlags & flags);
+		static WriteStatus saveSortFlags(const QDir & dir);
 	protected:
 		DirDb(const QDir & dir);
 

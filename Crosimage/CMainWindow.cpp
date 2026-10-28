@@ -112,6 +112,13 @@ CMainWindow::CMainWindow(QWidget *parent, Qt::WindowFlags flags, const QString &
 		_checkSortReversed.sizePolicy = QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 		_checkSortReversed.connectClicks(this, &CMainWindow::sortingUpdated);
 		lay2 << _checkSortReversed;
+		connect(_model, &ThumbModel::sortingChanged, this, [this]() {
+			const QSignalBlocker sortBlocker(_boxSortBy);
+			const QSignalBlocker reversedBlocker(_checkSortReversed);
+			const auto sort = _model->dir().sorting();
+			_boxSortBy->setCurrentIndex(_boxSortBy->findData(int(sort & (QDir::SortByMask | QDir::Type))));
+			_checkSortReversed.checked = sort.testFlag(QDir::Reversed);
+		});
 
 		_editPath = new CComboBox();
 		_editPath->setEditable(1);

@@ -62,6 +62,7 @@ Release
 Debug
 *.pdb
 thumbnails.sqlite
+thumbnails.sqlite-*
 
 # CMake (out-of-source builds and local IDE settings)
 /build/

@@ -7,9 +7,9 @@ class FileSystemThread: public QThread {
 		static FileSystemThread& instance();
 		virtual ~FileSystemThread();
 	public slots:
-		void readDir(QDir dir);
+		void readDir(QDir dir, bool restoreSorting, quint64 requestId);
 	signals:
-		void items(QDir dir, QStringList items);
+		void items(QDir dir, QStringList items, quint64 requestId);
 	protected:
 		FileSystemThread();
 };

@@ -12,7 +12,7 @@ ThumbModel::ThumbModel(QObject*parent):
 	_dir.setSorting(QDir::Time|QDir::DirsFirst);
 	connect(&ThumbCache::instance(), SIGNAL(loadedByCache(const QString &, const QImage&)),
 		SLOT(updateThumb(const QString&, const QImage&)) );
-	connect(&_dirThread, SIGNAL(items(QDir, QStringList)), SLOT(directoryLoaded(QDir, QStringList)) );
+	connect(&_dirThread, &FileSystemThread::items, this, &ThumbModel::directoryLoaded);
 }
 ThumbModel::~ThumbModel() {
 	clear();
@@ -94,19 +94,22 @@ void ThumbModel::setDir(const QString & str, bool check) {
 	QDir dir(str);
 	if(check && dir.absolutePath()==_dir.absolutePath())
 		return;
-	// Navigation changes the path, not the model's selected sort order.
+	// Folders without a preference inherit the model's selected sort order.
 	dir.setSorting(_dir.sorting());
 	_dir = dir;
-	refresh();
+	readDirectory(true);
 }
 void ThumbModel::clear() {
 	qDeleteAll(_items);
 	_items.clear();
 	_invalidateFiles = true;
 }
-void ThumbModel::directoryLoaded(QDir dir, QStringList items) {
-	if(_dir!=dir)
+void ThumbModel::directoryLoaded(QDir dir, QStringList items, quint64 requestId) {
+	if(requestId!=_directoryRequestId)
 		return;
+	_restoreSortingPending = false;
+	_dir.setSorting(dir.sorting());
+	emit sortingChanged();
 	beginResetModel();
 	clear();
 	for(auto item: items)
@@ -114,10 +117,19 @@ void ThumbModel::directoryLoaded(QDir dir, QStringList items) {
 	endResetModel();
 }
 void ThumbModel::refresh() {
+	readDirectory(_restoreSortingPending);
+}
+void ThumbModel::readDirectory(bool restoreSorting) {
+	_restoreSortingPending = restoreSorting;
+	// The filesystem worker broadcasts results to all windows. Identify each load
+	// so another window or an older navigation/sort request cannot replace this one.
+	static quint64 nextRequestId = 0;
+	_directoryRequestId = ++nextRequestId;
 	beginResetModel();
 	clear();
 	_dir.refresh();
-	QMetaObject::invokeMethod(&_dirThread, "readDir", Qt::QueuedConnection, Q_ARG(QDir, _dir));
+	QMetaObject::invokeMethod(&_dirThread, "readDir", Qt::QueuedConnection,
+		Q_ARG(QDir, _dir), Q_ARG(bool, restoreSorting), Q_ARG(quint64, _directoryRequestId));
 	endResetModel();
 }
 void ThumbModel::updateThumb(const QString & path, const QImage & image) {
@@ -154,6 +166,14 @@ void ThumbModel::setSortFlags(QDir::SortFlags f) {
 	if(f==_dir.sorting())
 		return;
 	_dir.setSorting(f);
+	_restoreSortingPending = false;
+	const QDir dir = _dir;
+	QMetaObject::invokeMethod(&_dirThread, [dir]() {
+		const auto status = DirDb::saveSortFlags(dir);
+		if(!status.ok())
+			qWarning() << "Could not save folder sorting:" << dir.absolutePath();
+	}, Qt::QueuedConnection);
+	emit sortingChanged();
 	refresh();
 }
 void ThumbModel::setColumnCount(int cols) {

@@ -11,6 +11,7 @@
 #include "ThumbWorker.h"
 #include "CrSettings.h"
 #include "Screenshot.h"
+#include "FileSystemThread.h"
 #include <cstdio>
 #include <cstdlib>
 
@@ -147,6 +148,9 @@ CApplication::CApplication(int & argc, char ** argv): QApplication(argc, argv) {
 	timer->start(500);
 }
 CApplication::~CApplication() {
+	// Finish queued sorting writes while QApplication is still alive. Stopping
+	// the filesystem event loop directly could discard them after a slow read.
+	QMetaObject::invokeMethod(&FileSystemThread::instance(), []() {}, Qt::BlockingQueuedConnection);
 	ThumbWorker::instance().exit();
 	if(screenshotMode())
 		return;

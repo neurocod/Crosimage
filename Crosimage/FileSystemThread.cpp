@@ -19,11 +19,16 @@ FileSystemThread::~FileSystemThread() {
 		msleep(1);
 }
 bool compareByNameAndNumber(const QString & s1, const QString & s2);
-void FileSystemThread::readDir(QDir dir) {
+void FileSystemThread::readDir(QDir dir, bool restoreSorting, quint64 requestId) {
 	QElapsedTimer t;
 	t.start();
 	QString dirPath = dir.path();//for debug
 	ASSERT(QThread::currentThread()!=qApp->thread());//don't call directly from gui thread cause gui thread will slow down
+	if(restoreSorting) {
+		auto flags = dir.sorting();
+		if(DirDb::loadSortFlags(dir, flags).ok())
+			dir.setSorting(flags);
+	}
 	QStringList entryList = dir.entryList(QDir::AllEntries|QDir::NoDotAndDotDot
 		|QDir::Hidden|QDir::System//without this it hides broken shortcuts
 		);
@@ -52,5 +57,5 @@ void FileSystemThread::readDir(QDir dir) {
 			std::reverse(other.begin(), other.end());
 		entryList = dirs + other;
 	}
-	emit items(dir, entryList);
+	emit items(dir, entryList, requestId);
 }
