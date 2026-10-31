@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "FileSystemThread.h"
 #include "DirDb.h"
+#include "DirectorySorting.h"
 
 FileSystemThread& FileSystemThread::instance() {
 	static FileSystemThread p;
@@ -18,7 +19,6 @@ FileSystemThread::~FileSystemThread() {
 	while(!isFinished())
 		msleep(1);
 }
-bool compareByNameAndNumber(const QString & s1, const QString & s2);
 void FileSystemThread::readDir(QDir dir, bool restoreSorting, quint64 requestId) {
 	QElapsedTimer t;
 	t.start();

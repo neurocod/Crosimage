@@ -70,7 +70,7 @@ ImageView::ImageView(ThumbModel*parent, ThumbView*view, QString file): _parent(p
 	{
 		Action a(tr("Last image"), QKeySequence("End"));
 		QObject::connect(a, &QAction::triggered, this, [this]() {
-			_indexInParent = _parent->items().count()-1;
+			_indexInParent = _files.count()-1;
 			navigate();
 		});
 		addAction(a);
@@ -252,6 +252,12 @@ void ImageView::show(const QStringList & files) {
 	update();
 }
 void ImageView::navigate(int step) {
+	if(_files.isEmpty()) {
+		_indexInParent = -1;
+		_images.clear();
+		update();
+		return;
+	}
 	auto files = _files;
 	int test = _indexInParent + step;
 	test = qBound(0, test, files.count()-1);

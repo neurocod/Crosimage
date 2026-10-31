@@ -15,6 +15,11 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Sql Svg Xml)
 
 option(CROSIMAGE_DEPLOY_QT "Copy Qt runtime libraries and plugins beside the Windows executable" ${WIN32})
 add_subdirectory(Crosimage)
+option(CROSIMAGE_BUILD_TESTS "Build focused regression tests" OFF)
+if(CROSIMAGE_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Crosimage)
 
 # Make the former solution items available in generated IDE projects as well.

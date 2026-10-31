@@ -28,11 +28,11 @@ void ThumbWorker::exit() {
 	wait(10000);
 }
 void ThumbWorker::makeFirst(const QString & path) {
-	auto job = new GenerateThumb(path);
+	const GenerateThumb job(path);
 	QMutexLocker lock(&_lock);
 	for(int i = 0; i<_queue.count(); ++i) {
 		auto j = _queue.at(i);
-		if(job->equal(*j)) {
+		if(job.equal(*j)) {
 			_queue.swapItemsAt(0, i);
 			return;
 		}
@@ -207,7 +207,7 @@ void ThumbWorker::SetThumb::run(ThumbWorker*w) {
 	w->emit updated(_file.absoluteFilePath(), _img);
 }
 void ThumbWorker::GenerateDirRecursive::run(ThumbWorker*w) {
-	if(_dirIterator.hasNext()) {
+	if(!_dirIterator.hasNext()) {
 		_delete = true;
 		return;
 	}

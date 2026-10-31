@@ -163,6 +163,8 @@ crosimage_sources("src"
     DirCacheItem.h
     DirDb.cpp
     DirDb.h
+    DirectorySorting.cpp
+    DirectorySorting.h
     main.cpp
     Screenshot.cpp
     Screenshot.h

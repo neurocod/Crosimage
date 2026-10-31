@@ -279,8 +279,12 @@ void ThumbView::openInExplorer() {
 	}
 }
 void ThumbView::moveFiles() {
-	auto selected = selectionModel()->selectedIndexes();
-	if(selected.isEmpty())
+	// A modal dialog processes events and can reset the model. Keep values,
+	// not indexes or item pointers, for the files selected before it opens.
+	QStringList paths;
+	for(auto item: selectedItems())
+		paths << item->absoluteFilePath();
+	if(paths.isEmpty())
 		return;
 	static QMap<QString, QString> dirsToMove;
 	QString curDir = _model->dir().path();
@@ -291,9 +295,8 @@ void ThumbView::moveFiles() {
 	if(dirToMove.isEmpty())
 		return;
 	QDir dir2(dirToMove);
-	for(auto index: selected) {
-		const QFileInfo & file = _model->itemBy(index)->fileInfo();
-		QString from = file.absoluteFilePath();
+	for(const auto & from: paths) {
+		const QFileInfo file(from);
 		QString to = dir2.absoluteFilePath(file.fileName());
 		bool b = QDir().rename(from, to);
 		if(!b) {

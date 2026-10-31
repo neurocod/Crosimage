@@ -75,6 +75,23 @@ On Windows, Ninja needs a Visual Studio developer shell. The migration has
 been verified with MSVC on Windows; other compiler/platform combinations
 may require changes to the existing C++ sources.
 
+## Regression tests
+
+Focused C++ regression tests are optional and use the same Qt kit as the app:
+
+```powershell
+cmake -S . -B build/x64 -DCROSIMAGE_BUILD_TESTS=ON
+python build.py
+ctest --test-dir build/x64 -C Debug --output-on-failure
+```
+
+The tests use temporary fixtures and isolated settings. They cover thumbnail
+job completion and allocation regressions, viewer navigation and file moves across model resets,
+natural sorting, and compatibility with existing thumbnail timestamp encoding.
+The allocation check requires MSVC Debug. Python 3 is used to clean the tests'
+temporary databases after its process exits. Set `CROSIMAGE_BUILD_TESTS=OFF`
+to return to application-only builds.
+
 ## Screenshots for development
 
 Build, capture the viewer, and wait for it to exit:

@@ -6,6 +6,26 @@ const QString DirDb::dbFileName = "thumbnails.sqlite";
 const QString DirDb::dbFileName2 = dbFileName + "-journal";
 
 namespace {
+// Preserve the existing files.modified BLOB format; this is part of the
+// thumbnail schema, rather than a property of SQLite connections.
+QVariant toVariantByteArray(const QDateTime & dt) {
+	QByteArray arr;
+	{
+		QDataStream stream(&arr, QIODevice::WriteOnly);
+		stream << dt;
+	}
+	return QVariant(arr);
+}
+QDateTime dateTimeFromVariant(const QVariant & v) {
+	QDateTime dt;
+	if(v.canConvert(QVariant::ByteArray)) {
+		const QByteArray arr = v.toByteArray();
+		QDataStream stream(arr);
+		stream >> dt;
+	}
+	return dt;
+}
+
 const QString settingsTableSql = "CREATE TABLE IF NOT EXISTS settings ("
 	"k TEXT UNIQUE NOT NULL PRIMARY KEY, v BLOB NULL)";
 
@@ -117,7 +137,7 @@ ReadStatus DirDb::readAllToCache() {
 	return true;
 }
 bool DirDb::compareByRating(const Item * i1, const Item * i2) {
-	return i1->_rating > i1->_rating;
+	return i1->_rating > i2->_rating;
 }
 void DirDb::freeCacheMemory() {
 	qDeleteAll(_items);

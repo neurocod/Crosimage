@@ -8,6 +8,7 @@
 #include "CApplication.h"
 #include "SettingsDialog.h"
 #include "TxtLnkProcessor.h"
+#include "DirectorySorting.h"
 
 QList<CMainWindow*> CMainWindow::s_inst;
 bool CMainWindow::s_loadingComplete = false;
@@ -301,11 +302,6 @@ void CMainWindow::goUpSibling() {
 }
 void CMainWindow::goDownSibling() {
 	goSibling(true);
-}
-bool compareByNameAndNumber(const QString & s1, const QString & s2) {
-	thread_local QCollator collator;
-	collator.setNumericMode(true);
-	return collator.compare(s1, s2)<0;
 }
 void CMainWindow::goSibling(bool next) {
 	QDir parentDir = _model->dir().absoluteFilePath("..");
